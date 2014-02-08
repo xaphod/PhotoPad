@@ -47,6 +47,10 @@
     longPress.delegate = self;
     [_galleryView addGestureRecognizer:longPress];
     self.photoToolSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Delete" otherButtonTitles:nil];
+    
+    // Tim added...
+    self.galleryView.allowsMultipleSelection = YES;
+    self.selectedPhotos = [NSMutableArray array];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -120,6 +124,7 @@
     return cell;
 }
 
+/*
 - (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section
 {
     return 5;
@@ -129,12 +134,27 @@
 {
     return 5;
 }
+ */
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    /* tim - want to multi-select & print.
     [_photosBrowser reloadData];
     [_photosBrowser setCurrentPhotoIndex:indexPath.row];
     [self.navigationController pushViewController:_photosBrowser animated:YES];
+     */
+    
+    BPPGalleryCell *cell = (BPPGalleryCell*)[collectionView cellForItemAtIndexPath:indexPath];
+    [cell.checkmarkViewOutlet setChecked:YES];
+    
+    [self.selectedPhotos addObject:[self.photos objectAtIndex:indexPath.row]];
+}
+
+- (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
+{
+    BPPGalleryCell *cell = (BPPGalleryCell*)[collectionView cellForItemAtIndexPath:indexPath];
+    [cell.checkmarkViewOutlet setChecked:NO];
+    [self.selectedPhotos removeObject:[self.photos objectAtIndex:indexPath.row]];
 }
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section{
@@ -171,6 +191,10 @@
     if (index < self.photos.count)
         return [MWPhoto photoWithImage:[UIImage imageWithContentsOfFile:[self.photos objectAtIndex:index]]];
     return nil;
+}
+
+- (IBAction)PrintPressed:(id)sender {
+    NSLog(@"PrintPressed.");
 }
 
 @end

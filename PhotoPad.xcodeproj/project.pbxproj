@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		22010AAA18A6E1CE00D9A921 /* SSCheckMark.m in Sources */ = {isa = PBXBuildFile; fileRef = 22010AA918A6E1CE00D9A921 /* SSCheckMark.m */; };
 		2266804718A69F350060FBBE /* MWCaptionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2266803518A69F350060FBBE /* MWCaptionView.m */; };
 		2266804818A69F350060FBBE /* MWGridCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 2266803818A69F350060FBBE /* MWGridCell.m */; };
 		2266804918A69F350060FBBE /* MWGridViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2266803A18A69F350060FBBE /* MWGridViewController.m */; };
@@ -116,6 +117,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		22010AA818A6E1CE00D9A921 /* SSCheckMark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SSCheckMark.h; path = PhotoPad/SSCheckMark.h; sourceTree = "<group>"; };
+		22010AA918A6E1CE00D9A921 /* SSCheckMark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SSCheckMark.m; path = PhotoPad/SSCheckMark.m; sourceTree = "<group>"; };
 		2266803418A69F350060FBBE /* MWCaptionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MWCaptionView.h; sourceTree = "<group>"; };
 		2266803518A69F350060FBBE /* MWCaptionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MWCaptionView.m; sourceTree = "<group>"; };
 		2266803618A69F350060FBBE /* MWCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MWCommon.h; sourceTree = "<group>"; };
@@ -465,6 +468,8 @@
 				863ED8C6183F267300AB7A6A /* Extensions */,
 				4D784B32183D730B007FB05A /* CocoaHTTPServer */,
 				863ED8DF18403D1700AB7A6A /* MWPhotoBrowser */,
+				22010AA818A6E1CE00D9A921 /* SSCheckMark.h */,
+				22010AA918A6E1CE00D9A921 /* SSCheckMark.m */,
 			);
 			name = External;
 			sourceTree = "<group>";
@@ -864,6 +869,7 @@
 				863ED9391840502100AB7A6A /* NSFileManager+Tar.m in Sources */,
 				863ED92E18403D1700AB7A6A /* UIButton+WebCache.m in Sources */,
 				863ED8A6183DB66000AB7A6A /* UIColor+Hex.m in Sources */,
+				22010AAA18A6E1CE00D9A921 /* SSCheckMark.m in Sources */,
 				863ED93C1840532500AB7A6A /* NSFileManager+EyeFi.m in Sources */,
 				4D784B7C183D7319007FB05A /* HTTPAsyncFileResponse.m in Sources */,
 				863ED92918403D1700AB7A6A /* SDWebImageDecoder.m in Sources */,

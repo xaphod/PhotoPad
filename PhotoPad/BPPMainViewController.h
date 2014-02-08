@@ -16,6 +16,8 @@
 @property (strong, nonatomic) UIActionSheet *photoToolSheet;
 @property (nonatomic) NSUInteger selectedIndex;
 
+@property(nonatomic, strong) NSMutableArray* selectedPhotos;
+
 - (UIImage *)imageWithImage:(UIImage *)image scaledToFillSize:(CGSize)size;
 
 @end

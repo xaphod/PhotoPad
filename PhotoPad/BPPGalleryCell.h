@@ -7,9 +7,11 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "SSCheckMark.h"
 
 @interface BPPGalleryCell : UICollectionViewCell
 
 @property(nonatomic, strong) UIImage *asset;
+@property (weak, nonatomic) IBOutlet SSCheckMark *checkmarkViewOutlet;
 
 @end
