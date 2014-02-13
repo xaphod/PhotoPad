@@ -10,6 +10,7 @@
 #import "BPPGalleryCell.h"
 #import "NSFileManager+Tar.h"
 #import "UIColor+Hex.h"
+#import "BPPAirprintCollagePrinter.h"
 
 @interface BPPMainViewController ()
 
@@ -48,7 +49,6 @@
     [_galleryView addGestureRecognizer:longPress];
     self.photoToolSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Delete" otherButtonTitles:nil];
     
-    // Tim added...
     self.galleryView.allowsMultipleSelection = YES;
     self.selectedPhotos = [NSMutableArray array];
 }
@@ -147,7 +147,8 @@
     BPPGalleryCell *cell = (BPPGalleryCell*)[collectionView cellForItemAtIndexPath:indexPath];
     [cell.checkmarkViewOutlet setChecked:YES];
     
-    [self.selectedPhotos addObject:[self.photos objectAtIndex:indexPath.row]];
+    NSString *filename = [self.photos objectAtIndex:indexPath.row];
+    [self.selectedPhotos addObject:[UIImage imageWithContentsOfFile:filename]];
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
@@ -193,8 +194,38 @@
     return nil;
 }
 
+#pragma mark - Printing
+
 - (IBAction)PrintPressed:(id)sender {
-    NSLog(@"PrintPressed.");
+    NSLog(@"PrintPressed, %lu photos to print.", (unsigned long)self.selectedPhotos.count);
+
+    BPPAirprintCollagePrinter *ap = [BPPAirprintCollagePrinter singleton];
+    
+    // TODO: debug code
+    NSData* thisDebugJPG = [ap printCollage:self.selectedPhotos];
+    NSLog(@"thisDebugJPG size %lu", (unsigned long)thisDebugJPG.length);
+    
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+    NSString *documentsDirectory = [paths objectAtIndex:0];
+    NSString *appFile = [documentsDirectory stringByAppendingPathComponent:@"collage.JPG"];
+    [thisDebugJPG writeToFile:appFile atomically:YES];
+
+    
+    /*
+    UIImageView* iv = [[UIImageView alloc] initWithImage:[UIImage imageWithData:thisDebugJPG]];
+    [iv setFrame:CGRectMake(0, 0, 1200, 1800)];
+    [self.view addSubview:iv];
+    */
+    
+    [self clearCellSelections];
+    [self.selectedPhotos removeAllObjects];
+}
+
+- (void)clearCellSelections {
+    int collectonViewCount = [self.galleryView numberOfItemsInSection:0];
+    for (int i=0; i<=collectonViewCount; i++) {
+        [self.galleryView deselectItemAtIndexPath:[NSIndexPath indexPathForItem:i inSection:0] animated:YES];
+    }
 }
 
 @end

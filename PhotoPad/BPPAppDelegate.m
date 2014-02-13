@@ -8,6 +8,7 @@
 
 #import "BPPAppDelegate.h"
 #import "BPPEyeFiConnector.h"
+#import "BPPAirprintCollagePrinter.h"
 
 #import "HTTPServer.h"
 

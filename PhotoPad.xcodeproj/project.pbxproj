@@ -30,6 +30,7 @@
 		2266807818A69F6D0060FBBE /* PSTGridLayoutItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 2266806918A69F6D0060FBBE /* PSTGridLayoutItem.m */; };
 		2266807918A69F6D0060FBBE /* PSTGridLayoutRow.m in Sources */ = {isa = PBXBuildFile; fileRef = 2266806B18A69F6D0060FBBE /* PSTGridLayoutRow.m */; };
 		2266807A18A69F6D0060FBBE /* PSTGridLayoutSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 2266806D18A69F6D0060FBBE /* PSTGridLayoutSection.m */; };
+		228FABDD18A7967300DB5BDF /* BPPAirprintCollagePrinter.m in Sources */ = {isa = PBXBuildFile; fileRef = 228FABDC18A7967300DB5BDF /* BPPAirprintCollagePrinter.m */; };
 		4D784AFA183D72D1007FB05A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D784AF9183D72D1007FB05A /* Foundation.framework */; };
 		4D784AFC183D72D1007FB05A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D784AFB183D72D1007FB05A /* CoreGraphics.framework */; };
 		4D784AFE183D72D1007FB05A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D784AFD183D72D1007FB05A /* UIKit.framework */; };
@@ -167,6 +168,8 @@
 		2266806B18A69F6D0060FBBE /* PSTGridLayoutRow.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSTGridLayoutRow.m; sourceTree = "<group>"; };
 		2266806C18A69F6D0060FBBE /* PSTGridLayoutSection.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PSTGridLayoutSection.h; sourceTree = "<group>"; };
 		2266806D18A69F6D0060FBBE /* PSTGridLayoutSection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSTGridLayoutSection.m; sourceTree = "<group>"; };
+		228FABDB18A7967300DB5BDF /* BPPAirprintCollagePrinter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPPAirprintCollagePrinter.h; sourceTree = "<group>"; };
+		228FABDC18A7967300DB5BDF /* BPPAirprintCollagePrinter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BPPAirprintCollagePrinter.m; sourceTree = "<group>"; };
 		4D784AF6183D72D0007FB05A /* PhotoPad.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhotoPad.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D784AF9183D72D1007FB05A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		4D784AFB183D72D1007FB05A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -409,13 +412,13 @@
 		4D784AFF183D72D1007FB05A /* PhotoPad */ = {
 			isa = PBXGroup;
 			children = (
+				4D784B0B183D72D1007FB05A /* Main.storyboard */,
 				4D784B08183D72D1007FB05A /* BPPAppDelegate.h */,
 				4D784B09183D72D1007FB05A /* BPPAppDelegate.m */,
 				4D784B8E183D7348007FB05A /* BPPEyeFiConnector.h */,
 				4D784B8F183D7348007FB05A /* BPPEyeFiConnector.m */,
 				863ED89F183D973200AB7A6A /* BPPEyeFiResponseParse.h */,
 				863ED8A0183D973200AB7A6A /* BPPEyeFiResponseParse.m */,
-				4D784B0B183D72D1007FB05A /* Main.storyboard */,
 				4D784B0E183D72D1007FB05A /* BPPMainViewController.h */,
 				4D784B0F183D72D1007FB05A /* BPPMainViewController.m */,
 				8627C8E81841679100DA239D /* BPPHelpViewController.h */,
@@ -424,6 +427,8 @@
 				863ED9411840608900AB7A6A /* BPPGalleryCell.m */,
 				863ED8A9183EC95B00AB7A6A /* EyeFi Responses */,
 				4D784B00183D72D1007FB05A /* Supporting Files */,
+				228FABDB18A7967300DB5BDF /* BPPAirprintCollagePrinter.h */,
+				228FABDC18A7967300DB5BDF /* BPPAirprintCollagePrinter.m */,
 			);
 			path = PhotoPad;
 			sourceTree = "<group>";
@@ -900,6 +905,7 @@
 				2266807618A69F6D0060FBBE /* PSTCollectionViewUpdateItem.m in Sources */,
 				4D784B8B183D7319007FB05A /* ContextFilterLogFormatter.m in Sources */,
 				2266807718A69F6D0060FBBE /* PSTGridLayoutInfo.m in Sources */,
+				228FABDD18A7967300DB5BDF /* BPPAirprintCollagePrinter.m in Sources */,
 				4D784B7B183D7319007FB05A /* MultipartMessageHeaderField.m in Sources */,
 				4D784B72183D7319007FB05A /* DDData.m in Sources */,
 				2266807018A69F6D0060FBBE /* PSTCollectionViewCell.m in Sources */,

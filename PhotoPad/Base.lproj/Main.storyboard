@@ -7,7 +7,6 @@
         <!--Navigation Controller-->
         <scene sceneID="InF-ad-Ayx">
             <objects>
-                <placeholder placeholderIdentifier="IBFirstResponder" id="2r2-Ro-wxc" userLabel="First Responder" sceneMemberID="firstResponder"/>
                 <navigationController definesPresentationContext="YES" id="RTl-KA-cyl" sceneMemberID="viewController">
                     <simulatedNavigationBarMetrics key="simulatedTopBarMetrics" barStyle="black" prompted="NO"/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" barStyle="black" id="Xnm-vc-0Yl">
@@ -18,6 +17,7 @@
                         <segue destination="aVO-UE-KGo" kind="relationship" relationship="rootViewController" id="PoQ-bp-rIH"/>
                     </connections>
                 </navigationController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="2r2-Ro-wxc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="-1006" y="15"/>
         </scene>
@@ -77,7 +77,8 @@
                                 <rect key="frame" x="0.0" y="980" width="768" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <items>
-                                    <barButtonItem title="Print" id="fuB-Fg-9MR">
+                                    <barButtonItem style="plain" systemItem="flexibleSpace" id="0pa-Bh-yhg"/>
+                                    <barButtonItem image="Print" id="fuB-Fg-9MR">
                                         <connections>
                                             <action selector="PrintPressed:" destination="aVO-UE-KGo" id="Vpp-Xv-Dcw"/>
                                         </connections>
@@ -131,6 +132,9 @@
             <point key="canvasLocation" x="785" y="-399"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="Print" width="20" height="20"/>
+    </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar" statusBarStyle="blackOpaque"/>
         <simulatedOrientationMetrics key="orientation"/>
