@@ -135,25 +135,12 @@
             [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[1] rect:CGRectMake((CollageLongsidePixels/2) + (CollageBorderPixels/2), CollageBorderPixels, (CollageLongsidePixels - (3*CollageBorderPixels) ) / 2, (CollageShortsidePixels - (2*CollageBorderPixels) ) )];
             
         } else if( imagesOfThisCollage.count == 3 ) {
-            // NOTE: this layout doesn't use CollageBorderPixels, because the border is implicit within the layout already
-            // orientation: landscape
-            // Image 1 and 2:
-            //      width = CollageLongsidePixels * 0.25
-            //      height= CollageShortsidePixels* 0.375
-            // Image 3:
-            //      width = CollageLongsidePixels / 2
-            //      height= CollageShortsidePixels
-            // image positioning, from top-left of orientation:
-            //      1. x= 0.125*CollageLongsidePixels, y= ((1/3)/4)*CollageShortsidePixels
-            //      2. x= 0.125*CollageLongsidePixels, y= ((1.5+(2/3))/4)*CollageShortsidePixels
-            //      3. x= CollageLongsidePixels/2, y= 0
-            
-            // CGRECTMAKE:  X, Y, WIDTH, HEIGHT
-            // [(UIImage*)imagesOfThisCollage[x] drawInRect:(CGRectMake(  ))];
-
-            [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[0] rect:CGRectMake(0.125*CollageLongsidePixels, ((1/3)/4)*CollageShortsidePixels, CollageLongsidePixels * 0.25, CollageShortsidePixels* 0.375 )];
-            [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[1] rect:CGRectMake(0.125*CollageLongsidePixels, ((1.5+(2/3))/4)*CollageShortsidePixels, CollageLongsidePixels * 0.25, CollageShortsidePixels* 0.375)];
-            [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[2] rect:CGRectMake(CollageLongsidePixels/2, 0, CollageLongsidePixels / 2, CollageShortsidePixels)];
+            // NEW - all squares
+           
+            int width1and2 = (CollageLongsidePixels - (3*CollageBorderPixels) ) / 3;
+            [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[0] rect:CGRectMake(CollageBorderPixels, CollageBorderPixels, width1and2, (CollageShortsidePixels - (3*CollageBorderPixels) )/ 2 )];
+            [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[1] rect:CGRectMake(CollageBorderPixels, (CollageShortsidePixels/2) + (CollageBorderPixels/2), width1and2, (CollageShortsidePixels - (3*CollageBorderPixels) )/ 2 )];
+            [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[2] rect:CGRectMake( 2*CollageBorderPixels+width1and2, CollageBorderPixels, (CollageLongsidePixels - (3*CollageBorderPixels) )*2/3, CollageShortsidePixels - (2*CollageBorderPixels))];
             
         } else if( imagesOfThisCollage.count == 4 ) {
             // orientation: **PORTRAIT**
