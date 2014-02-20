@@ -97,6 +97,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="galleryView" destination="mvz-d7-I6V" id="EnG-pH-arR"/>
+                        <outlet property="printButtonOulet" destination="fuB-Fg-9MR" id="GxD-ET-KPa"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="asY-HQ-Guj" sceneMemberID="firstResponder"/>

@@ -15,6 +15,7 @@
 @property (weak, nonatomic) IBOutlet UICollectionView *galleryView;
 @property (strong, nonatomic) UIActionSheet *photoToolSheet;
 @property (nonatomic) NSUInteger selectedIndex;
+@property (weak, nonatomic) IBOutlet UIBarButtonItem *printButtonOulet;
 
 @property(nonatomic, strong) NSMutableArray* selectedPhotos;
 

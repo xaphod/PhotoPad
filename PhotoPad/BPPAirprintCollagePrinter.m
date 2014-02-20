@@ -11,7 +11,6 @@
 @implementation BPPAirprintCollagePrinter
 
 // TODO:
-// test printing portrait collages - do they auto-rotate?
 // test making collages of mixed images - some resize by width
 
 + (BPPAirprintCollagePrinter *)singleton {
@@ -26,14 +25,15 @@
 
 - (id)init {
     if (self = [super init]) {
-        // init code here
+        _printerIDs = [NSMutableArray array];
+        _lastUsedPrinterIDArrayIndex = -1;
     }
     return self;
 }
 
 // public
 // creates collages of up to 6 images in a single image
-- (NSData*)printCollage:(NSArray*)images {
+- (bool)printCollage:(NSArray*)images fromUIBarButton:(UIBarButtonItem*)fromUIBarButton {
     if( images.count < 2 ) {
         // must pass in at least 2 images
         NSLog(@"printCollage: must print at least 2 images");
@@ -55,14 +55,70 @@
     NSArray *collageGroupings = [self makeCollageUIImageGroupings:images];
     NSArray *collagesReadyToPrintInNSDataJPG = [self makeCollageJPGs:collageGroupings];
     
-    // DEBUG: return just the first jpgdata collage
-    return collagesReadyToPrintInNSDataJPG[0];
-        
-    //UIPrintInteractionController *pic = [UIPrintInteractionController sharedPrintController];
-    // print using .printingItem --> takes UIImage
+    UIPrintInteractionController *controller = [UIPrintInteractionController sharedPrintController];
     
+    UIPrintInfo *printInfo = [UIPrintInfo printInfo];
+    printInfo.outputType = UIPrintInfoOutputPhoto;
+    printInfo.jobName = @"Photopad print";
+    
+    // printers get saved as they are used. if there are printers saved, use them... user must still confirm the choice (iOS limitation)
+    if( self.printerIDs.count == 1 ) {
+        // use this printer only
+        printInfo.printerID = self.printerIDs[0];
+        
+    } else if( self.printerIDs.count > 1) {
+        if( _lastUsedPrinterIDArrayIndex == -1 ) { // if never used
+            NSLog(@"printCollage: More than one printer found, for the first time");
+            _lastUsedPrinterIDArrayIndex++;
+        }
+        printInfo.printerID = self.printerIDs[_lastUsedPrinterIDArrayIndex];
+        NSLog(@"printCollage: using printer %d - %@", _lastUsedPrinterIDArrayIndex, self.printerIDs[_lastUsedPrinterIDArrayIndex]);
+        _lastUsedPrinterIDArrayIndex++;
+        if( _lastUsedPrinterIDArrayIndex >= self.printerIDs.count )
+            _lastUsedPrinterIDArrayIndex = 0;
+    }
+    
+    controller.printInfo = printInfo;
+    controller.printingItems = collagesReadyToPrintInNSDataJPG;
+    
+    UIPrintInteractionCompletionHandler completionHandler = ^(UIPrintInteractionController *printController, BOOL completed, NSError *error) {
+        
+        if( completed ) {
+            // save this printer, but only if it is not already saved
+            bool newPrinter = YES;
+            for( id thisID in self.printerIDs ) {
+                if( [printController.printInfo.printerID isEqualToString:thisID] ) {
+                    newPrinter = NO;
+                    break;
+                }
+            }
+            
+            if( newPrinter ) {
+                NSLog(@"printCollage, saving selected Printer ID, because it hasn't been seen before: %@",printController.printInfo.printerID);
+                [self.printerIDs addObject:printController.printInfo.printerID];
+            } else {
+                NSLog(@"printerCollage, not saving printer ID because it is already known");
+            }
+            // TODO: UI confirmation of success here?
+        } else {
+            if( error )
+                NSLog(@"printCollage: printing FAILED! due to error in domain %@ with error code %d", error.domain, (int)error.code);
+            else
+                NSLog(@"printCollage: printing FAILED, no error!");
+            // TODO: UI confirmation of failure here?
+        }
+    };
+    
+    if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
+    {
+        [controller presentFromBarButtonItem:fromUIBarButton animated:YES completionHandler:completionHandler];  // iPad
+    }
+    else
+    {
+        [controller presentAnimated:YES completionHandler:completionHandler];  // iPhone
+    }
  
-    //return YES;
+    return YES;
 }
 
 // private
@@ -120,22 +176,13 @@
         
         if( imagesOfThisCollage.count == 2 ) {
             // orientation: landscape
-            // image dimensions for each image:
-            //      width = (CollageLongsidePixels - (3*CollageBorderPixels) ) / 2
-            //      height= (CollageShortsidePixels - (2*CollageBorderPixels) )
-            // image positioning, from top-left of orientation:
-            //      1. x=CollageBorderPixels, y=CollageBorderPixels
-            //      2. x= (CollageLongsidePixels/2) + (CollageBorderPixels/2), y=CollageBorderPixels
-            
-            // CGRECTMAKE:  X, Y, WIDTH, HEIGHT
-            // [(UIImage*)imagesOfThisCollage[x] drawInRect:(CGRectMake(  ))];
             
             [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[0] rect:CGRectMake(CollageBorderPixels, CollageBorderPixels, (CollageLongsidePixels - (3*CollageBorderPixels) ) / 2, (CollageShortsidePixels - (2*CollageBorderPixels) ) )];
             
             [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[1] rect:CGRectMake((CollageLongsidePixels/2) + (CollageBorderPixels/2), CollageBorderPixels, (CollageLongsidePixels - (3*CollageBorderPixels) ) / 2, (CollageShortsidePixels - (2*CollageBorderPixels) ) )];
             
         } else if( imagesOfThisCollage.count == 3 ) {
-            // NEW - all squares
+            // all squares
            
             int width1and2 = (CollageLongsidePixels - (3*CollageBorderPixels) ) / 3;
             [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[0] rect:CGRectMake(CollageBorderPixels, CollageBorderPixels, width1and2, (CollageShortsidePixels - (3*CollageBorderPixels) )/ 2 )];
@@ -144,16 +191,7 @@
             
         } else if( imagesOfThisCollage.count == 4 ) {
             // orientation: **PORTRAIT**
-            // image dimensions for each image:
-            //      width = (CollageShortsidePixels - 3*CollageBorderPixels) / 2
-            //      height= (CollageLongsidePixels - 3*CollageBorderPixels) / 2
-            // image positioning, from top-left of orientation:
-            //      1. x= CollageBorderPixels, y= CollageBorderPixels
-            //      2. x= (CollageShortsidePixels/2) + (CollageBorderPixels/2), y= CollageBorderPixels
-            //      3. x= CollageBorderPixels, y= (CollageLongsidePixels/2) + (CollageBorderPixels/2)
-            //      4. x= (CollageShortsidePixels/2) + (CollageBorderPixels/2), y= (CollageLongsidePixels/2) + (CollageBorderPixels/2)
-            
-            // portrait - just start a new context
+
             UIGraphicsEndImageContext();
             UIGraphicsBeginImageContextWithOptions(CGSizeMake(CollageShortsidePixels, CollageLongsidePixels), YES, 1.0);
             [[UIColor CollageBorderUIColor] setFill];
@@ -166,20 +204,7 @@
             
         } else if( imagesOfThisCollage.count == 5 ) {
             // orientation: **PORTRAIT**
-            // Images 1 and 3:
-            //      width = (CollageShortsidePixels/2) - CollageBorderPixels - (CollageBorderPixels/2)
-            //      height= (CollageLongsidePixels/2) - CollageBorderPixels - (CollageBorderPixels/2)
-            // Images 2, 4, and 5:
-            //      width = (CollageShortsidePixels/2) - CollageBorderPixels - (CollageBorderPixels/2)
-            //      height= (CollageLongsidePixels - (4*CollageBorderPixels) )/3
-            // image positioning, from top-left of orientation:
-            //      1. x= CollageBorderPixels, y= CollageBorderPixels
-            //      2. x= (CollageShortsidePixels/2) + (CollageBorderPixels/2), y=CollageBorderPixels
-            //      3. x= CollageBorderPixels, y= (CollageLongsidePixels/2) + (CollageBorderPixels/2)
-            //      4. x= (CollageShortsidePixels/2) + (CollageBorderPixels/2), y= (CollageLongsidePixels/3) + (CollageBorderPixels/2)
-            //      5. x= (CollageShortsidePixels/2) + (CollageBorderPixels/2), y= (CollageLongsidePixels*(2/3)) + (CollageBorderPixels/2)
-            
-            // portrait - just start a new context
+
             UIGraphicsEndImageContext();
             UIGraphicsBeginImageContextWithOptions(CGSizeMake(CollageShortsidePixels, CollageLongsidePixels), YES, 1.0);
             [[UIColor CollageBorderUIColor] setFill];
@@ -194,16 +219,6 @@
             
         } else if( imagesOfThisCollage.count == 6 ) {
             // orientation: landscape
-            // image dimensions for each image:
-            //      width = (CollageLongsidePixels - (4*CollageBorderPixels)) / 3
-            //      height= (CollageShortsidePixels- (3*CollageBorderPixels)) / 2
-            // image positioning, from top-left of orientation:
-            //      1. x= CollageBorderPixels, y= CollageBorderPixels
-            //      2. x= (CollageLongsidePixels/3) + (CollageBorderPixels/2), y=CollageBorderPixels
-            //      3. x= (CollageLongsidePixels*(2/3)) + (CollageBorderPixels/2), y=CollageBorderPixels
-            //      4. x= CollageBorderPixels, y= (CollageShortsidePixels/2) + (CollageBorderPixels/2)
-            //      5. x= (CollageLongsidePixels/3) + (CollageBorderPixels/2), y= (CollageShortsidePixels/2) + (CollageBorderPixels/2)
-            //      6. x= (CollageLongsidePixels*(2/3)) + (CollageBorderPixels/2), y= (CollageShortsidePixels/2) + (CollageBorderPixels/2)
             
             [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[0] rect:CGRectMake(CollageBorderPixels, CollageBorderPixels, (CollageLongsidePixels - (4*CollageBorderPixels)) / 3, (CollageShortsidePixels- (3*CollageBorderPixels)) / 2) ];
             
@@ -264,7 +279,7 @@
     // resize image before we crop it
     UIGraphicsBeginImageContextWithOptions(CGSizeMake(widthBeforeCrop, heightBeforeCrop), YES, 1.0);
     [image drawInRect:CGRectMake(0, 0, widthBeforeCrop, heightBeforeCrop)];
-    UIImage* resultImage = UIGraphicsGetImageFromCurrentImageContext(); // overwrites parameter input
+    UIImage* resultImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     
     if( resizeAlongWidth ) {

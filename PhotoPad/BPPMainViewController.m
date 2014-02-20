@@ -201,15 +201,18 @@
 
     BPPAirprintCollagePrinter *ap = [BPPAirprintCollagePrinter singleton];
     
-    // TODO: debug code
-    NSData* thisDebugJPG = [ap printCollage:self.selectedPhotos];
+    if( ! [ap printCollage:self.selectedPhotos fromUIBarButton:self.printButtonOulet] ) {
+        NSLog(@"MainVC, got fail for printCollage");
+    }
+
+    /*
     NSLog(@"thisDebugJPG size %lu", (unsigned long)thisDebugJPG.length);
     
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSString *documentsDirectory = [paths objectAtIndex:0];
     NSString *appFile = [documentsDirectory stringByAppendingPathComponent:@"collage.JPG"];
     [thisDebugJPG writeToFile:appFile atomically:YES];
-
+*/
     
     /*
     UIImageView* iv = [[UIImageView alloc] initWithImage:[UIImage imageWithData:thisDebugJPG]];
@@ -222,8 +225,8 @@
 }
 
 - (void)clearCellSelections {
-    int collectonViewCount = [self.galleryView numberOfItemsInSection:0];
-    for (int i=0; i<=collectonViewCount; i++) {
+    int collectionViewCount = [self.galleryView numberOfItemsInSection:0];
+    for (int i=0; i<=collectionViewCount; i++) {
         [self.galleryView deselectItemAtIndexPath:[NSIndexPath indexPathForItem:i inSection:0] animated:YES];
     }
 }
