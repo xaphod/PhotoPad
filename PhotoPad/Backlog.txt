@@ -1,0 +1,20 @@
+Backlog - Tim
+
+1. TODOs in code
+1b.Stop saving images inside app's own xcappdata -- save to photo roll instead, own folder
+
+Main screen
+    2. support landscape mode
+    3. scrolling down thru images is jerky, fix this: image thumbnails too big?
+    4. deselect doesn't work: at least the checkmarks are not removed on deselect
+    5. Image downloaded (eyefi): make this bigger?
+    6. new images (images downloaded) must be put at START of collection (top left), not bottom
+    7. print icon must be much bigger
+    7b.print must only work when at least 2 images are selected: inform user or disable until?
+    8. add ability to email self multi-selected images - email a link set up in advance, for marketing / bitsize-upload reasons? send watermarked images, with a link to non-watermarked versions?!
+    9. update or get rid of help
+    10.add ability to get rid of images (delete them) -- but prevent customer from doing this? only in "admin mode"?
+    11.title update - from "browse all photos" to "Photobooth by %companyname%" in prefs
+
+20. localize into german?
+21. images printed to collage: apply a style (edit) them?

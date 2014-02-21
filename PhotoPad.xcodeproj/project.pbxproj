@@ -120,6 +120,7 @@
 /* Begin PBXFileReference section */
 		22010AA818A6E1CE00D9A921 /* SSCheckMark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SSCheckMark.h; path = PhotoPad/SSCheckMark.h; sourceTree = "<group>"; };
 		22010AA918A6E1CE00D9A921 /* SSCheckMark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SSCheckMark.m; path = PhotoPad/SSCheckMark.m; sourceTree = "<group>"; };
+		22172F8F18B77D81004358BD /* Backlog.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Backlog.txt; sourceTree = "<group>"; };
 		2266803418A69F350060FBBE /* MWCaptionView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MWCaptionView.h; sourceTree = "<group>"; };
 		2266803518A69F350060FBBE /* MWCaptionView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MWCaptionView.m; sourceTree = "<group>"; };
 		2266803618A69F350060FBBE /* MWCommon.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MWCommon.h; sourceTree = "<group>"; };
@@ -412,6 +413,7 @@
 		4D784AFF183D72D1007FB05A /* PhotoPad */ = {
 			isa = PBXGroup;
 			children = (
+				22172F8F18B77D81004358BD /* Backlog.txt */,
 				4D784B0B183D72D1007FB05A /* Main.storyboard */,
 				4D784B08183D72D1007FB05A /* BPPAppDelegate.h */,
 				4D784B09183D72D1007FB05A /* BPPAppDelegate.m */,

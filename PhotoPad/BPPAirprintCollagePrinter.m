@@ -104,8 +104,8 @@
             if( error )
                 NSLog(@"printCollage: printing FAILED! due to error in domain %@ with error code %d", error.domain, (int)error.code);
             else
-                NSLog(@"printCollage: printing FAILED, no error!");
-            // TODO: UI confirmation of failure here?
+                NSLog(@"printCollage: printing cancelled by user");
+            // TODO: UI confirmation of cancel here?
         }
     };
     
@@ -235,7 +235,15 @@
         
         NSData* collageJpg = UIImageJPEGRepresentation( UIGraphicsGetImageFromCurrentImageContext(), CollageJPGQuality);
         [collagesReadyToPrintInNSDataJPG addObject:collageJpg];
+        NSLog(@"makeCollageJPGs: adding collage JPG size %d", (int)collageJpg.length);
         UIGraphicsEndImageContext();
+        
+        // TODO: REMOVE THIS DEBUG CODE
+        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+        NSString *documentsDirectory = [paths objectAtIndex:0];
+        NSString *appFile = [documentsDirectory stringByAppendingPathComponent:@"collage.JPG"];
+        [collageJpg writeToFile:appFile atomically:YES];
+
     } // end for
     
     return collagesReadyToPrintInNSDataJPG;
@@ -263,12 +271,17 @@
     
     UIGraphicsPushContext( UIGraphicsGetCurrentContext() );
     
-    bool resizeAlongWidth = image.size.width-targetWidth < image.size.height-targetHeight;
+    // to figure out which dimension (width vs height) we keep static and which we resize, need to check which becomes smaller than the target when we choose the other.
+    
     double widthBeforeCrop, heightBeforeCrop, yBeforeCrop, xBeforeCrop; // these are intermediate sizes & pos -- then one of the dimensions is cropped -- in the center
+
+    heightBeforeCrop = image.size.height / (image.size.width / targetWidth);
+    bool resizeAlongWidth = targetHeight < heightBeforeCrop;
+    //bool resizeAlongWidth = image.size.width-targetWidth < image.size.height-targetHeight;
+
     if( resizeAlongWidth ) {
         NSLog(@"resizeAndCropUIImage: resizing along WIDTH");
         widthBeforeCrop = targetWidth;
-        heightBeforeCrop = image.size.height / (image.size.width / targetWidth);
     } else {
         NSLog(@"resizeAndCropUIImage: resizing along HEIGHT");
         widthBeforeCrop = image.size.width / (image.size.height / targetHeight);

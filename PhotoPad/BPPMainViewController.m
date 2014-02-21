@@ -198,6 +198,8 @@
 
 - (IBAction)PrintPressed:(id)sender {
     NSLog(@"PrintPressed, %lu photos to print.", (unsigned long)self.selectedPhotos.count);
+    
+    // TODO: progress indicator -- printCollage takes about 0.5s until it shows iOS print ui
 
     BPPAirprintCollagePrinter *ap = [BPPAirprintCollagePrinter singleton];
     
@@ -205,14 +207,6 @@
         NSLog(@"MainVC, got fail for printCollage");
     }
 
-    /*
-    NSLog(@"thisDebugJPG size %lu", (unsigned long)thisDebugJPG.length);
-    
-    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    NSString *documentsDirectory = [paths objectAtIndex:0];
-    NSString *appFile = [documentsDirectory stringByAppendingPathComponent:@"collage.JPG"];
-    [thisDebugJPG writeToFile:appFile atomically:YES];
-*/
     
     /*
     UIImageView* iv = [[UIImageView alloc] initWithImage:[UIImage imageWithData:thisDebugJPG]];
