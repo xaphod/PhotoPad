@@ -259,64 +259,25 @@
     [resizedAndCroppedImage drawInRect:(rect)];
 }
 
-
-// operates on the UIImage given, returns false if something didn't work
+// private
 - (UIImage*)resizeAndCropUIImage:(UIImage*)image targetWidth:(double)targetWidth targetHeight:(double)targetHeight {
-    // assume the image is already in the correct orientation
-    // goal: resize the image but keep the perspective the same, via crop
     
-    // only downsize
-    if( targetWidth >= image.size.width || targetHeight >= image.size.height )
-        return nil;
+    CGFloat scale = MAX(targetWidth/image.size.width, targetHeight/image.size.height);
+    CGFloat width = image.size.width * scale;
+    CGFloat height = image.size.height * scale;
+    CGRect imageRect = CGRectMake((targetWidth - width)/2.0f,
+                                  (targetHeight - height)/2.0f,
+                                  width,
+                                  height);
     
-    UIGraphicsPushContext( UIGraphicsGetCurrentContext() );
-    
-    // to figure out which dimension (width vs height) we keep static and which we resize, need to check which becomes smaller than the target when we choose the other.
-    
-    double widthBeforeCrop, heightBeforeCrop, yBeforeCrop, xBeforeCrop; // these are intermediate sizes & pos -- then one of the dimensions is cropped -- in the center
-
-    heightBeforeCrop = image.size.height / (image.size.width / targetWidth);
-    bool resizeAlongWidth = targetHeight < heightBeforeCrop;
-    //bool resizeAlongWidth = image.size.width-targetWidth < image.size.height-targetHeight;
-
-    if( resizeAlongWidth ) {
-        NSLog(@"resizeAndCropUIImage: resizing along WIDTH");
-        widthBeforeCrop = targetWidth;
-    } else {
-        NSLog(@"resizeAndCropUIImage: resizing along HEIGHT");
-        widthBeforeCrop = image.size.width / (image.size.height / targetHeight);
-        heightBeforeCrop = targetHeight;
-    }
-    //NSLog(@"resizeAndCropUImage, creating resized image w:%f h:%f", widthBeforeCrop, heightBeforeCrop);
-
-    // resize image before we crop it
-    UIGraphicsBeginImageContextWithOptions(CGSizeMake(widthBeforeCrop, heightBeforeCrop), YES, 1.0);
-    [image drawInRect:CGRectMake(0, 0, widthBeforeCrop, heightBeforeCrop)];
-    UIImage* resultImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    
-    if( resizeAlongWidth ) {
-        yBeforeCrop = (heightBeforeCrop - targetHeight) / 2;
-        xBeforeCrop = 0;
-    } else {
-        yBeforeCrop = 0;
-        xBeforeCrop = (widthBeforeCrop - targetWidth) / 2;
-    }
-
-    //NSLog(@"resizeAndCropUIImage, creating cropped final image into target. Crop: x:%f y:%f w:%f h:%f", xBeforeCrop, yBeforeCrop, targetWidth, targetHeight);
-
     UIGraphicsBeginImageContextWithOptions(CGSizeMake(targetWidth, targetHeight), YES, 1.0);
-    [[UIColor redColor] setFill]; // shouldn't see the red!
-    UIRectFill(CGRectMake(0, 0, targetWidth, targetHeight));
-    [resultImage drawAtPoint:CGPointMake(-xBeforeCrop, -yBeforeCrop)];
-    resultImage = UIGraphicsGetImageFromCurrentImageContext();
-    
+    [image drawInRect:imageRect];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
-    
-    UIGraphicsPopContext();
-    return resultImage;
+    return newImage;
 }
 
+// private
 - (NSInteger)getRandomNumberBetween:(NSInteger)min maxNumber:(NSInteger)max
 {
     // we don't care about modulo bias

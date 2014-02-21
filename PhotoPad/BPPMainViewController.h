@@ -8,14 +8,21 @@
 
 #import "MWPhotoBrowser.h"
 
-@interface BPPMainViewController : UIViewController <MWPhotoBrowserDelegate, UIGestureRecognizerDelegate, UIActionSheetDelegate>
+#define DEVICE_IS_LANDSCAPE UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation)
+
+#define cellBorderPixels 10
+
+@interface BPPMainViewController : UIViewController <MWPhotoBrowserDelegate, UIGestureRecognizerDelegate, UIActionSheetDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
 @property (strong, nonatomic) NSMutableArray *photos;
 @property (strong, nonatomic) MWPhotoBrowser *photosBrowser;
 @property (weak, nonatomic) IBOutlet UICollectionView *galleryView;
 @property (strong, nonatomic) UIActionSheet *photoToolSheet;
+
 @property (nonatomic) NSUInteger selectedIndex;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *printButtonOulet;
+@property (weak, nonatomic) IBOutlet UICollectionViewFlowLayout *collectionViewFlowLayout;
+
 
 @property(nonatomic, strong) NSMutableArray* selectedPhotos;
 

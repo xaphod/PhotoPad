@@ -66,6 +66,7 @@
     CGFloat scale = MAX(size.width/image.size.width, size.height/image.size.height);
     CGFloat width = image.size.width * scale;
     CGFloat height = image.size.height * scale;
+    NSLog(@"Perf debug: imageWithImage. Width %f, height %f", width, height);
     CGRect imageRect = CGRectMake((size.width - width)/2.0f,
                                   (size.height - height)/2.0f,
                                   width,
@@ -118,8 +119,14 @@
 {
     BPPGalleryCell *cell = (BPPGalleryCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"PhotoCell" forIndexPath:indexPath];
     
-    cell.asset = [self imageWithImage: [UIImage imageWithContentsOfFile:self.photos[indexPath.row]] scaledToFillSize:CGSizeMake(200, 200)];
-    cell.backgroundColor = [UIColor redColor];
+    // TODO: this is probably why it is slow to scroll - this is a resize from full JPG. how often is this called?
+    CGSize size = [self getCellSize];
+    size.width -= 2*cellBorderPixels;
+    size.height-= 2*cellBorderPixels;
+    
+    cell.asset = [self imageWithImage: [UIImage imageWithContentsOfFile:self.photos[indexPath.row]] scaledToFillSize:size];
+    cell.backgroundColor = [UIColor whiteColor];
+    //NSLog(@"cellForItemAtIndexPath: cell size width %d, height %d", (int)cell.frame.size.width, (int)cell.frame.size.width);
     
     return cell;
 }
@@ -158,8 +165,35 @@
     [self.selectedPhotos removeObject:[self.photos objectAtIndex:indexPath.row]];
 }
 
-- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section{
+- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
     return UIEdgeInsetsMake(10, 10, 0, 10);
+}
+
+- (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
+    return [self getCellSize];
+}
+
+- (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
+    [super willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+    [self.collectionViewFlowLayout invalidateLayout];
+}
+
+- (CGSize)getCellSize {
+    
+    int squareSize = self.view.frame.size.width;
+
+    if( DEVICE_IS_LANDSCAPE ) {
+        // 3 per row
+        squareSize -= 6 * cellBorderPixels;
+        squareSize /= 3;
+        //NSLog(@"landscape (div by 3), squaresize is %d", squareSize);
+    } else {
+        // 2 per row
+        squareSize -= 4 * cellBorderPixels;
+        squareSize /= 2;
+        //NSLog(@"portrait (div by 2), squaresize is %d", squareSize);
+    }
+    return CGSizeMake(squareSize, squareSize);
 }
 
 - (void)activateActionMode:(UILongPressGestureRecognizer *)gr

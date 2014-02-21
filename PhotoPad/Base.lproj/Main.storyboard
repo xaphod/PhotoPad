@@ -19,7 +19,7 @@
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2r2-Ro-wxc" userLabel="First Responder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="-1006" y="15"/>
+            <point key="canvasLocation" x="-1323" y="-18"/>
         </scene>
         <!--Main View Controller - Browse All Photos-->
         <scene sceneID="0NU-cZ-2PS">
@@ -33,35 +33,47 @@
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="mvz-d7-I6V">
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="mvz-d7-I6V">
                                 <rect key="frame" x="0.0" y="0.0" width="768" height="1044"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="20" minimumInteritemSpacing="10" id="PH7-Qb-xsV">
-                                    <size key="itemSize" width="350" height="350"/>
+                                    <size key="itemSize" width="356" height="340"/>
                                     <size key="headerReferenceSize" width="0.0" height="0.0"/>
                                     <size key="footerReferenceSize" width="0.0" height="0.0"/>
                                     <inset key="sectionInset" minX="0.0" minY="0.0" maxX="0.0" maxY="0.0"/>
                                 </collectionViewFlowLayout>
                                 <cells>
                                     <collectionViewCell opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" reuseIdentifier="PhotoCell" id="e28-lw-JxE" customClass="BPPGalleryCell">
-                                        <rect key="frame" x="0.0" y="64" width="350" height="350"/>
+                                        <rect key="frame" x="0.0" y="64" width="356" height="340"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <view key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center">
-                                            <rect key="frame" x="0.0" y="0.0" width="350" height="350"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="356" height="340"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="FOH-bL-1NW">
-                                                    <rect key="frame" x="0.0" y="0.0" width="350" height="350"/>
+                                                <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="FOH-bL-1NW">
+                                                    <rect key="frame" x="10" y="10" width="336" height="320"/>
                                                     <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                                 </imageView>
-                                                <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="mAE-5J-npz" customClass="SSCheckMark">
-                                                    <rect key="frame" x="270" y="20" width="60" height="60"/>
+                                                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="mAE-5J-npz" customClass="SSCheckMark">
+                                                    <rect key="frame" x="276" y="20" width="60" height="60"/>
                                                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                                     <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                                    <constraints>
+                                                        <constraint firstAttribute="width" constant="60" id="69N-Cc-qYI"/>
+                                                        <constraint firstAttribute="height" constant="60" id="pcf-kG-DTm"/>
+                                                    </constraints>
                                                 </view>
                                             </subviews>
                                             <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                         </view>
+                                        <constraints>
+                                            <constraint firstItem="FOH-bL-1NW" firstAttribute="leading" secondItem="e28-lw-JxE" secondAttribute="leading" constant="10" id="AK2-e5-ZpI"/>
+                                            <constraint firstAttribute="trailing" secondItem="FOH-bL-1NW" secondAttribute="trailing" constant="10" id="RkK-kJ-tAT"/>
+                                            <constraint firstAttribute="bottom" secondItem="FOH-bL-1NW" secondAttribute="bottom" constant="10" id="UbU-a1-59Z"/>
+                                            <constraint firstAttribute="trailing" secondItem="mAE-5J-npz" secondAttribute="trailing" constant="20" id="dki-TN-dd1"/>
+                                            <constraint firstItem="FOH-bL-1NW" firstAttribute="top" secondItem="e28-lw-JxE" secondAttribute="top" constant="10" id="jIb-rS-NIu"/>
+                                            <constraint firstItem="mAE-5J-npz" firstAttribute="top" secondItem="e28-lw-JxE" secondAttribute="top" constant="20" id="qQ8-gJ-WuA"/>
+                                        </constraints>
                                         <connections>
                                             <outlet property="checkmarkViewOutlet" destination="mAE-5J-npz" id="fSM-4t-Ha4"/>
                                             <outlet property="photoImageView" destination="FOH-bL-1NW" id="PqD-sm-wFg"/>
@@ -73,7 +85,7 @@
                                     <outlet property="delegate" destination="aVO-UE-KGo" id="8wK-HM-2R6"/>
                                 </connections>
                             </collectionView>
-                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" fixedFrame="YES" barStyle="black" translatesAutoresizingMaskIntoConstraints="NO" id="1NY-zh-a1W">
+                            <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="black" translatesAutoresizingMaskIntoConstraints="NO" id="1NY-zh-a1W">
                                 <rect key="frame" x="0.0" y="980" width="768" height="44"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <items>
@@ -87,6 +99,15 @@
                             </toolbar>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="1NY-zh-a1W" firstAttribute="leading" secondItem="eNX-1A-1la" secondAttribute="leading" id="0Ji-32-laL"/>
+                            <constraint firstItem="mvz-d7-I6V" firstAttribute="top" secondItem="eNX-1A-1la" secondAttribute="top" id="0fj-OB-2KI"/>
+                            <constraint firstItem="97W-YQ-9ry" firstAttribute="top" secondItem="1NY-zh-a1W" secondAttribute="bottom" id="0pK-Uw-wff"/>
+                            <constraint firstAttribute="bottom" secondItem="mvz-d7-I6V" secondAttribute="bottom" constant="-20" id="9KT-IJ-DpW"/>
+                            <constraint firstAttribute="trailing" secondItem="1NY-zh-a1W" secondAttribute="trailing" id="BRZ-FT-pAT"/>
+                            <constraint firstItem="mvz-d7-I6V" firstAttribute="leading" secondItem="eNX-1A-1la" secondAttribute="leading" id="Cxm-2s-LHG"/>
+                            <constraint firstAttribute="trailing" secondItem="mvz-d7-I6V" secondAttribute="trailing" id="Tqn-TC-r1w"/>
+                        </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Browse All Photos" id="dCg-GS-7iL">
                         <barButtonItem key="rightBarButtonItem" title="Help" id="sgi-o3-8Hf">
@@ -96,6 +117,7 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="collectionViewFlowLayout" destination="PH7-Qb-xsV" id="Mpc-rN-yfZ"/>
                         <outlet property="galleryView" destination="mvz-d7-I6V" id="EnG-pH-arR"/>
                         <outlet property="printButtonOulet" destination="fuB-Fg-9MR" id="GxD-ET-KPa"/>
                     </connections>

@@ -1,5 +1,6 @@
 Backlog - Tim
 
+0. prep design workpackage for Matt - define asset deliverables (which icons etc)
 1. TODOs in code
 1b.Stop saving images inside app's own xcappdata -- save to photo roll instead, own folder
 

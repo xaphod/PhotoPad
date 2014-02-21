@@ -31,8 +31,7 @@
                                             selector:@selector(updateEyeFiStatus:)
                                                 name:@"EyeFiCommunication"
                                               object:nil];
-    
-    // Override point for customization after application launch.
+
     return YES;
 }
 
