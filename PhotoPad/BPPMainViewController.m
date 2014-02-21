@@ -12,7 +12,10 @@
 #import "UIColor+Hex.h"
 #import "BPPAirprintCollagePrinter.h"
 
-@interface BPPMainViewController ()
+@interface BPPMainViewController () {
+    NSOperationQueue* _resizedImageCacheOperationQueue;
+    NSCache* _resizedImageCache;
+}
 
 @end
 
@@ -51,6 +54,10 @@
     
     self.galleryView.allowsMultipleSelection = YES;
     self.selectedPhotos = [NSMutableArray array];
+    
+    _resizedImageCache = [[NSCache init] alloc];
+    _resizedImageCacheOperationQueue = [[NSOperationQueue init] alloc];
+    _resizedImageCacheOperationQueue.maxConcurrentOperationCount = 3;
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -119,7 +126,10 @@
 {
     BPPGalleryCell *cell = (BPPGalleryCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"PhotoCell" forIndexPath:indexPath];
     
-    // TODO: this is probably why it is slow to scroll - this is a resize from full JPG. how often is this called?
+    // TODO: this is probably why it is slow to scroll - this is a resize from full JPG. need to save these off as individual items
+    
+    // approach: use an NSCache, with an NSOperationQueue that limits the number of concurrent ops to 3.
+    
     CGSize size = [self getCellSize];
     size.width -= 2*cellBorderPixels;
     size.height-= 2*cellBorderPixels;

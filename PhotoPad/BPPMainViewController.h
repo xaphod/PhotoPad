@@ -12,7 +12,7 @@
 
 #define cellBorderPixels 10
 
-@interface BPPMainViewController : UIViewController <MWPhotoBrowserDelegate, UIGestureRecognizerDelegate, UIActionSheetDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
+@interface BPPMainViewController : UIViewController <MWPhotoBrowserDelegate, UIGestureRecognizerDelegate, UIActionSheetDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout> 
 
 @property (strong, nonatomic) NSMutableArray *photos;
 @property (strong, nonatomic) MWPhotoBrowser *photosBrowser;

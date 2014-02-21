@@ -5,7 +5,7 @@ Backlog - Tim
 1b.Stop saving images inside app's own xcappdata -- save to photo roll instead, own folder
 
 Main screen
-    2. support landscape mode
+    2. DONE: support landscape mode
     3. scrolling down thru images is jerky, fix this: image thumbnails too big?
     4. deselect doesn't work: at least the checkmarks are not removed on deselect
     5. Image downloaded (eyefi): make this bigger?

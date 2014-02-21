@@ -86,11 +86,14 @@
                                 </connections>
                             </collectionView>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="black" translatesAutoresizingMaskIntoConstraints="NO" id="1NY-zh-a1W">
-                                <rect key="frame" x="0.0" y="980" width="768" height="44"/>
+                                <rect key="frame" x="0.0" y="948" width="768" height="76"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="76" id="4PP-R0-r8a"/>
+                                </constraints>
                                 <items>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="0pa-Bh-yhg"/>
-                                    <barButtonItem image="Print" id="fuB-Fg-9MR">
+                                    <barButtonItem image="Print" width="60" id="fuB-Fg-9MR">
                                         <connections>
                                             <action selector="PrintPressed:" destination="aVO-UE-KGo" id="Vpp-Xv-Dcw"/>
                                         </connections>
