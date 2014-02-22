@@ -33,7 +33,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="mvz-d7-I6V">
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" indicatorStyle="white" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="mvz-d7-I6V">
                                 <rect key="frame" x="0.0" y="0.0" width="768" height="1044"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="20" minimumInteritemSpacing="10" id="PH7-Qb-xsV">
@@ -86,10 +86,10 @@
                                 </connections>
                             </collectionView>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="black" translatesAutoresizingMaskIntoConstraints="NO" id="1NY-zh-a1W">
-                                <rect key="frame" x="0.0" y="948" width="768" height="76"/>
+                                <rect key="frame" x="0.0" y="964" width="768" height="60"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="76" id="4PP-R0-r8a"/>
+                                    <constraint firstAttribute="height" constant="60" id="4PP-R0-r8a"/>
                                 </constraints>
                                 <items>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="0pa-Bh-yhg"/>
@@ -120,8 +120,8 @@
                         </barButtonItem>
                     </navigationItem>
                     <connections>
+                        <outlet property="collectionView" destination="mvz-d7-I6V" id="Std-Dx-Wfn"/>
                         <outlet property="collectionViewFlowLayout" destination="PH7-Qb-xsV" id="Mpc-rN-yfZ"/>
-                        <outlet property="galleryView" destination="mvz-d7-I6V" id="EnG-pH-arR"/>
                         <outlet property="printButtonOulet" destination="fuB-Fg-9MR" id="GxD-ET-KPa"/>
                     </connections>
                 </viewController>

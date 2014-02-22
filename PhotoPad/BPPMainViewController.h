@@ -16,7 +16,7 @@
 
 @property (strong, nonatomic) NSMutableArray *photos; // array of filenames with absolute paths
 @property (strong, nonatomic) MWPhotoBrowser *photosBrowser;
-@property (weak, nonatomic) IBOutlet UICollectionView *galleryView;
+@property (weak, nonatomic) IBOutlet UICollectionView *collectionView;
 @property (strong, nonatomic) UIActionSheet *photoToolSheet;
 
 @property (nonatomic) NSUInteger selectedIndex;

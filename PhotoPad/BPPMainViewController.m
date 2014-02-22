@@ -33,7 +33,7 @@
                                               object:nil];
     
     [[NSNotificationCenter defaultCenter]addObserver:self
-                                            selector:@selector(updateGallery:)
+                                            selector:@selector(addToTopOfGallery:)
                                                 name:@"EyeFiUnarchiveComplete"
                                               object:nil];
     
@@ -50,10 +50,10 @@
     // Setup a long press to reveal an action menu.
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(activateActionMode:)];
     longPress.delegate = self;
-    [_galleryView addGestureRecognizer:longPress];
+    [_collectionView addGestureRecognizer:longPress];
     self.photoToolSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Delete" otherButtonTitles:nil];
     
-    self.galleryView.allowsMultipleSelection = YES;
+    self.collectionView.allowsMultipleSelection = YES;
     self.selectedPhotos = [NSMutableDictionary dictionary];
     
     _resizedImageCache = [[NSCache alloc] init];
@@ -108,23 +108,28 @@
     self.navigationController.navigationBar.topItem.title = (windowTitle) ?: @"Browse All Photos";
 }
 
-- (void)updateGallery:(NSNotification *)notification
+#pragma mark - Photo Gallery
+
+- (void)addToTopOfGallery:(NSNotification *)notification
 {
-    [self.photos addObject: [notification.userInfo objectForKey:@"path"]];
-    [self.galleryView reloadData];
+    NSLog(@"AddToTopOfGallery: START");
+    NSString* filename = [notification.userInfo objectForKey:@"path"];
+    
+    [self.photos insertObject:filename atIndex:0];
+    [self.collectionView insertItemsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForItem:0 inSection:0]]];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"EyeFiCommunication" object:nil userInfo:[NSDictionary dictionaryWithObject:@"GalleryUpdated" forKey:@"method"]];
 }
 
-#pragma mark - Photo Gallery
-
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
+    NSLog(@"numberOfItemsInSection: returning %d", (int)self.photos.count);
     return self.photos.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    NSLog(@"cellForItemAtIndexPath: START, indexPath.row %d", (int)indexPath.row);
     BPPGalleryCell *cell = (BPPGalleryCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"PhotoCell" forIndexPath:indexPath];
     
     // approach: use an NSCache, with an NSOperationQueue that limits the number of concurrent ops to 3.
@@ -143,10 +148,10 @@
             resizeImg = [self imageWithImage:resizeImg scaledToFillSize:size];
             [_resizedImageCache setObject:resizeImg forKey:self.photos[indexPath.row]];
             
-            if( [_galleryView.indexPathsForVisibleItems containsObject:indexPath] ) {
+            if( [_collectionView.indexPathsForVisibleItems containsObject:indexPath] ) {
                 // Get hold of main queue (main thread)
                 [[NSOperationQueue mainQueue] addOperationWithBlock: ^ {
-                    BPPGalleryCell *thisCell = (BPPGalleryCell*)[_galleryView cellForItemAtIndexPath:indexPath];
+                    BPPGalleryCell *thisCell = (BPPGalleryCell*)[_collectionView cellForItemAtIndexPath:indexPath];
                     thisCell.asset = resizeImg;
                     thisCell.backgroundColor = [UIColor whiteColor];
                 }];
@@ -182,7 +187,7 @@
 }
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
-    return UIEdgeInsetsMake(10, 10, 0, 10);
+    return UIEdgeInsetsMake(10, 10, 85, 10);
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -216,10 +221,10 @@
 - (void)activateActionMode:(UILongPressGestureRecognizer *)gr
 {
     if (gr.state == UIGestureRecognizerStateBegan) {
-        NSIndexPath *indexPath = [_galleryView indexPathForItemAtPoint:[gr locationInView:_galleryView]];
-        UICollectionViewLayoutAttributes *cellAtributes = [_galleryView layoutAttributesForItemAtIndexPath:indexPath];
+        NSIndexPath *indexPath = [_collectionView indexPathForItemAtPoint:[gr locationInView:_collectionView]];
+        UICollectionViewLayoutAttributes *cellAtributes = [_collectionView layoutAttributesForItemAtIndexPath:indexPath];
         self.selectedIndex = indexPath.row;
-        [self.photoToolSheet showFromRect:cellAtributes.frame inView:_galleryView animated:YES];
+        [self.photoToolSheet showFromRect:cellAtributes.frame inView:_collectionView animated:YES];
     }
 }
 
@@ -229,18 +234,19 @@
         // Delete button was pressed.
         [[NSFileManager defaultManager] removeItemAtPath:[_photos objectAtIndex:_selectedIndex] error:nil];
         [_photos removeObjectAtIndex:_selectedIndex];
-        [_galleryView reloadData];
+        [_collectionView deleteItemsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForItem:_selectedIndex inSection:0]]];
+//        [_collectionView reloadData];
     }
 }
 
 - (void)clearCellSelections {
     NSLog(@"clearCellSelections begin");
 
-    NSArray* selectedIndexPaths = [self.galleryView indexPathsForSelectedItems];
+    NSArray* selectedIndexPaths = [self.collectionView indexPathsForSelectedItems];
     
     for( id indexPath in selectedIndexPaths ) {
-        [self.galleryView deselectItemAtIndexPath:indexPath animated:YES];
-        [self collectionView:self.galleryView didDeselectItemAtIndexPath:indexPath];
+        [self.collectionView deselectItemAtIndexPath:indexPath animated:YES];
+        [self collectionView:self.collectionView didDeselectItemAtIndexPath:indexPath];
     }
 }
 
