@@ -7,7 +7,7 @@ Backlog - Tim
 Main screen
     2. DONE: support landscape mode
     3. DONE: scrolling down thru images is jerky, fix this: image thumbnails too big?
-    4. deselect doesn't work: at least the checkmarks are not removed on deselect
+    4. DONE: deselect doesn't work: at least the checkmarks are not removed on deselect
     5. Image downloaded (eyefi): make this bigger?
     6. new images (images downloaded) must be put at START of collection (top left), not bottom - 
     6b.if scrolled down in main view, nothing must change until an action is taken (ie print) when new photos come in
