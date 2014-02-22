@@ -15,6 +15,7 @@
 @interface BPPMainViewController () {
     NSOperationQueue* _resizedImageCacheOperationQueue;
     NSCache* _resizedImageCache;
+    NSCache* _fullsizedImageCache;
 }
 
 @end
@@ -53,10 +54,11 @@
     self.photoToolSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Delete" otherButtonTitles:nil];
     
     self.galleryView.allowsMultipleSelection = YES;
-    self.selectedPhotos = [NSMutableArray array];
+    self.selectedPhotos = [NSMutableDictionary dictionary];
     
-    _resizedImageCache = [[NSCache init] alloc];
-    _resizedImageCacheOperationQueue = [[NSOperationQueue init] alloc];
+    _resizedImageCache = [[NSCache alloc] init];
+    _fullsizedImageCache = [[NSCache alloc] init];
+    _resizedImageCacheOperationQueue = [[NSOperationQueue alloc] init];
     _resizedImageCacheOperationQueue.maxConcurrentOperationCount = 3;
 }
 
@@ -73,7 +75,6 @@
     CGFloat scale = MAX(size.width/image.size.width, size.height/image.size.height);
     CGFloat width = image.size.width * scale;
     CGFloat height = image.size.height * scale;
-    NSLog(@"Perf debug: imageWithImage. Width %f, height %f", width, height);
     CGRect imageRect = CGRectMake((size.width - width)/2.0f,
                                   (size.height - height)/2.0f,
                                   width,
@@ -126,32 +127,35 @@
 {
     BPPGalleryCell *cell = (BPPGalleryCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"PhotoCell" forIndexPath:indexPath];
     
-    // TODO: this is probably why it is slow to scroll - this is a resize from full JPG. need to save these off as individual items
-    
     // approach: use an NSCache, with an NSOperationQueue that limits the number of concurrent ops to 3.
-    
-    CGSize size = [self getCellSize];
-    size.width -= 2*cellBorderPixels;
-    size.height-= 2*cellBorderPixels;
-    
-    cell.asset = [self imageWithImage: [UIImage imageWithContentsOfFile:self.photos[indexPath.row]] scaledToFillSize:size];
-    cell.backgroundColor = [UIColor whiteColor];
-    //NSLog(@"cellForItemAtIndexPath: cell size width %d, height %d", (int)cell.frame.size.width, (int)cell.frame.size.width);
+    UIImage* cachedResizeImg = [_resizedImageCache objectForKey:self.photos[indexPath.row]];
+
+    if( cachedResizeImg ) {
+        cell.asset = cachedResizeImg;
+    } else {
+        CGSize size = [self getCellSize];
+        size.width -= 2*cellBorderPixels;
+        size.height-= 2*cellBorderPixels;
+        
+        [_resizedImageCacheOperationQueue addOperationWithBlock: ^ {
+            
+            UIImage *resizeImg = [self loadFullsizeImage:self.photos[indexPath.row]];
+            resizeImg = [self imageWithImage:resizeImg scaledToFillSize:size];
+            [_resizedImageCache setObject:resizeImg forKey:self.photos[indexPath.row]];
+            
+            if( [_galleryView.indexPathsForVisibleItems containsObject:indexPath] ) {
+                // Get hold of main queue (main thread)
+                [[NSOperationQueue mainQueue] addOperationWithBlock: ^ {
+                    BPPGalleryCell *thisCell = (BPPGalleryCell*)[_galleryView cellForItemAtIndexPath:indexPath];
+                    thisCell.asset = resizeImg;
+                    thisCell.backgroundColor = [UIColor whiteColor];
+                }];
+            }
+        }];
+    }
     
     return cell;
 }
-
-/*
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumLineSpacingForSectionAtIndex:(NSInteger)section
-{
-    return 5;
-}
-
-- (CGFloat)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout minimumInteritemSpacingForSectionAtIndex:(NSInteger)section
-{
-    return 5;
-}
- */
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
@@ -165,14 +169,16 @@
     [cell.checkmarkViewOutlet setChecked:YES];
     
     NSString *filename = [self.photos objectAtIndex:indexPath.row];
-    [self.selectedPhotos addObject:[UIImage imageWithContentsOfFile:filename]];
+    [self.selectedPhotos setObject:[self loadFullsizeImage:filename] forKey:filename];
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     BPPGalleryCell *cell = (BPPGalleryCell*)[collectionView cellForItemAtIndexPath:indexPath];
     [cell.checkmarkViewOutlet setChecked:NO];
-    [self.selectedPhotos removeObject:[self.photos objectAtIndex:indexPath.row]];
+    // TODO: all array ops should be in a function that captures exceptions?
+    NSString *filename = [self.photos objectAtIndex:indexPath.row];
+    [self.selectedPhotos removeObjectForKey:filename];
 }
 
 - (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
@@ -185,6 +191,7 @@
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
     [super willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
+    [_resizedImageCache removeAllObjects];
     [self.collectionViewFlowLayout invalidateLayout];
 }
 
@@ -226,6 +233,18 @@
     }
 }
 
+- (void)clearCellSelections {
+    NSLog(@"clearCellSelections begin");
+
+    NSArray* selectedIndexPaths = [self.galleryView indexPathsForSelectedItems];
+    
+    for( id indexPath in selectedIndexPaths ) {
+        [self.galleryView deselectItemAtIndexPath:indexPath animated:YES];
+        [self collectionView:self.galleryView didDeselectItemAtIndexPath:indexPath];
+    }
+}
+
+
 #pragma mark - Photo Browser
 
 - (NSUInteger)numberOfPhotosInPhotoBrowser:(MWPhotoBrowser *)photoBrowser {
@@ -234,7 +253,7 @@
 
 - (MWPhoto *)photoBrowser:(MWPhotoBrowser *)photoBrowser photoAtIndex:(NSUInteger)index {
     if (index < self.photos.count)
-        return [MWPhoto photoWithImage:[UIImage imageWithContentsOfFile:[self.photos objectAtIndex:index]]];
+        return [MWPhoto photoWithImage:[self loadFullsizeImage:[self.photos objectAtIndex:index]]];
     return nil;
 }
 
@@ -247,26 +266,23 @@
 
     BPPAirprintCollagePrinter *ap = [BPPAirprintCollagePrinter singleton];
     
-    if( ! [ap printCollage:self.selectedPhotos fromUIBarButton:self.printButtonOulet] ) {
+    if( ! [ap printCollage:[self.selectedPhotos allValues] fromUIBarButton:self.printButtonOulet] ) {
         NSLog(@"MainVC, got fail for printCollage");
     }
 
-    
-    /*
-    UIImageView* iv = [[UIImageView alloc] initWithImage:[UIImage imageWithData:thisDebugJPG]];
-    [iv setFrame:CGRectMake(0, 0, 1200, 1800)];
-    [self.view addSubview:iv];
-    */
-    
     [self clearCellSelections];
     [self.selectedPhotos removeAllObjects];
 }
 
-- (void)clearCellSelections {
-    int collectionViewCount = [self.galleryView numberOfItemsInSection:0];
-    for (int i=0; i<=collectionViewCount; i++) {
-        [self.galleryView deselectItemAtIndexPath:[NSIndexPath indexPathForItem:i inSection:0] animated:YES];
+- (UIImage*)loadFullsizeImage:(NSString*)filename {
+    UIImage* image = [_fullsizedImageCache objectForKey:filename];
+    if( !image ) {
+        image = [UIImage imageWithContentsOfFile:filename];
+        [_fullsizedImageCache setObject:image forKey:filename];
     }
+    return image;
 }
+
+
 
 @end

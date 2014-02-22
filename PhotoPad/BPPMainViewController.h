@@ -14,7 +14,7 @@
 
 @interface BPPMainViewController : UIViewController <MWPhotoBrowserDelegate, UIGestureRecognizerDelegate, UIActionSheetDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout> 
 
-@property (strong, nonatomic) NSMutableArray *photos;
+@property (strong, nonatomic) NSMutableArray *photos; // array of filenames with absolute paths
 @property (strong, nonatomic) MWPhotoBrowser *photosBrowser;
 @property (weak, nonatomic) IBOutlet UICollectionView *galleryView;
 @property (strong, nonatomic) UIActionSheet *photoToolSheet;
@@ -24,7 +24,7 @@
 @property (weak, nonatomic) IBOutlet UICollectionViewFlowLayout *collectionViewFlowLayout;
 
 
-@property(nonatomic, strong) NSMutableArray* selectedPhotos;
+@property(nonatomic, strong) NSMutableDictionary* selectedPhotos; // key = filename (from photos array), value = UIImage*
 
 - (UIImage *)imageWithImage:(UIImage *)image scaledToFillSize:(CGSize)size;
 
