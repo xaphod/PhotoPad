@@ -289,6 +289,12 @@
     return image;
 }
 
+// TODO: remove this debug code
+- (IBAction)debugInjectPressed:(id)sender {
+    
+    UIImage* debugImg = [self loadFullsizeImage:@"tim_and_noah.jpg"];
+        //[self.photos addObject: [notification.userInfo objectForKey:@"path"]];
+}
 
 
 @end

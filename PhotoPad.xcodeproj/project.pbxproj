@@ -31,6 +31,7 @@
 		2266807918A69F6D0060FBBE /* PSTGridLayoutRow.m in Sources */ = {isa = PBXBuildFile; fileRef = 2266806B18A69F6D0060FBBE /* PSTGridLayoutRow.m */; };
 		2266807A18A69F6D0060FBBE /* PSTGridLayoutSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 2266806D18A69F6D0060FBBE /* PSTGridLayoutSection.m */; };
 		228FABDD18A7967300DB5BDF /* BPPAirprintCollagePrinter.m in Sources */ = {isa = PBXBuildFile; fileRef = 228FABDC18A7967300DB5BDF /* BPPAirprintCollagePrinter.m */; };
+		22A3DE8F18BA614F0041FDC6 /* tim_and_noah.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 22A3DE8E18BA614F0041FDC6 /* tim_and_noah.jpg */; };
 		4D784AFA183D72D1007FB05A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D784AF9183D72D1007FB05A /* Foundation.framework */; };
 		4D784AFC183D72D1007FB05A /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D784AFB183D72D1007FB05A /* CoreGraphics.framework */; };
 		4D784AFE183D72D1007FB05A /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D784AFD183D72D1007FB05A /* UIKit.framework */; };
@@ -171,6 +172,7 @@
 		2266806D18A69F6D0060FBBE /* PSTGridLayoutSection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSTGridLayoutSection.m; sourceTree = "<group>"; };
 		228FABDB18A7967300DB5BDF /* BPPAirprintCollagePrinter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPPAirprintCollagePrinter.h; sourceTree = "<group>"; };
 		228FABDC18A7967300DB5BDF /* BPPAirprintCollagePrinter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BPPAirprintCollagePrinter.m; sourceTree = "<group>"; };
+		22A3DE8E18BA614F0041FDC6 /* tim_and_noah.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = tim_and_noah.jpg; path = Assets/tim_and_noah.jpg; sourceTree = "<group>"; };
 		4D784AF6183D72D0007FB05A /* PhotoPad.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhotoPad.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		4D784AF9183D72D1007FB05A /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		4D784AFB183D72D1007FB05A /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -375,6 +377,14 @@
 			path = PSTCollectionView;
 			sourceTree = "<group>";
 		};
+		22A3DE8D18BA61110041FDC6 /* Assets */ = {
+			isa = PBXGroup;
+			children = (
+				22A3DE8E18BA614F0041FDC6 /* tim_and_noah.jpg */,
+			);
+			name = Assets;
+			sourceTree = "<group>";
+		};
 		4D784AED183D72D0007FB05A = {
 			isa = PBXGroup;
 			children = (
@@ -413,6 +423,7 @@
 		4D784AFF183D72D1007FB05A /* PhotoPad */ = {
 			isa = PBXGroup;
 			children = (
+				22A3DE8D18BA61110041FDC6 /* Assets */,
 				22172F8F18B77D81004358BD /* Backlog.txt */,
 				4D784B0B183D72D1007FB05A /* Main.storyboard */,
 				4D784B08183D72D1007FB05A /* BPPAppDelegate.h */,
@@ -830,6 +841,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				22A3DE8F18BA614F0041FDC6 /* tim_and_noah.jpg in Resources */,
 				4D784B0D183D72D1007FB05A /* Main.storyboard in Resources */,
 				4D784B15183D72D1007FB05A /* Images.xcassets in Resources */,
 				4D784B04183D72D1007FB05A /* InfoPlist.strings in Resources */,

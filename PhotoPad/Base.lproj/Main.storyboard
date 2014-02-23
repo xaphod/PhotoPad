@@ -92,6 +92,11 @@
                                     <constraint firstAttribute="height" constant="60" id="4PP-R0-r8a"/>
                                 </constraints>
                                 <items>
+                                    <barButtonItem title="DEBUG: inject" id="xP4-ke-SRw">
+                                        <connections>
+                                            <action selector="debugInjectPressed:" destination="aVO-UE-KGo" id="wm1-QT-Ttw"/>
+                                        </connections>
+                                    </barButtonItem>
                                     <barButtonItem style="plain" systemItem="flexibleSpace" id="0pa-Bh-yhg"/>
                                     <barButtonItem image="Print" width="60" id="fuB-Fg-9MR">
                                         <connections>
