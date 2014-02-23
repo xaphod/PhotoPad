@@ -9,9 +9,10 @@ Main screen
     3. DONE: scrolling down thru images is jerky, fix this: image thumbnails too big?
     4. DONE: deselect doesn't work: at least the checkmarks are not removed on deselect
     5. Image downloaded (eyefi): make this bigger?
-    6. new images (images downloaded) must be put at START of collection (top left), not bottom - 
+    6. DONE: new images (images downloaded) must be put at START of collection (top left), not bottom
     6b.if scrolled down in main view, nothing must change until an action is taken (ie print) when new photos come in
     6c.have some UI indication that newest ones are at the top - a notificaton overlay that appears when new images arrive, touch it to jump to top
+    6d.old/stale selections -- time them out??
     7. print icon must be much bigger
     7b.print must only work when at least 2 images are selected: inform user or disable until?
     8. add ability to email self - email a link set in settings, with a ready-date also set in settings

@@ -16,6 +16,9 @@
     NSOperationQueue* _resizedImageCacheOperationQueue;
     NSCache* _resizedImageCache;
     NSCache* _fullsizedImageCache;
+    
+    // DEBUG: ReMOVE THIS
+    bool debugJPGdone;
 }
 
 @end
@@ -38,9 +41,12 @@
                                               object:nil];
     
     // Create array of `MWPhoto` objects
-    _photos = [[NSMutableArray array] init];
+    _photoFilenames = [[NSMutableArray array] init];
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    [_photos addObjectsFromArray: [[NSBundle bundleWithPath:[paths objectAtIndex:0]] pathsForResourcesOfType:@".JPG" inDirectory:nil]];
+    [_photoFilenames addObjectsFromArray: [[NSBundle bundleWithPath:[paths objectAtIndex:0]] pathsForResourcesOfType:@".JPG" inDirectory:nil]];
+    // want to display newest at top
+    [_photoFilenames sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
+    _photoFilenames = [[[_photoFilenames reverseObjectEnumerator] allObjects] mutableCopy];
     
     // Setup the photo browser.
     _photosBrowser = [[MWPhotoBrowser alloc] initWithDelegate:self];
@@ -112,10 +118,11 @@
 
 - (void)addToTopOfGallery:(NSNotification *)notification
 {
-    NSLog(@"AddToTopOfGallery: START");
+    NSLog(@"AddToTopOfGallery: START, currentThread %@", [NSThread currentThread]);
+    
     NSString* filename = [notification.userInfo objectForKey:@"path"];
     
-    [self.photos insertObject:filename atIndex:0];
+    [self.photoFilenames insertObject:filename atIndex:0];
     [self.collectionView insertItemsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForItem:0 inSection:0]]];
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"EyeFiCommunication" object:nil userInfo:[NSDictionary dictionaryWithObject:@"GalleryUpdated" forKey:@"method"]];
@@ -123,17 +130,27 @@
 
 - (NSInteger)collectionView:(UICollectionView *)collectionView numberOfItemsInSection:(NSInteger)section
 {
-    NSLog(@"numberOfItemsInSection: returning %d", (int)self.photos.count);
-    return self.photos.count;
+    NSLog(@"numberOfItemsInSection: returning %d", (int)self.photoFilenames.count);
+    return self.photoFilenames.count;
 }
 
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    NSLog(@"cellForItemAtIndexPath: START, indexPath.row %d", (int)indexPath.row);
     BPPGalleryCell *cell = (BPPGalleryCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"PhotoCell" forIndexPath:indexPath];
+
+    // cells don't remember their state
+    cell.backgroundColor = [UIColor whiteColor];
+    NSString *filename = self.photoFilenames[indexPath.row];
+    if( [self.selectedPhotos objectForKey:filename] != nil ) {
+        [cell.checkmarkViewOutlet setChecked:YES];
+        cell.selected = TRUE;
+    } else {
+        [cell.checkmarkViewOutlet setChecked:NO];
+        cell.selected = FALSE;
+    }
     
     // approach: use an NSCache, with an NSOperationQueue that limits the number of concurrent ops to 3.
-    UIImage* cachedResizeImg = [_resizedImageCache objectForKey:self.photos[indexPath.row]];
+    UIImage* cachedResizeImg = [_resizedImageCache objectForKey:self.photoFilenames[indexPath.row]];
 
     if( cachedResizeImg ) {
         cell.asset = cachedResizeImg;
@@ -144,16 +161,15 @@
         
         [_resizedImageCacheOperationQueue addOperationWithBlock: ^ {
             
-            UIImage *resizeImg = [self loadFullsizeImage:self.photos[indexPath.row]];
+            UIImage *resizeImg = [self loadFullsizeImage:self.photoFilenames[indexPath.row]];
             resizeImg = [self imageWithImage:resizeImg scaledToFillSize:size];
-            [_resizedImageCache setObject:resizeImg forKey:self.photos[indexPath.row]];
+            [_resizedImageCache setObject:resizeImg forKey:self.photoFilenames[indexPath.row]];
             
             if( [_collectionView.indexPathsForVisibleItems containsObject:indexPath] ) {
                 // Get hold of main queue (main thread)
                 [[NSOperationQueue mainQueue] addOperationWithBlock: ^ {
                     BPPGalleryCell *thisCell = (BPPGalleryCell*)[_collectionView cellForItemAtIndexPath:indexPath];
                     thisCell.asset = resizeImg;
-                    thisCell.backgroundColor = [UIColor whiteColor];
                 }];
             }
         }];
@@ -173,7 +189,7 @@
     BPPGalleryCell *cell = (BPPGalleryCell*)[collectionView cellForItemAtIndexPath:indexPath];
     [cell.checkmarkViewOutlet setChecked:YES];
     
-    NSString *filename = [self.photos objectAtIndex:indexPath.row];
+    NSString *filename = [self.photoFilenames objectAtIndex:indexPath.row];
     [self.selectedPhotos setObject:[self loadFullsizeImage:filename] forKey:filename];
 }
 
@@ -182,7 +198,7 @@
     BPPGalleryCell *cell = (BPPGalleryCell*)[collectionView cellForItemAtIndexPath:indexPath];
     [cell.checkmarkViewOutlet setChecked:NO];
     // TODO: all array ops should be in a function that captures exceptions?
-    NSString *filename = [self.photos objectAtIndex:indexPath.row];
+    NSString *filename = [self.photoFilenames objectAtIndex:indexPath.row];
     [self.selectedPhotos removeObjectForKey:filename];
 }
 
@@ -232,8 +248,8 @@
 {
     if (buttonIndex == 0) {
         // Delete button was pressed.
-        [[NSFileManager defaultManager] removeItemAtPath:[_photos objectAtIndex:_selectedIndex] error:nil];
-        [_photos removeObjectAtIndex:_selectedIndex];
+        [[NSFileManager defaultManager] removeItemAtPath:[_photoFilenames objectAtIndex:_selectedIndex] error:nil];
+        [_photoFilenames removeObjectAtIndex:_selectedIndex];
         [_collectionView deleteItemsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForItem:_selectedIndex inSection:0]]];
 //        [_collectionView reloadData];
     }
@@ -254,12 +270,12 @@
 #pragma mark - Photo Browser
 
 - (NSUInteger)numberOfPhotosInPhotoBrowser:(MWPhotoBrowser *)photoBrowser {
-    return self.photos.count;
+    return self.photoFilenames.count;
 }
 
 - (MWPhoto *)photoBrowser:(MWPhotoBrowser *)photoBrowser photoAtIndex:(NSUInteger)index {
-    if (index < self.photos.count)
-        return [MWPhoto photoWithImage:[self loadFullsizeImage:[self.photos objectAtIndex:index]]];
+    if (index < self.photoFilenames.count)
+        return [MWPhoto photoWithImage:[self loadFullsizeImage:[self.photoFilenames objectAtIndex:index]]];
     return nil;
 }
 
@@ -292,8 +308,24 @@
 // TODO: remove this debug code
 - (IBAction)debugInjectPressed:(id)sender {
     
-    UIImage* debugImg = [self loadFullsizeImage:@"tim_and_noah.jpg"];
-        //[self.photos addObject: [notification.userInfo objectForKey:@"path"]];
+    NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
+    NSString* filename;
+    if( !debugJPGdone ) {
+
+        filename = [thisBundle pathForResource:@"debug1" ofType:@"jpg"];
+        NSLog(@"debugInjectPressed: filename is %@", filename);
+        debugJPGdone = TRUE;
+    } else {
+        filename = [thisBundle pathForResource:@"debug2" ofType:@"jpg"];
+        NSLog(@"debugInjectPressed: filename is %@", filename);
+        debugJPGdone = FALSE;
+    }
+    //    UIImage* debugImg = [self loadFullsizeImage:filename];
+
+    NSNotification *notif = [NSNotification notificationWithName:@"debug" object:nil userInfo:[NSMutableDictionary dictionaryWithObject:filename forKey:@"path"]];
+    
+    [self addToTopOfGallery:notif];
+    
 }
 
 

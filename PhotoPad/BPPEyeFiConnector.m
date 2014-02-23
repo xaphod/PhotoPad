@@ -58,12 +58,12 @@
         return [[HTTPDataResponse alloc] initWithData:[[self stringForTemplate:@"UploadPhoto"] dataUsingEncoding:NSUTF8StringEncoding]];
     }
     
-    self.parseQueue = [NSOperationQueue new];
+    self.parseQueue = [NSOperationQueue new]; // new means, a new thread (not the main thread)
     BPPEyeFiResponseParse *parseOperation = [[BPPEyeFiResponseParse alloc] initWithData:self.postData];
     [self.parseQueue addOperation:parseOperation];
     [self.parseQueue waitUntilAllOperationsAreFinished];
     
-    NSLog(@"Method is: %@", parseOperation.eyeFiMethod);
+    NSLog(@"BPPEyeFiConn, httpResponseForMethod: %@", parseOperation.eyeFiMethod);
     
     if ([parseOperation.eyeFiMethod isEqualToString:@"StartSession"]) {
         return [self startSessionAuthenticate: parseOperation.eyeFiPayload];

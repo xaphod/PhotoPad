@@ -23,7 +23,10 @@
     [files removeItemAtPath:path error:&error];
     [files removeItemAtPath:[path stringByReplacingOccurrencesOfString:@".tar" withString:@".log"] error:&error];
     
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"EyeFiUnarchiveComplete" object:nil userInfo:[NSDictionary dictionaryWithObject:[path stringByReplacingOccurrencesOfString:@".tar" withString:@""] forKey:@"path"]];
+    // Moved to the main thread by Tim: otherwise UICollectionView gives really crazy results -- a bunch of empty cells, UI unresponsive for 5 seconds, etc
+    dispatch_async(dispatch_get_main_queue(),^{
+        [[NSNotificationCenter defaultCenter] postNotificationName:@"EyeFiUnarchiveComplete" object:nil userInfo:[NSDictionary dictionaryWithObject:[path stringByReplacingOccurrencesOfString:@".tar" withString:@""] forKey:@"path"]];
+    });
 }
 
 @end
