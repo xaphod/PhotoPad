@@ -40,8 +40,8 @@
                                                 name:@"EyeFiUnarchiveComplete"
                                               object:nil];
     
-    // Create array of `MWPhoto` objects
-    _photoFilenames = [[NSMutableArray array] init];
+    _photoFilenames = [NSMutableArray array];
+    _photosNotYetAdded = [NSMutableArray array];
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     [_photoFilenames addObjectsFromArray: [[NSBundle bundleWithPath:[paths objectAtIndex:0]] pathsForResourcesOfType:@".JPG" inDirectory:nil]];
     // want to display newest at top
@@ -66,6 +66,13 @@
     _fullsizedImageCache = [[NSCache alloc] init];
     _resizedImageCacheOperationQueue = [[NSOperationQueue alloc] init];
     _resizedImageCacheOperationQueue.maxConcurrentOperationCount = 3;
+    
+    // when the collectionView is pulled from top, it should be refreshed
+    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
+    [refreshControl addTarget:self action:@selector(newPhotosButtonPressed:)
+             forControlEvents:UIControlEventValueChanged];
+    self.collectionView.alwaysBounceVertical = YES;
+    [self.collectionView addSubview:refreshControl];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -122,8 +129,16 @@
     
     NSString* filename = [notification.userInfo objectForKey:@"path"];
     
-    [self.photoFilenames insertObject:filename atIndex:0];
-    [self.collectionView insertItemsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForItem:0 inSection:0]]];
+    if( [self.collectionView.indexPathsForVisibleItems containsObject:[NSIndexPath indexPathForItem:0 inSection:0]] ) {
+        [self.photoFilenames insertObject:filename atIndex:0];
+        [self.collectionView insertItemsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForItem:0 inSection:0]]];
+        NSLog(@"... added directly to photos array / collectionView");
+    } else {
+        // show new photos UI indication
+        [self.notificationOfNewPhotosViewOutlet setHidden:FALSE];
+        [self.photosNotYetAdded addObject:filename];
+        NSLog(@"... pending in queue (newPhotosNotYetAdded)!");
+    }
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"EyeFiCommunication" object:nil userInfo:[NSDictionary dictionaryWithObject:@"GalleryUpdated" forKey:@"method"]];
 }
@@ -326,6 +341,24 @@
     
     [self addToTopOfGallery:notif];
     
+}
+
+- (IBAction)newPhotosButtonPressed:(id)sender {
+    NSLog(@"NewPhotosButtonPressed");
+    [self.notificationOfNewPhotosViewOutlet setHidden:TRUE];
+    
+    if( sender == self.notificationOfNewPhotosButtonOutlet) {
+        NSLog(@"... button pressed, so scrolling up");
+        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0] atScrollPosition:UICollectionViewScrollPositionTop animated:TRUE];
+    }
+
+    [self.collectionView performBatchUpdates:^{
+        for( id object in self.photosNotYetAdded ) {
+            [self.photoFilenames insertObject:object atIndex:0];
+            [self.collectionView insertItemsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForItem:0 inSection:0]]];
+        }
+    } completion:^(BOOL finished) {
+    }];
 }
 
 

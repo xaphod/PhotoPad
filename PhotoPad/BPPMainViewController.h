@@ -22,7 +22,9 @@
 @property (nonatomic) NSUInteger selectedIndex;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *printButtonOulet;
 @property (weak, nonatomic) IBOutlet UICollectionViewFlowLayout *collectionViewFlowLayout;
-
+@property (weak, nonatomic) IBOutlet UIView *notificationOfNewPhotosViewOutlet;
+@property (weak, nonatomic) IBOutlet UIButton *notificationOfNewPhotosButtonOutlet;
+@property (nonatomic, strong) NSMutableArray *photosNotYetAdded; // filenames of photos that are not in photos array or the UICollectionView yet. Newest are at the end of the array
 
 @property(nonatomic, strong) NSMutableDictionary* selectedPhotos; // key = filename (from photos array), value = UIImage*
 

@@ -85,6 +85,34 @@
                                     <outlet property="delegate" destination="aVO-UE-KGo" id="8wK-HM-2R6"/>
                                 </connections>
                             </collectionView>
+                            <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AFx-ZS-dxN">
+                                <rect key="frame" x="498" y="84" width="250" height="100"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <subviews>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="tPq-gM-Tjl">
+                                        <rect key="frame" x="10" y="10" width="230" height="80"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <state key="normal">
+                                            <string key="title">New photos at the 
+top - touch here!</string>
+                                            <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="newPhotosButtonPressed:" destination="aVO-UE-KGo" eventType="touchUpInside" id="5sd-bJ-Hju"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                                <color key="backgroundColor" red="0.0" green="0.71240482233502544" blue="0.101617422678422" alpha="0.66000000000000003" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstItem="tPq-gM-Tjl" firstAttribute="leading" secondItem="AFx-ZS-dxN" secondAttribute="leading" constant="10" id="7rQ-jE-AGU"/>
+                                    <constraint firstAttribute="trailing" secondItem="tPq-gM-Tjl" secondAttribute="trailing" constant="10" id="PHA-7n-bGJ"/>
+                                    <constraint firstAttribute="width" constant="250" id="an2-Wl-TQz"/>
+                                    <constraint firstItem="tPq-gM-Tjl" firstAttribute="top" secondItem="AFx-ZS-dxN" secondAttribute="top" constant="10" id="jTM-iS-RIm"/>
+                                    <constraint firstAttribute="height" constant="100" id="s4x-rK-fV5"/>
+                                    <constraint firstAttribute="bottom" secondItem="tPq-gM-Tjl" secondAttribute="bottom" constant="10" id="tF5-cj-Us8"/>
+                                </constraints>
+                            </view>
                             <toolbar opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" barStyle="black" translatesAutoresizingMaskIntoConstraints="NO" id="1NY-zh-a1W">
                                 <rect key="frame" x="0.0" y="964" width="768" height="60"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMinY="YES"/>
@@ -111,10 +139,12 @@
                             <constraint firstItem="1NY-zh-a1W" firstAttribute="leading" secondItem="eNX-1A-1la" secondAttribute="leading" id="0Ji-32-laL"/>
                             <constraint firstItem="mvz-d7-I6V" firstAttribute="top" secondItem="eNX-1A-1la" secondAttribute="top" id="0fj-OB-2KI"/>
                             <constraint firstItem="97W-YQ-9ry" firstAttribute="top" secondItem="1NY-zh-a1W" secondAttribute="bottom" id="0pK-Uw-wff"/>
+                            <constraint firstAttribute="trailing" secondItem="AFx-ZS-dxN" secondAttribute="trailing" constant="20" id="34N-yi-7WR"/>
                             <constraint firstAttribute="bottom" secondItem="mvz-d7-I6V" secondAttribute="bottom" constant="-20" id="9KT-IJ-DpW"/>
                             <constraint firstAttribute="trailing" secondItem="1NY-zh-a1W" secondAttribute="trailing" id="BRZ-FT-pAT"/>
                             <constraint firstItem="mvz-d7-I6V" firstAttribute="leading" secondItem="eNX-1A-1la" secondAttribute="leading" id="Cxm-2s-LHG"/>
                             <constraint firstAttribute="trailing" secondItem="mvz-d7-I6V" secondAttribute="trailing" id="Tqn-TC-r1w"/>
+                            <constraint firstItem="AFx-ZS-dxN" firstAttribute="top" secondItem="AQ0-eb-9gs" secondAttribute="bottom" constant="20" id="YLx-6R-sHU"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" title="Browse All Photos" id="dCg-GS-7iL">
@@ -127,6 +157,8 @@
                     <connections>
                         <outlet property="collectionView" destination="mvz-d7-I6V" id="Std-Dx-Wfn"/>
                         <outlet property="collectionViewFlowLayout" destination="PH7-Qb-xsV" id="Mpc-rN-yfZ"/>
+                        <outlet property="notificationOfNewPhotosButtonOutlet" destination="tPq-gM-Tjl" id="6nh-CN-6t1"/>
+                        <outlet property="notificationOfNewPhotosViewOutlet" destination="AFx-ZS-dxN" id="XYt-OH-GGo"/>
                         <outlet property="printButtonOulet" destination="fuB-Fg-9MR" id="GxD-ET-KPa"/>
                     </connections>
                 </viewController>
