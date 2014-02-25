@@ -1,21 +1,24 @@
 //
-//  BPPMainViewController.m
+//  BPPPreviewViewController.m
 //  PhotoPad
 //
-//  Created by Albert Martin on 11/20/13.
-//  Copyright (c) 2013 Albert Martin. All rights reserved.
+//  Created by Tim Carr on 2/25/14.
+//  Copyright (c) 2014 Albert Martin. All rights reserved.
 //
 
-#import "BPPMainViewController.h"
+#import "BPPPreviewViewController.h"
 #import "BPPGalleryCell.h"
 #import "NSFileManager+Tar.h"
 #import "UIColor+Hex.h"
 #import "BPPAirprintCollagePrinter.h"
 
-@interface BPPMainViewController () {
+@interface BPPPreviewViewController () {
     NSOperationQueue* _resizedImageCacheOperationQueue;
     NSCache* _resizedImageCache;
     NSCache* _fullsizedImageCache;
+    CGFloat cellSize;
+    NSIndexPath* _oldestNewestIndexPath;
+    NSNumber* _previewIsShown;
     
     // DEBUG: ReMOVE THIS
     bool debugJPGdone;
@@ -23,15 +26,16 @@
 
 @end
 
-@implementation BPPMainViewController
+@implementation BPPPreviewViewController
 
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
-
+    
     [self updateUIFromSettings];
+    cellSize = -1;
+    _previewIsShown = [NSNumber numberWithBool:FALSE];
 	
     [[NSNotificationCenter defaultCenter]addObserver:self
                                             selector:@selector(updateUIFromSettings)
@@ -39,12 +43,11 @@
                                               object:nil];
     
     [[NSNotificationCenter defaultCenter]addObserver:self
-                                            selector:@selector(addToTopOfGallery:)
+                                            selector:@selector(addToRightSideOfCollectionView:)
                                                 name:@"EyeFiUnarchiveComplete"
                                               object:nil];
     
     _photoFilenames = [NSMutableArray array];
-    _photosNotYetAdded = [NSMutableArray array];
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     [_photoFilenames addObjectsFromArray: [[NSBundle bundleWithPath:[paths objectAtIndex:0]] pathsForResourcesOfType:@".JPG" inDirectory:nil]];
     // want to display newest at top
@@ -70,12 +73,6 @@
     _resizedImageCacheOperationQueue = [[NSOperationQueue alloc] init];
     _resizedImageCacheOperationQueue.maxConcurrentOperationCount = 3;
     
-    // when the collectionView is pulled from top, it should be refreshed
-    UIRefreshControl *refreshControl = [[UIRefreshControl alloc] init];
-    [refreshControl addTarget:self action:@selector(newPhotosButtonPressed:)
-             forControlEvents:UIControlEventValueChanged];
-    self.collectionView.alwaysBounceVertical = YES;
-    [self.collectionView addSubview:refreshControl];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -126,21 +123,33 @@
 
 #pragma mark - Photo Gallery
 
-- (void)addToTopOfGallery:(NSNotification *)notification
+- (void)addToRightSideOfCollectionView:(NSNotification *)notification
 {
-    NSLog(@"AddToTopOfGallery: START, currentThread %@", [NSThread currentThread]);
+    NSLog(@"addToRightSideOfCollectionView: START, currentThread %@", [NSThread currentThread]);
     
     NSString* filename = [notification.userInfo objectForKey:@"path"];
     
-    if( [self.collectionView.indexPathsForVisibleItems containsObject:[NSIndexPath indexPathForItem:0 inSection:0]] ) {
-        [self.photoFilenames insertObject:filename atIndex:0];
-        [self.collectionView insertItemsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForItem:0 inSection:0]]];
-        NSLog(@"... added directly to photos array / collectionView");
-    } else {
-        // show new photos UI indication
-        [self.notificationOfNewPhotosViewOutlet setHidden:FALSE];
-        [self.photosNotYetAdded addObject:filename];
-        NSLog(@"... pending in queue (newPhotosNotYetAdded)!");
+    int numItemsBeforeInsert = (int)self.photoFilenames.count;
+    [self.photoFilenames addObject:filename];
+    
+    // rest is capable of adding more than one item...
+    [UIView setAnimationsEnabled:NO];
+    NSMutableArray *arrayWithIndexPaths = [NSMutableArray array];
+    for (int i = numItemsBeforeInsert; i < numItemsBeforeInsert + 1; i++)
+        [arrayWithIndexPaths addObject:[NSIndexPath indexPathForRow:i inSection:0]];
+    
+    [self.collectionView performBatchUpdates:^{
+        [self.collectionView insertItemsAtIndexPaths:arrayWithIndexPaths];
+    } completion:^(BOOL finished) {
+        [UIView setAnimationsEnabled:YES];
+    }];
+    
+    if( self.notificationOfNewPhotosViewOutlet.hidden ) {
+        if( ! [self.collectionView.indexPathsForVisibleItems containsObject:arrayWithIndexPaths[0]] ) {
+            // first item we just added not visible
+            _oldestNewestIndexPath = arrayWithIndexPaths[0];
+            self.notificationOfNewPhotosViewOutlet.hidden = FALSE;
+        }
     }
     
     [[NSNotificationCenter defaultCenter] postNotificationName:@"EyeFiCommunication" object:nil userInfo:[NSDictionary dictionaryWithObject:@"GalleryUpdated" forKey:@"method"]];
@@ -155,7 +164,7 @@
 - (UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath
 {
     BPPGalleryCell *cell = (BPPGalleryCell *)[collectionView dequeueReusableCellWithReuseIdentifier:@"PhotoCell" forIndexPath:indexPath];
-
+    
     // cells don't remember their state
     cell.backgroundColor = [UIColor whiteColor];
     NSString *filename = self.photoFilenames[indexPath.row];
@@ -169,13 +178,11 @@
     
     // approach: use an NSCache, with an NSOperationQueue that limits the number of concurrent ops to 3.
     UIImage* cachedResizeImg = [_resizedImageCache objectForKey:self.photoFilenames[indexPath.row]];
-
+    
     if( cachedResizeImg ) {
         cell.asset = cachedResizeImg;
     } else {
-        CGSize size = [self getCellSize];
-        size.width -= 2*cellBorderPixels;
-        size.height-= 2*cellBorderPixels;
+        CGSize size = CGSizeMake(cellSize, cellSize);
         
         [_resizedImageCacheOperationQueue addOperationWithBlock: ^ {
             
@@ -198,17 +205,12 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    /* tim - want to multi-select & print.
-    [_photosBrowser reloadData];
-    [_photosBrowser setCurrentPhotoIndex:indexPath.row];
-    [self.navigationController pushViewController:_photosBrowser animated:YES];
-     */
-    
     BPPGalleryCell *cell = (BPPGalleryCell*)[collectionView cellForItemAtIndexPath:indexPath];
     [cell.checkmarkViewOutlet setChecked:YES];
     
     NSString *filename = [self.photoFilenames objectAtIndex:indexPath.row];
     [self.selectedPhotos setObject:[self loadFullsizeImage:filename] forKey:filename];
+    [self updatePreview];
 }
 
 - (void)collectionView:(UICollectionView *)collectionView didDeselectItemAtIndexPath:(NSIndexPath *)indexPath
@@ -218,38 +220,23 @@
     // TODO: all array ops should be in a function that captures exceptions?
     NSString *filename = [self.photoFilenames objectAtIndex:indexPath.row];
     [self.selectedPhotos removeObjectForKey:filename];
-}
-
-- (UIEdgeInsets)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout insetForSectionAtIndex:(NSInteger)section {
-    return UIEdgeInsetsMake(10, 10, 85, 10);
+    [self updatePreview];
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
-    return [self getCellSize];
+    
+    if( cellSize == -1 ) {
+        cellSize = self.collectionViewFlowLayoutOutlet.itemSize.height - 2*cellInsets;
+        NSLog(@"Set cellSize to %f", cellSize);
+    }
+    return CGSizeMake(cellSize, cellSize);
 }
+
 
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
     [super willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
     [_resizedImageCache removeAllObjects];
-    [self.collectionViewFlowLayout invalidateLayout];
-}
-
-- (CGSize)getCellSize {
-    
-    int squareSize = self.view.frame.size.width;
-
-    if( DEVICE_IS_LANDSCAPE ) {
-        // 3 per row
-        squareSize -= 6 * cellBorderPixels;
-        squareSize /= 3;
-        //NSLog(@"landscape (div by 3), squaresize is %d", squareSize);
-    } else {
-        // 2 per row
-        squareSize -= 4 * cellBorderPixels;
-        squareSize /= 2;
-        //NSLog(@"portrait (div by 2), squaresize is %d", squareSize);
-    }
-    return CGSizeMake(squareSize, squareSize);
+    [self.collectionView.collectionViewLayout invalidateLayout];
 }
 
 - (void)activateActionMode:(UILongPressGestureRecognizer *)gr
@@ -269,13 +256,13 @@
         [[NSFileManager defaultManager] removeItemAtPath:[_photoFilenames objectAtIndex:_selectedIndex] error:nil];
         [_photoFilenames removeObjectAtIndex:_selectedIndex];
         [_collectionView deleteItemsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForItem:_selectedIndex inSection:0]]];
-//        [_collectionView reloadData];
+        //        [_collectionView reloadData];
     }
 }
 
 - (void)clearCellSelections {
     NSLog(@"clearCellSelections begin");
-
+    
     NSArray* selectedIndexPaths = [self.collectionView indexPathsForSelectedItems];
     
     for( id indexPath in selectedIndexPaths ) {
@@ -303,13 +290,13 @@
     NSLog(@"PrintPressed, %lu photos to print.", (unsigned long)self.selectedPhotos.count);
     
     // TODO: progress indicator -- printCollage takes about 0.5s until it shows iOS print ui
-
+    
     BPPAirprintCollagePrinter *ap = [BPPAirprintCollagePrinter singleton];
     
     if( ! [ap printCollage:[self.selectedPhotos allValues] fromUIBarButton:self.printButtonOulet] ) {
         NSLog(@"MainVC, got fail for printCollage");
     }
-
+    
     [self clearCellSelections];
     [self.selectedPhotos removeAllObjects];
 }
@@ -328,8 +315,10 @@
     
     NSBundle *thisBundle = [NSBundle bundleForClass:[self class]];
     NSString* filename;
+    
+    // for ( int i=0 ; i < 3 ; i+=1 ) {
     if( !debugJPGdone ) {
-
+        
         filename = [thisBundle pathForResource:@"debug1" ofType:@"jpg"];
         NSLog(@"debugInjectPressed: filename is %@", filename);
         debugJPGdone = TRUE;
@@ -339,10 +328,12 @@
         debugJPGdone = FALSE;
     }
     //    UIImage* debugImg = [self loadFullsizeImage:filename];
-
-    NSNotification *notif = [NSNotification notificationWithName:@"debug" object:nil userInfo:[NSMutableDictionary dictionaryWithObject:filename forKey:@"path"]];
     
-    [self addToTopOfGallery:notif];
+    NSNotification *notif = [NSNotification notificationWithName:@"debug" object:nil userInfo:[NSMutableDictionary dictionaryWithObject:filename forKey:@"path"]];
+    [self addToRightSideOfCollectionView:notif];
+    //  }
+    
+    
     
 }
 
@@ -350,19 +341,46 @@
     NSLog(@"NewPhotosButtonPressed");
     [self.notificationOfNewPhotosViewOutlet setHidden:TRUE];
     
-    if( sender == self.notificationOfNewPhotosButtonOutlet) {
-        NSLog(@"... button pressed, so scrolling up");
-        [self.collectionView scrollToItemAtIndexPath:[NSIndexPath indexPathForItem:0 inSection:0] atScrollPosition:UICollectionViewScrollPositionTop animated:TRUE];
+    if( sender == self.notificationOfNewPhotosButtonOutlet && _oldestNewestIndexPath != nil ) {
+        NSLog(@"... scrolling right");
+        [self.collectionView scrollToItemAtIndexPath:_oldestNewestIndexPath atScrollPosition:UICollectionViewScrollPositionLeft animated:TRUE];
     }
-
-    [self.collectionView performBatchUpdates:^{
-        for( id object in self.photosNotYetAdded ) {
-            [self.photoFilenames insertObject:object atIndex:0];
-            [self.collectionView insertItemsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForItem:0 inSection:0]]];
-        }
-    } completion:^(BOOL finished) {
-    }];
 }
 
+- (void)updatePreview {
+    @synchronized( _previewIsShown ) {
+        
+        if( self.selectedPhotos.count > 6 ) {
+            NSAssert(FALSE, @"Don't poke me! UpdatePreview cannot handle more than 6 images yet.");
+            return;
+        }
+        if( self.selectedPhotos.count < 2 ) {
+            if( _previewIsShown.boolValue ) {
+                // TODO: going from 3 to 2 selected images -- hide/destroy preview, inform?
+                
+                _previewIsShown = [NSNumber numberWithBool:FALSE];
+            } else {
+                // TODO: going from 0->1 selected images -- inform user to pick another?
+            }
+            return;
+        }
+        
+        BPPAirprintCollagePrinter* ap = [BPPAirprintCollagePrinter singleton];
+        NSArray* selectedPhotosArray = [self.selectedPhotos allValues];
+        UIImage* updatedPreview = [ap makeCollageImages:[NSArray arrayWithObject:selectedPhotosArray]][0];
+        
+        CGRect pos;
+        if( updatedPreview.size.width > updatedPreview.size.height )
+            pos = CGRectMake(200, 300, CollageLongsidePixels/5, CollageShortsidePixels/5);
+        else
+            pos = CGRectMake(200, 300, CollageShortsidePixels/5, CollageLongsidePixels/5);
+        
+        UIImageView* previewIView = [[UIImageView alloc] initWithFrame:pos];
+        previewIView.image = updatedPreview;
+        [self.view addSubview:previewIView];
+        _previewIsShown = [NSNumber numberWithBool:TRUE];
+        
+    }
+}
 
 @end

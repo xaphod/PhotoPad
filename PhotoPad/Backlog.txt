@@ -5,14 +5,13 @@ Backlog - Tim
 1b.Stop saving images inside app's own xcappdata -- save to photo roll instead, own folder
 
 Main screen
-    2. DONE: support landscape mode
+    2. support landscape mode
     3. DONE: scrolling down thru images is jerky, fix this: image thumbnails too big?
     4. DONE: deselect doesn't work: at least the checkmarks are not removed on deselect
     5. Image downloaded (eyefi): make this bigger?
     6. DONE: new images (images downloaded) must be put at START of collection (top left), not bottom
     6b.DONE: if scrolled down in main view, nothing must change until an action is taken (ie print) when new photos come in
     6c.DONE, NEEDS BETTER UI: have some UI indication that newest ones are at the top - a notificaton overlay that appears when new images arrive, touch it to jump to top
-    bug: pull to reload spinner spins forever.
     6d.old/stale selections -- time them out??
     7. print icon must be much bigger
     7b.print must only work when at least 2 images are selected: inform user or disable until?
@@ -21,6 +20,7 @@ Main screen
     9. update or get rid of help
     10.add ability to get rid of images (delete them) -- but prevent customer from doing this? only in "admin mode"?
     11.title update - from "browse all photos" to "Photobooth by %companyname%" in prefs
+    12.per image in collage: random amount of tilt + zoom, to make things more interesting
 
 20. localize into german?
 21. images printed to collage: apply a style (edit) them?

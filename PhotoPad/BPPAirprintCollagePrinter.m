@@ -53,7 +53,7 @@
     }
     
     NSArray *collageGroupings = [self makeCollageUIImageGroupings:images];
-    NSArray *collagesReadyToPrintInNSDataJPG = [self makeCollageJPGs:collageGroupings];
+    NSArray *collagesArrayUIImage = [self makeCollageImages:collageGroupings];
     
     UIPrintInteractionController *controller = [UIPrintInteractionController sharedPrintController];
     
@@ -79,7 +79,7 @@
     }
     
     controller.printInfo = printInfo;
-    controller.printingItems = collagesReadyToPrintInNSDataJPG;
+    controller.printingItems = collagesArrayUIImage;
     
     UIPrintInteractionCompletionHandler completionHandler = ^(UIPrintInteractionController *printController, BOOL completed, NSError *error) {
         
@@ -162,9 +162,10 @@
     return groupedCollages;
 }
 
-- (NSArray*)makeCollageJPGs:(NSArray*)collages {
+// public
+- (NSArray*)makeCollageImages:(NSArray*)collages {
     
-    NSMutableArray *collagesReadyToPrintInNSDataJPG = [NSMutableArray array];
+    NSMutableArray *retval = [NSMutableArray array];
     
     for (id thisID in collages) {
         
@@ -233,20 +234,21 @@
             [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[5] rect:CGRectMake((CollageLongsidePixels*2/3) + (CollageBorderPixels/2), (CollageShortsidePixels/2) + (CollageBorderPixels/2), (CollageLongsidePixels - (4*CollageBorderPixels)) / 3, (CollageShortsidePixels- (3*CollageBorderPixels)) / 2) ];
         }
         
-        NSData* collageJpg = UIImageJPEGRepresentation( UIGraphicsGetImageFromCurrentImageContext(), CollageJPGQuality);
-        [collagesReadyToPrintInNSDataJPG addObject:collageJpg];
-        NSLog(@"makeCollageJPGs: adding collage JPG size %d", (int)collageJpg.length);
+        UIImage* collageImage = UIGraphicsGetImageFromCurrentImageContext();
+        [retval addObject:collageImage];
+        NSLog(@"makeCollageImages: adding collage UIImage");
         UIGraphicsEndImageContext();
         
         // TODO: REMOVE THIS DEBUG CODE
         NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
         NSString *documentsDirectory = [paths objectAtIndex:0];
         NSString *appFile = [documentsDirectory stringByAppendingPathComponent:@"collage.JPG"];
-        [collageJpg writeToFile:appFile atomically:YES];
+        NSData* jpgImage = UIImageJPEGRepresentation(collageImage, CollageJPGQuality);
+        [jpgImage writeToFile:appFile atomically:YES];
 
     } // end for
     
-    return collagesReadyToPrintInNSDataJPG;
+    return retval;
 }
 
 
