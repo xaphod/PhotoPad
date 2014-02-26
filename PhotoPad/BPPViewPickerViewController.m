@@ -27,6 +27,10 @@
 {
     [super viewDidLoad];
 	// Do any additional setup after loading the view.
+    if( [[NSThread currentThread] isMainThread])
+        NSLog(@"Main thread looks to be %@", [NSThread currentThread]);
+    else
+        NSLog(@"NOT MAIN THREAD?!");
 }
 
 - (void)didReceiveMemoryWarning

@@ -13,6 +13,8 @@
 
 - (void)unarchiveEyeFi:(NSString *)path
 {
+    NSLog(@"NSFileManager+EyeFi: unarchiveEyeFi start");
+
     NSFileManager *files = [NSFileManager defaultManager];
     NSData* tarData = [NSData dataWithContentsOfFile:path];
     NSError *error;

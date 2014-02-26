@@ -2,7 +2,10 @@ Backlog - Tim
 
 0. prep design workpackage for Matt - define asset deliverables (which icons etc)
 1. TODOs in code
-1b.Stop saving images inside app's own xcappdata -- save to photo roll instead, own folder
+1b.DONE: Stop saving images inside app's own xcappdata -- save to photo roll instead, own folder
+
+- preview doesn't rotate when it should go landscape etc
+- test eyefi card recv
 
 Main screen
     2. support landscape mode
@@ -21,6 +24,7 @@ Main screen
     10.add ability to get rid of images (delete them) -- but prevent customer from doing this? only in "admin mode"?
     11.title update - from "browse all photos" to "Photobooth by %companyname%" in prefs
     12.per image in collage: random amount of tilt + zoom, to make things more interesting
+    13.app must prevent screen from turning off
 
 20. localize into german?
 21. images printed to collage: apply a style (edit) them?

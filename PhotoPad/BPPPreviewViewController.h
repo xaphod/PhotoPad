@@ -17,15 +17,11 @@
 
 @interface BPPPreviewViewController : UIViewController <MWPhotoBrowserDelegate, UIGestureRecognizerDelegate, UIActionSheetDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout>
 
-@property (strong, nonatomic) NSMutableArray *photoFilenames; // array of filenames with absolute paths
+// @property (strong, nonatomic) NSMutableArray *photoFilenames; // array of filenames with absolute paths
 
 @property(nonatomic, strong) NSMutableDictionary* selectedPhotos; // key = filename (from photos array), value = UIImage*
 
 @property (strong, nonatomic) MWPhotoBrowser *photosBrowser;
-
-- (UIImage *)imageWithImage:(UIImage *)image scaledToFillSize:(CGSize)size;
-
-
 
 
 // UI

@@ -33,6 +33,8 @@
 		2266807918A69F6D0060FBBE /* PSTGridLayoutRow.m in Sources */ = {isa = PBXBuildFile; fileRef = 2266806B18A69F6D0060FBBE /* PSTGridLayoutRow.m */; };
 		2266807A18A69F6D0060FBBE /* PSTGridLayoutSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 2266806D18A69F6D0060FBBE /* PSTGridLayoutSection.m */; };
 		228FABDD18A7967300DB5BDF /* BPPAirprintCollagePrinter.m in Sources */ = {isa = PBXBuildFile; fileRef = 228FABDC18A7967300DB5BDF /* BPPAirprintCollagePrinter.m */; };
+		229FAFD418BDF7B700165F0C /* ALAssetsLibrary+CustomPhotoAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 229FAFD318BDF7B700165F0C /* ALAssetsLibrary+CustomPhotoAlbum.m */; };
+		229FAFD718BE0F2900165F0C /* BPPPhotoStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 229FAFD618BE0F2900165F0C /* BPPPhotoStore.m */; };
 		22A3DE9418BAB2300041FDC6 /* debug1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 22A3DE9218BAB2300041FDC6 /* debug1.jpg */; };
 		22A3DE9518BAB2300041FDC6 /* debug2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 22A3DE9318BAB2300041FDC6 /* debug2.jpg */; };
 		4D784AFA183D72D1007FB05A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D784AF9183D72D1007FB05A /* Foundation.framework */; };
@@ -179,6 +181,10 @@
 		2266806D18A69F6D0060FBBE /* PSTGridLayoutSection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSTGridLayoutSection.m; sourceTree = "<group>"; };
 		228FABDB18A7967300DB5BDF /* BPPAirprintCollagePrinter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPPAirprintCollagePrinter.h; sourceTree = "<group>"; };
 		228FABDC18A7967300DB5BDF /* BPPAirprintCollagePrinter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BPPAirprintCollagePrinter.m; sourceTree = "<group>"; };
+		229FAFD218BDF7B700165F0C /* ALAssetsLibrary+CustomPhotoAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ALAssetsLibrary+CustomPhotoAlbum.h"; sourceTree = "<group>"; };
+		229FAFD318BDF7B700165F0C /* ALAssetsLibrary+CustomPhotoAlbum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ALAssetsLibrary+CustomPhotoAlbum.m"; sourceTree = "<group>"; };
+		229FAFD518BE0F2900165F0C /* BPPPhotoStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPPPhotoStore.h; sourceTree = "<group>"; };
+		229FAFD618BE0F2900165F0C /* BPPPhotoStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BPPPhotoStore.m; sourceTree = "<group>"; };
 		22A3DE9218BAB2300041FDC6 /* debug1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = debug1.jpg; path = Assets/debug1.jpg; sourceTree = "<group>"; };
 		22A3DE9318BAB2300041FDC6 /* debug2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = debug2.jpg; path = Assets/debug2.jpg; sourceTree = "<group>"; };
 		4D784AF6183D72D0007FB05A /* PhotoPad.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhotoPad.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -455,6 +461,8 @@
 				228FABDC18A7967300DB5BDF /* BPPAirprintCollagePrinter.m */,
 				222CB24418BD091E0000502A /* BPPViewPickerViewController.h */,
 				222CB24518BD091E0000502A /* BPPViewPickerViewController.m */,
+				229FAFD518BE0F2900165F0C /* BPPPhotoStore.h */,
+				229FAFD618BE0F2900165F0C /* BPPPhotoStore.m */,
 			);
 			path = PhotoPad;
 			sourceTree = "<group>";
@@ -646,6 +654,8 @@
 		863ED8C6183F267300AB7A6A /* Extensions */ = {
 			isa = PBXGroup;
 			children = (
+				229FAFD218BDF7B700165F0C /* ALAssetsLibrary+CustomPhotoAlbum.h */,
+				229FAFD318BDF7B700165F0C /* ALAssetsLibrary+CustomPhotoAlbum.m */,
 				863ED8A4183DB66000AB7A6A /* UIColor+Hex.h */,
 				863ED8A5183DB66000AB7A6A /* UIColor+Hex.m */,
 				863ED8BC183F087A00AB7A6A /* NSData+MD5.h */,
@@ -898,6 +908,7 @@
 				2266804718A69F350060FBBE /* MWCaptionView.m in Sources */,
 				4D784B86183D7319007FB05A /* DDAbstractDatabaseLogger.m in Sources */,
 				4D784B87183D7319007FB05A /* DDASLLogger.m in Sources */,
+				229FAFD418BDF7B700165F0C /* ALAssetsLibrary+CustomPhotoAlbum.m in Sources */,
 				2266806F18A69F6D0060FBBE /* PSTCollectionView.m in Sources */,
 				863ED9391840502100AB7A6A /* NSFileManager+Tar.m in Sources */,
 				863ED92E18403D1700AB7A6A /* UIButton+WebCache.m in Sources */,
@@ -951,6 +962,7 @@
 				863ED92618403D1700AB7A6A /* NSData+GIF.m in Sources */,
 				4D784B88183D7319007FB05A /* DDFileLogger.m in Sources */,
 				4D784B89183D7319007FB05A /* DDLog.m in Sources */,
+				229FAFD718BE0F2900165F0C /* BPPPhotoStore.m in Sources */,
 				4D784B82183D7319007FB05A /* WebSocket.m in Sources */,
 				2266807518A69F6D0060FBBE /* PSTCollectionViewLayout.m in Sources */,
 				863ED92B18403D1700AB7A6A /* SDWebImageDownloaderOperation.m in Sources */,
