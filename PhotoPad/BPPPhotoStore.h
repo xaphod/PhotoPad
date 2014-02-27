@@ -3,7 +3,7 @@
 //  PhotoPad
 //
 //  Created by Tim Carr on 2/26/14.
-//  Copyright (c) 2014 Albert Martin. All rights reserved.
+//  Copyright (c) 2014 Tim Carr. All rights reserved.
 //
 
 #import <Foundation/Foundation.h>
@@ -31,6 +31,7 @@
 
 - (void)viewControllerIsRotating;
 - (void)setReloadTarget:(UICollectionView*)vc;
+- (void)flushFullsizeCache;
 
 // TODO: delete if populateAllCachesSynchronous is deleted
 @property CGSize targetResizeCGSize;

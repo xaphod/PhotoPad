@@ -3,7 +3,7 @@
 //  PhotoPad
 //
 //  Created by Tim Carr on 2/26/14.
-//  Copyright (c) 2014 Albert Martin. All rights reserved.
+//  Copyright (c) 2014 Tim Carr. All rights reserved.
 //
 
 #import "BPPPhotoStore.h"
@@ -280,6 +280,11 @@
 
 - (void)viewControllerIsRotating {
     // TODO: implement or delete -- invalidate resize caches?
+}
+
+- (void)flushFullsizeCache {
+    [_fullsizedImageCache removeAllObjects];
+    NSLog(@"BPPPhotoStore: cache flushed for fullsize images");
 }
 
 @end

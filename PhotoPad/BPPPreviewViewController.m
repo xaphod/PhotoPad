@@ -3,7 +3,7 @@
 //  PhotoPad
 //
 //  Created by Tim Carr on 2/25/14.
-//  Copyright (c) 2014 Albert Martin. All rights reserved.
+//  Copyright (c) 2014 Tim Carr. All rights reserved.
 //
 
 #import "BPPPreviewViewController.h"
@@ -111,6 +111,8 @@
 
 - (void)photoReceivedFromEyeFi:(NSNotification *)notification
 {
+    // THIS METHOD RUNS CONCURRENTLY VIA MULTIPLE THREADS
+    
     NSString* filename = [notification.userInfo objectForKey:@"path"];
     NSLog(@"photoReceivedFromEyeFi: START filename %@, currentThread %@", filename,  [NSThread currentThread]);
     
@@ -118,7 +120,7 @@
     
     [photoStore loadFromFileAndDelete:filename completionBlock:^{
         
-        NSAssert(photoStore.photoURLs.count == numItemsBeforeInsert+1, @"photoReceivedFromEyeFi: Stopping because the item did not get added.");
+        NSAssert(photoStore.photoURLs.count >= numItemsBeforeInsert+1, @"photoReceivedFromEyeFi: Stopping because the item did not get added.");
         
         // rest is capable of adding more than one item...
         [UIView setAnimationsEnabled:NO];

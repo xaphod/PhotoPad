@@ -7,6 +7,7 @@
 //
 
 #import "BPPAirprintCollagePrinter.h"
+#import "BPPPhotoStore.h"
 
 @implementation BPPAirprintCollagePrinter
 
@@ -117,7 +118,10 @@
     {
         [controller presentAnimated:YES completionHandler:completionHandler];  // iPhone
     }
- 
+    
+    BPPPhotoStore* ps = [BPPPhotoStore singleton];
+    [ps flushFullsizeCache];
+
     return YES;
 }
 

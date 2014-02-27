@@ -1,9 +1,9 @@
 //
 //  ALAssetsLibrary category to handle a custom photo album
 //
-//  Created by Marin Todorov on 10/26/11.
-//  Copyright (c) 2011 Marin Todorov. All rights reserved.
-//
+//  Copyright (c) 2014 Tim Carr. All rights reserved.
+//  http://www.touch-code-magazine.com/ios5-saving-photos-in-custom-photo-album-category-for-download/
+//  Original by Marin Todorov on 10/26/11.
 
 #import <Foundation/Foundation.h>
 #import <AssetsLibrary/AssetsLibrary.h>

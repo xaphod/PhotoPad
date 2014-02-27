@@ -3,7 +3,7 @@
 //  PhotoPad
 //
 //  Created by Tim Carr on 2/25/14.
-//  Copyright (c) 2014 Albert Martin. All rights reserved.
+//  Copyright (c) 2014 Tim Carr. All rights reserved.
 //
 
 #import "BPPViewPickerViewController.h"
