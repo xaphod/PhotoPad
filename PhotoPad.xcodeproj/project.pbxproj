@@ -35,6 +35,7 @@
 		228FABDD18A7967300DB5BDF /* BPPAirprintCollagePrinter.m in Sources */ = {isa = PBXBuildFile; fileRef = 228FABDC18A7967300DB5BDF /* BPPAirprintCollagePrinter.m */; };
 		229FAFD418BDF7B700165F0C /* ALAssetsLibrary+CustomPhotoAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 229FAFD318BDF7B700165F0C /* ALAssetsLibrary+CustomPhotoAlbum.m */; };
 		229FAFD718BE0F2900165F0C /* BPPPhotoStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 229FAFD618BE0F2900165F0C /* BPPPhotoStore.m */; };
+		229FAFDA18C09BAA00165F0C /* TTAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 229FAFD918C09BAA00165F0C /* TTAlertView.m */; };
 		22A3DE9418BAB2300041FDC6 /* debug1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 22A3DE9218BAB2300041FDC6 /* debug1.jpg */; };
 		22A3DE9518BAB2300041FDC6 /* debug2.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 22A3DE9318BAB2300041FDC6 /* debug2.jpg */; };
 		4D784AFA183D72D1007FB05A /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 4D784AF9183D72D1007FB05A /* Foundation.framework */; };
@@ -185,6 +186,8 @@
 		229FAFD318BDF7B700165F0C /* ALAssetsLibrary+CustomPhotoAlbum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ALAssetsLibrary+CustomPhotoAlbum.m"; sourceTree = "<group>"; };
 		229FAFD518BE0F2900165F0C /* BPPPhotoStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPPPhotoStore.h; sourceTree = "<group>"; };
 		229FAFD618BE0F2900165F0C /* BPPPhotoStore.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BPPPhotoStore.m; sourceTree = "<group>"; };
+		229FAFD818C09BAA00165F0C /* TTAlertView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = TTAlertView.h; path = ../TTAlertView/TTAlertView/TTAlertView.h; sourceTree = "<group>"; };
+		229FAFD918C09BAA00165F0C /* TTAlertView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = TTAlertView.m; path = ../TTAlertView/TTAlertView/TTAlertView.m; sourceTree = "<group>"; };
 		22A3DE9218BAB2300041FDC6 /* debug1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = debug1.jpg; path = Assets/debug1.jpg; sourceTree = "<group>"; };
 		22A3DE9318BAB2300041FDC6 /* debug2.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; name = debug2.jpg; path = Assets/debug2.jpg; sourceTree = "<group>"; };
 		4D784AF6183D72D0007FB05A /* PhotoPad.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PhotoPad.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -502,6 +505,8 @@
 		4D784B31183D7303007FB05A /* External */ = {
 			isa = PBXGroup;
 			children = (
+				229FAFD818C09BAA00165F0C /* TTAlertView.h */,
+				229FAFD918C09BAA00165F0C /* TTAlertView.m */,
 				8627C8E51841573D00DA239D /* MTStatusBarOverlay.h */,
 				8627C8E61841573D00DA239D /* MTStatusBarOverlay.m */,
 				863ED8C6183F267300AB7A6A /* Extensions */,
@@ -946,6 +951,7 @@
 				4D784B8B183D7319007FB05A /* ContextFilterLogFormatter.m in Sources */,
 				2266807718A69F6D0060FBBE /* PSTGridLayoutInfo.m in Sources */,
 				228FABDD18A7967300DB5BDF /* BPPAirprintCollagePrinter.m in Sources */,
+				229FAFDA18C09BAA00165F0C /* TTAlertView.m in Sources */,
 				4D784B7B183D7319007FB05A /* MultipartMessageHeaderField.m in Sources */,
 				4D784B72183D7319007FB05A /* DDData.m in Sources */,
 				2266807018A69F6D0060FBBE /* PSTCollectionViewCell.m in Sources */,

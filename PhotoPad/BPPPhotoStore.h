@@ -29,9 +29,11 @@
 // can take a while to load from camera roll?
 - (UIImage*)getFullsizeImage:(NSString*)url completionBlock:(void (^)(UIImage* fullsizeImage))completionBlock;
 
+// UI-related
 - (void)viewControllerIsRotating;
 - (void)setReloadTarget:(UICollectionView*)vc;
 - (void)flushFullsizeCache;
+
 
 // TODO: delete if populateAllCachesSynchronous is deleted
 @property CGSize targetResizeCGSize;

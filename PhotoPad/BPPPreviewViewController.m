@@ -16,8 +16,9 @@
 @interface BPPPreviewViewController () {
     CGFloat cellSize;
     NSIndexPath* _oldestNewestIndexPath;
-    UIImageView* _previewImageView;
     BPPPhotoStore* photoStore;
+    
+    CGRect _initialPreviewImageViewFrameRect;
     
     // DEBUG: ReMOVE THIS
     bool debugJPGdone;
@@ -82,6 +83,12 @@
         [self performSegueWithIdentifier:@"showHelp" sender: self];
     }
      */
+    
+    // save initial image preview ImageView height / width
+    _initialPreviewImageViewFrameRect = self.previewImageViewOutlet.frame;
+
+    NSLog(@"containerView has %d constraints", (int)self.previewContainingViewOutlet.constraints.count);
+
 }
 
 - (void)didReceiveMemoryWarning
@@ -195,6 +202,16 @@
     return cell;
 }
 
+// max 6 selected cells
+- (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
+    if( self.selectedPhotos.count >= 6 ) {
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Maximum 6 Photos" message:@"The maximum number of photos is already selected. To clear the selection, use the clear button." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+        return NO;
+    }
+    return YES;
+}
+
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
     BPPGalleryCell *cell = (BPPGalleryCell*)[collectionView cellForItemAtIndexPath:indexPath];
@@ -205,6 +222,8 @@
         [self.selectedPhotos setObject:fullsizeImage forKey:url];
         [self updatePreview];
     }];
+    
+    NSLog(@"Finished selecting item");
 
 }
 
@@ -225,7 +244,23 @@
     return CGSizeMake(cellSize, cellSize);
 }
 
+// avoid cells having old images from before they were recycled
+- (void)collectionView:(UICollectionView *)collectionView didEndDisplayingCell:(UICollectionViewCell *)cell forItemAtIndexPath:(NSIndexPath *)indexPath {
+    BPPGalleryCell* thisCell = (BPPGalleryCell*)cell;
+    thisCell.asset = nil;
+}
 
+// stop showing newimagesnotification when visible cell it was marking comes into view
+- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
+{
+    NSArray* visibleIndexPaths = [self.collectionView indexPathsForVisibleItems];
+    for( NSIndexPath* thisIndexPath in visibleIndexPaths ) {
+        if( thisIndexPath.row >= _oldestNewestIndexPath.row ) {
+            self.notificationOfNewPhotosViewOutlet.hidden = TRUE;
+            return;
+        }
+    }
+}
 - (void)willRotateToInterfaceOrientation:(UIInterfaceOrientation)toInterfaceOrientation duration:(NSTimeInterval)duration {
     [super willRotateToInterfaceOrientation:toInterfaceOrientation duration:duration];
     [photoStore viewControllerIsRotating];
@@ -247,6 +282,7 @@
     if (buttonIndex == 0) {
         // Delete button was pressed.
         NSString* url = photoStore.photoURLs[_selectedIndex];
+        [self.selectedPhotos removeObjectForKey:url];
         [photoStore deletePhoto:url];
         [_collectionView deleteItemsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForItem:_selectedIndex inSection:0]]];
     }
@@ -331,20 +367,20 @@
 }
 
 - (void)updatePreview {
-    @synchronized( _previewImageView ) {
+    @synchronized( self.previewImageViewOutlet ) {
         
         if( self.selectedPhotos.count > 6 ) {
             NSAssert(FALSE, @"Don't poke me! UpdatePreview cannot handle more than 6 images yet.");
             return;
         }
         if( self.selectedPhotos.count < 2 ) {
-            if( _previewImageView != nil ) {
-                // TODO: going from 3 to 2 selected images -- hide/destroy preview, inform?
-                [UIView transitionWithView:_previewImageView
+            if( self.previewImageViewOutlet.image != nil ) {
+                // TODO: going from 2 to 1 selected images -- hide/destroy preview, inform?
+                [UIView transitionWithView:self.previewImageViewOutlet
                                   duration:1.0f
                                    options:UIViewAnimationOptionTransitionCrossDissolve
                                 animations:^{
-                                    _previewImageView.image = nil;
+                                    self.previewImageViewOutlet.image = nil;
                                 } completion:nil];
             } else {
                 // TODO: going from 0->1 selected images -- inform user to pick another?
@@ -354,25 +390,39 @@
         
         BPPAirprintCollagePrinter* ap = [BPPAirprintCollagePrinter singleton];
         NSArray* selectedPhotosArray = [self.selectedPhotos allValues];
-        UIImage* updatedPreview = [ap makeCollageImages:[NSArray arrayWithObject:selectedPhotosArray]][0];
-
-        CGRect pos;
-        if( updatedPreview.size.width > updatedPreview.size.height )
-            pos = CGRectMake(100, 300, CollageLongsidePixels/3, CollageShortsidePixels/3);
-        else
-            pos = CGRectMake(100, 300, CollageShortsidePixels/3, CollageLongsidePixels/3);
         
-        if( _previewImageView== nil ) {
-            _previewImageView = [[UIImageView alloc] initWithFrame:pos];
-            [self.view addSubview:_previewImageView];
+        NSLog(@"PERF DEBUG: makeCollageImages START");
+        UIImage* updatedPreview = [ap makeCollageImages:[NSArray arrayWithObject:selectedPhotosArray]][0];
+        NSLog(@"PERF DEBUG: makeCollageImages END");
+
+        if( updatedPreview.size.width > _initialPreviewImageViewFrameRect.size.width || updatedPreview.size.height > _initialPreviewImageViewFrameRect.size.height ) {
+            
+            // image is too big to fit in here. Find longest side and resize
+            updatedPreview = [ap fitImage:updatedPreview scaledToFillSize:_initialPreviewImageViewFrameRect.size];
+            NSLog(@"new updatedPreview width %f height %f", updatedPreview.size.width, updatedPreview.size.height);
         }
         
-        [UIView transitionWithView:_previewImageView
+        CGFloat vertConstraints = (self.previewContainingViewOutlet.frame.size.height - updatedPreview.size.height) / 2;
+        CGFloat horzConstraints = (self.previewContainingViewOutlet.frame.size.width - updatedPreview.size.width) / 2;
+        NSLog(@"new constraint sizes: vert %f, horz %f", vertConstraints, horzConstraints);
+
+        self.previewImageViewConstraintLeft.constant = horzConstraints;
+        self.previewImageViewConstraintRight.constant = horzConstraints;
+        self.previewImageViewConstraintTop.constant = vertConstraints;
+        self.previewImageViewConstraintBottom.constant = vertConstraints;
+
+        
+        [UIView transitionWithView:self.previewImageViewOutlet
                           duration:0.7f
                            options:UIViewAnimationOptionTransitionCrossDissolve
                         animations:^{
-                            _previewImageView.image = updatedPreview;
-                        } completion:nil];
+//                            self.previewImageViewOutlet.frame = CGRectMake(0, 0, updatedPreview.size.width, updatedPreview.size.height);
+                            self.previewImageViewOutlet.image = updatedPreview;
+                            [self.view layoutIfNeeded];
+                        } completion:^(bool finished){
+                            NSLog(@"containerView has %d constraints", (int)self.previewContainingViewOutlet.constraints.count);
+
+                        }];
         
         
     }

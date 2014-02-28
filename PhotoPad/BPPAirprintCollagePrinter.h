@@ -15,6 +15,7 @@
 #define CollageBorderUIColor whiteColor
 #define CollageJPGQuality 0.6 // from 0 to 1, 1 is best quality
 
+#define DEG2RAD(X) ((X)*M_PI/180)
 
 @interface BPPAirprintCollagePrinter : NSObject {
     int _lastUsedPrinterIDArrayIndex;
@@ -28,6 +29,13 @@
 // input collages is an array of arrays of UIImage*
 // output is array of UIImage*
 - (NSArray*)makeCollageImages:(NSArray*)collages;
+
+// some utility functions for other classes
+// resize images
+- (UIImage *)cropImage:(UIImage *)image scaledToFillSize:(CGSize)size;
+- (UIImage *)fitImage:(UIImage *)image scaledToFillSize:(CGSize)size;
+
+
 
 @property NSMutableArray* printerIDs; // array of strings
 

@@ -9,6 +9,7 @@
 #import "BPPPhotoStore.h"
 #import "ALAssetsLibrary+CustomPhotoAlbum.h"
 #import "NSFileManager+EyeFi.h"
+#import "BPPAirprintCollagePrinter.h"
 
 @interface BPPPhotoStore() {
     ALAssetsLibrary* _photoLibrary;
@@ -81,24 +82,6 @@
 
 }
 
-- (UIImage *)imageWithImage:(UIImage *)image scaledToFillSize:(CGSize)size
-{
-    CGFloat scale = MAX(size.width/image.size.width, size.height/image.size.height);
-    CGFloat width = image.size.width * scale;
-    CGFloat height = image.size.height * scale;
-    CGRect imageRect = CGRectMake((size.width - width)/2.0f,
-                                  (size.height - height)/2.0f,
-                                  width,
-                                  height);
-    
-    UIGraphicsBeginImageContextWithOptions(size, NO, 0);
-    [image drawInRect:imageRect];
-    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
-    return newImage;
-}
-
-
 // returns UIImage* if there is already a resized image in the cache, otherwise executes completionBlock when it is ready
 - (UIImage*)getResizedImage:(NSString*)url size:(CGSize)size completionBlock:(void (^)(UIImage* resizedImage))completionBlock {
     
@@ -112,7 +95,7 @@
             
             // TODO: turn on fullsize image caching for all (here) ?
             UIImage* img = [self getFullsizeImageSynchronous:url doCacheImage:NO];
-            img = [self imageWithImage:img scaledToFillSize:size];
+            img = [[BPPAirprintCollagePrinter singleton] cropImage:img scaledToFillSize:size];
             [_resizedImageCache setObject:img forKey:url];
 
             completionBlock(img);
@@ -196,7 +179,7 @@
     if( [_resizedImageCache objectForKey:cacheKey] == nil ) {
 
         [_resizedImageCacheOperationQueue addOperationWithBlock: ^ {
-            UIImage* resizeImg = [self imageWithImage:fullsizeImage scaledToFillSize:self.targetResizeCGSize];
+            UIImage* resizeImg = [self cropImage:fullsizeImage scaledToFillSize:self.targetResizeCGSize];
             [_resizedImageCache setObject:resizeImg forKey:cacheKey];
         }];
     }

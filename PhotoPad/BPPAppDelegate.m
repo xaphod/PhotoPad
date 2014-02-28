@@ -16,6 +16,8 @@
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
+    [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+    
     // Initalize our http server
 	_httpServer = [[HTTPServer alloc] init];
 	[_httpServer setConnectionClass:[BPPEyeFiConnector class]];

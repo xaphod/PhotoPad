@@ -242,13 +242,6 @@
         [retval addObject:collageImage];
         NSLog(@"makeCollageImages: adding collage UIImage");
         UIGraphicsEndImageContext();
-        
-        // TODO: REMOVE THIS DEBUG CODE
-        NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-        NSString *documentsDirectory = [paths objectAtIndex:0];
-        NSString *appFile = [documentsDirectory stringByAppendingPathComponent:@"collage.JPG"];
-        NSData* jpgImage = UIImageJPEGRepresentation(collageImage, CollageJPGQuality);
-        [jpgImage writeToFile:appFile atomically:YES];
 
     } // end for
     
@@ -259,31 +252,110 @@
 // private
 - (void)resizeAndDrawInRect:(UIImage*)image rect:(CGRect)rect {
     NSLog(@"resizeAndDrawInRec: calling resize. Src: w:%f h:%f. Draw target x:%f y:%f w:%f h:%f", image.size.width, image.size.height, rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
-    UIImage* resizedAndCroppedImage = [self resizeAndCropUIImage:image targetWidth:rect.size.width targetHeight:rect.size.height];
+    
+    UIImage* resizedAndCroppedImage = [self cropImage:image scaledToFillSize:rect.size];
+    resizedAndCroppedImage = [self tiltAndZoomImage:resizedAndCroppedImage];
+    
     if( nil == resizedAndCroppedImage ) {
         NSLog(@"Failed to resize image!");
         return;
     }
+    
     [resizedAndCroppedImage drawInRect:(rect)];
+    
 }
 
-// private
-- (UIImage*)resizeAndCropUIImage:(UIImage*)image targetWidth:(double)targetWidth targetHeight:(double)targetHeight {
+
+// private - adds a random amount of tilt & zoom to make the image more interesting
+- (UIImage*)tiltAndZoomImage:(UIImage*)image {
     
-    CGFloat scale = MAX(targetWidth/image.size.width, targetHeight/image.size.height);
+    NSInteger tiltAngle = [self getRandomNumberBetween:0 maxNumber:30];
+    tiltAngle = tiltAngle - 15;
+    NSInteger extraZoom = [self getRandomNumberBetween:0 maxNumber:10];
+    extraZoom = 1 + (extraZoom/100);
+    NSLog(@"Tilting with angle %ld", (long)tiltAngle);
+    
+    UIImage* processedImage = [self imageRotatedByRadians:image angle:tiltAngle];
+
+    return processedImage;
+}
+
+- (UIImage *)imageRotatedByRadians:(UIImage*)image angle:(CGFloat)angle
+{
+    CGFloat radians = angle * (M_PI / 180);
+
+    // calculate the size of the rotated view's containing box for our drawing space
+    UIView *rotatedViewBox = [[UIView alloc] initWithFrame:CGRectMake(0,0,image.size.width, image.size.height)];
+    CGAffineTransform t = CGAffineTransformMakeRotation(radians);
+    rotatedViewBox.transform = t;
+    CGSize rotatedSize = rotatedViewBox.frame.size;
+    
+    // Create the bitmap context
+    UIGraphicsBeginImageContext(rotatedSize);
+    CGContextRef bitmap = UIGraphicsGetCurrentContext();
+    
+    // Move the origin to the middle of the image so we will rotate and scale around the center.
+    CGContextTranslateCTM(bitmap, rotatedSize.width/2, rotatedSize.height/2);
+    
+    //Rotate the image context
+    CGContextRotateCTM(bitmap, radians);
+    
+    // Now, draw the rotated/scaled image into the context
+//    CGContextScaleCTM(bitmap, 1.0, -1.0);
+    CGFloat scaleFactor = angle;
+    if( scaleFactor < 0)
+        scaleFactor *= -1;
+    CGContextScaleCTM(bitmap, 1 + (scaleFactor/18), (1 + (scaleFactor/18)) * -1);
+    
+    CGContextDrawImage(bitmap, CGRectMake(-image.size.width / 2, -image.size.height / 2, image.size.width, image.size.height), [image CGImage]);
+    
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+
+
+- (UIImage *)cropImage:(UIImage *)image scaledToFillSize:(CGSize)size
+{
+    // do not upscale
+    if( image.size.width <= size.width && image.size.height <= size.height )
+        return image;
+    
+    CGFloat scale = MAX(size.width/image.size.width, size.height/image.size.height);
     CGFloat width = image.size.width * scale;
     CGFloat height = image.size.height * scale;
-    CGRect imageRect = CGRectMake((targetWidth - width)/2.0f,
-                                  (targetHeight - height)/2.0f,
+    CGRect imageRect = CGRectMake((size.width - width)/2.0f,
+                                  (size.height - height)/2.0f,
                                   width,
                                   height);
     
-    UIGraphicsBeginImageContextWithOptions(CGSizeMake(targetWidth, targetHeight), YES, 1.0);
+    UIGraphicsBeginImageContextWithOptions(size, NO, 0);
     [image drawInRect:imageRect];
     UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return newImage;
 }
+
+- (UIImage *)fitImage:(UIImage *)image scaledToFillSize:(CGSize)size {
+    // do not upscale
+    if( image.size.width <= size.width && image.size.height <= size.height )
+        return image;
+    
+    CGFloat scale = MIN(size.width/image.size.width, size.height/image.size.height);
+    CGFloat width = image.size.width * scale;
+    CGFloat height = image.size.height * scale;
+    CGRect imageRect = CGRectMake(0,
+                                  0,
+                                  width,
+                                  height);
+    
+    UIGraphicsBeginImageContextWithOptions(size, NO, 0);
+    [image drawInRect:imageRect];
+    UIImage *newImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return newImage;
+}
+
 
 // private
 - (NSInteger)getRandomNumberBetween:(NSInteger)min maxNumber:(NSInteger)max

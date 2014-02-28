@@ -1,30 +1,40 @@
 Backlog - Tim
 
+BUG: slow perf on make collages when fullsize images given!
+
 0. prep design workpackage for Matt - define asset deliverables (which icons etc)
 1. TODOs in code
 1b.DONE: Stop saving images inside app's own xcappdata -- save to photo roll instead, own folder
 
 - preview doesn't rotate when it should go landscape etc
-- test eyefi card recv
+
+- after choosing 1, put it in a 2-er collage with a ? or grey square
 
 Main screen
-    2. support landscape mode
-    3. DONE: scrolling down thru images is jerky, fix this: image thumbnails too big?
-    4. DONE: deselect doesn't work: at least the checkmarks are not removed on deselect
     5. Image downloaded (eyefi): make this bigger?
-    6. DONE: new images (images downloaded) must be put at START of collection (top left), not bottom
-    6b.DONE: if scrolled down in main view, nothing must change until an action is taken (ie print) when new photos come in
-    6c.DONE, NEEDS BETTER UI: have some UI indication that newest ones are at the top - a notificaton overlay that appears when new images arrive, touch it to jump to top
     6d.old/stale selections -- time them out??
     7. print icon must be much bigger
-    7b.print must only work when at least 2 images are selected: inform user or disable until?
     8. add ability to email self - email a link set in settings, with a ready-date also set in settings
     8b.app must collect all email addresses -- where does it store them or how does it send them?
     9. update or get rid of help
-    10.add ability to get rid of images (delete them) -- but prevent customer from doing this? only in "admin mode"?
-    11.title update - from "browse all photos" to "Photobooth by %companyname%" in prefs
-    12.per image in collage: random amount of tilt + zoom, to make things more interesting
-    13.app must prevent screen from turning off
-
+18. busy-UI while loading imges at start
+19. mid-size cache for preview, or other approach to speed up selection & preview generation?
 20. localize into german?
 21. images printed to collage: apply a style (edit) them?
+22. publish to the instagram feed of the wedding??
+23. make squares at top to be portrait, not square???? and later have a setting to change it to landscape
+
+
+DONE
+
+- max 6 selection
+
+    12.per image in collage: random amount of tilt + zoom, to make things more interesting
+
+    2. DONE: support landscape mode
+    3. DONE: scrolling down thru images is jerky, fix this: image thumbnails too big?
+    4. DONE: deselect doesn't work: at least the checkmarks are not removed on deselect
+    6. DONE: new images (images downloaded) must be put at START of collection (top left), not bottom
+    6b.DONE: if scrolled down in main view, nothing must change until an action is taken (ie print) when new photos come in
+    6c.DONE, NEEDS BETTER UI: have some UI indication that newest ones are at the top - a notificaton overlay that appears when new images arrive, touch it to jump to top
+    13.app must prevent screen from turning off
