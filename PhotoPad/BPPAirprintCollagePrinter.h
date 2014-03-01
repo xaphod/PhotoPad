@@ -38,5 +38,7 @@
 
 
 @property NSMutableArray* printerIDs; // array of strings
+@property NSInteger longsidePixels; // used when other classes are preparing images for this class
+@property NSInteger shortsidePixels;
 
 @end

@@ -2,9 +2,7 @@ Backlog - Tim
 
 BUG: slow perf on make collages when fullsize images given!
 
-0. prep design workpackage for Matt - define asset deliverables (which icons etc)
 1. TODOs in code
-1b.DONE: Stop saving images inside app's own xcappdata -- save to photo roll instead, own folder
 
 - preview doesn't rotate when it should go landscape etc
 
@@ -27,6 +25,7 @@ Main screen
 
 DONE
 
+1b.DONE: Stop saving images inside app's own xcappdata -- save to photo roll instead, own folder
 - max 6 selection
 
     12.per image in collage: random amount of tilt + zoom, to make things more interesting

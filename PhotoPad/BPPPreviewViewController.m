@@ -95,6 +95,7 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+    NSLog(@"Memory warning BPPPreviewVC!");
 }
 
 - (void)updateUIFromSettings
@@ -185,8 +186,8 @@
     
     CGSize size = CGSizeMake(cellSize, cellSize);
 
-    UIImage* instantResult = [photoStore getResizedImage:photoStore.photoURLs[indexPath.row] size:size completionBlock:^(UIImage *resizedImage) {
-
+    UIImage* instantResult = [photoStore getCellsizeImage:photoStore.photoURLs[indexPath.row] size:size completionBlock:^(UIImage *resizedImage) {
+        
         if( [_collectionView.indexPathsForVisibleItems containsObject:indexPath] ) {
             // Get hold of main queue (main thread)
             [[NSOperationQueue mainQueue] addOperationWithBlock: ^ {
@@ -194,6 +195,7 @@
                 thisCell.asset = resizedImage;
             }];
         }
+
     }];
     
     if( instantResult != nil )
@@ -218,11 +220,11 @@
     [cell.checkmarkViewOutlet setChecked:YES];
     
     NSString *url = photoStore.photoURLs[indexPath.row];
-    [photoStore getFullsizeImage:url completionBlock:^(UIImage *fullsizeImage) {
-        [self.selectedPhotos setObject:fullsizeImage forKey:url];
+    
+    [photoStore getHalfResolutionImage:url completionBlock:^(UIImage *resizedImage) {
+        [self.selectedPhotos setObject:resizedImage forKey:url];
         [self updatePreview];
     }];
-    
     NSLog(@"Finished selecting item");
 
 }
@@ -389,7 +391,26 @@
         }
         
         BPPAirprintCollagePrinter* ap = [BPPAirprintCollagePrinter singleton];
-        NSArray* selectedPhotosArray = [self.selectedPhotos allValues];
+        
+        // selectedPhotos has images that are 2er (half) resolution. When making a collage of >=4, use 4er instead
+        NSMutableArray* selectedPhotosArray;
+        if( self.selectedPhotos.count >= 4 ) {
+
+            selectedPhotosArray = [NSMutableArray array];
+            for( NSString* url in [self.selectedPhotos allKeys] ) {
+                UIImage* selected_4er = [photoStore getQuarterResolutionImage:url completionBlock:^(UIImage *resizedImage) {
+                    NSAssert(FALSE, @"updatePreview, 4er [1/block]: should never get here because the 4er should already be cached before the user can select it...");
+                }];
+                if( selected_4er == nil ) {
+                    NSAssert(FALSE, @"updatePreview, 4er [2/out]: should never get here because the 4er should already be cached before the user can select it...");
+                    return;
+                }
+                [selectedPhotosArray addObject:selected_4er];
+            }
+            
+        } else {
+            selectedPhotosArray = [[self.selectedPhotos allValues] mutableCopy];
+        }
         
         NSLog(@"PERF DEBUG: makeCollageImages START");
         UIImage* updatedPreview = [ap makeCollageImages:[NSArray arrayWithObject:selectedPhotosArray]][0];
@@ -419,7 +440,7 @@
 //                            self.previewImageViewOutlet.frame = CGRectMake(0, 0, updatedPreview.size.width, updatedPreview.size.height);
                             self.previewImageViewOutlet.image = updatedPreview;
                             [self.view layoutIfNeeded];
-                        } completion:^(bool finished){
+                        } completion:^(BOOL finished){
                             NSLog(@"containerView has %d constraints", (int)self.previewContainingViewOutlet.constraints.count);
 
                         }];

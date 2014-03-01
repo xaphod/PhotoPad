@@ -12,6 +12,8 @@
 // TODO: make this an app setting?
 #define cameraRollAlbumName @"PhotoPad"
 
+typedef void(^ImageResizeCompletionBlock)(UIImage* resizedImage);
+
 
 @interface BPPPhotoStore : NSObject
 
@@ -23,20 +25,18 @@
 
 - (void)deletePhoto:(NSString*)url;
 
-// returns UIImage* if there is already a resized image in the cache, otherwise executes completionBlock when it is ready
-- (UIImage*)getResizedImage:(NSString*)url size:(CGSize)size completionBlock:(void (^)(UIImage* resizedImage))completionBlock;
+// these immediately return UIImage* if there is already a resized image in the cache, otherwise executes completionBlock when it is ready (async). The resolution (half, quarter etc) is relative to what BPPAirprintCollagePrinter defines, not the resolution of the input image.
+// caller is expected to manage what thread its completionBlock runs on, ie. if UI is calling, UI should dispatch completionblock on main thread
+- (UIImage*)getHalfResolutionImage:(NSString*)url completionBlock:(ImageResizeCompletionBlock)completionBlock;
+- (UIImage*)getQuarterResolutionImage:(NSString*)url completionBlock:(ImageResizeCompletionBlock)completionBlock;
+- (UIImage*)getCellsizeImage:(NSString*)url size:(CGSize)size completionBlock:(ImageResizeCompletionBlock)completionBlock; // performant only when this is called with the same CGSize all the time
+    
 
-// can take a while to load from camera roll?
-- (UIImage*)getFullsizeImage:(NSString*)url completionBlock:(void (^)(UIImage* fullsizeImage))completionBlock;
 
 // UI-related
 - (void)viewControllerIsRotating;
 - (void)setReloadTarget:(UICollectionView*)vc;
-- (void)flushFullsizeCache;
 
-
-// TODO: delete if populateAllCachesSynchronous is deleted
-@property CGSize targetResizeCGSize;
 
 @property (nonatomic) NSMutableArray* photoURLs; // array of NSString*, repesenting the photos in camera roll -- URLs are ALAssetRepresentation URLs (camera roll)
 

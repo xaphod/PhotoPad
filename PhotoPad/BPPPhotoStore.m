@@ -11,11 +11,63 @@
 #import "NSFileManager+EyeFi.h"
 #import "BPPAirprintCollagePrinter.h"
 
+
+#pragma mark - ImageResizeOperation
+
+@interface ImageResizeOperation: NSOperation
+
+@property (nonatomic, strong) UIImage* sourceImage;
+@property (copy) ImageResizeCompletionBlock myCompletionBlock;
+@property CGSize size;
+@property BOOL crop;
+
+- (id)initWithImage:(UIImage*)image size:(CGSize)size crop:(BOOL)crop resizeFinishCompletionBlock:(ImageResizeCompletionBlock)resizeFinishCompletionBlock;
+@end
+
+@implementation ImageResizeOperation
+- (void)main {
+
+    @autoreleasepool {
+
+        BPPAirprintCollagePrinter* ap = [BPPAirprintCollagePrinter singleton];
+        UIImage* image;
+        if( self.crop )
+            image = [ap cropImage:self.sourceImage scaledToFillSize:self.size];
+        else
+            image = [ap fitImage:self.sourceImage scaledToFillSize:self.size];
+        
+
+        NSLog(@"ImageResizeOperation complete: new size w %f h %f. Calling CompletionBlock now...", self.size.width, self.size.height);
+        if( self.myCompletionBlock )
+            self.myCompletionBlock(image);
+    }
+}
+
+- (id)initWithImage:(UIImage*)image size:(CGSize)size crop:(BOOL)crop resizeFinishCompletionBlock:(ImageResizeCompletionBlock)resizeFinishCompletionBlock {
+    self = [super init];
+    self.myCompletionBlock = resizeFinishCompletionBlock;
+    self.sourceImage = image;
+    self.size = size;
+    self.crop = crop;
+    return self;
+}
+
+@end
+
+
+
+
+#pragma mark - Main PhotoStore Implementation
+
 @interface BPPPhotoStore() {
     ALAssetsLibrary* _photoLibrary;
-    NSOperationQueue* _resizedImageCacheOperationQueue;
-    NSCache* _resizedImageCache;
-    NSCache* _fullsizedImageCache;
+
+    NSCache* _imageCache_2er; // half of resolution of #define. Original aspect ratio
+    NSCache* _imageCache_4er; // quarter resolution of #define. Original aspect ration -- generated when 2er is generated, from 2er
+    NSCache* _imageCache_cellsize; // resolution of cellsize. Currently is a square aspect ratio
+
+    NSOperationQueue* _imageCacheQueue; // all operations in same queue, so that the priorities can be relevant to one-another
+
     UICollectionView* _vc;
 }
 
@@ -23,7 +75,6 @@
 
 
 @implementation BPPPhotoStore
-
 
 + (BPPPhotoStore *)singleton {
     static dispatch_once_t pred;
@@ -39,11 +90,11 @@
     if (self = [super init]) {
         _photoURLs = [NSMutableArray array];
 
-        _resizedImageCache = [[NSCache alloc] init];
-        _fullsizedImageCache = [[NSCache alloc] init];
-        _resizedImageCacheOperationQueue = [[NSOperationQueue alloc] init];
-        _resizedImageCacheOperationQueue.maxConcurrentOperationCount = 3;
-        self.targetResizeCGSize = CGSizeMake(-1.0, -1.0);
+        _imageCache_2er = [[NSCache alloc] init];
+        _imageCache_4er = [[NSCache alloc] init];
+        _imageCache_cellsize = [[NSCache alloc] init];
+        _imageCacheQueue = [[NSOperationQueue alloc] init];
+        _imageCacheQueue.maxConcurrentOperationCount = 3;
         
         // get access to photo roll
         _photoLibrary = [[ALAssetsLibrary alloc] init];
@@ -56,7 +107,7 @@
         
         // load photos from camera roll
         
-        [_photoLibrary getAllImagesFromAlbum:cameraRollAlbumName delegate:self selectorAddImage:@selector(intialLoadPhotoFromCameraRoll:) selectorFinished:@selector(initialLoadIsFinished) withCompletionBlock:^(NSError *error) {
+        [_photoLibrary getAllImageURLsFromAlbum:cameraRollAlbumName delegate:self selectorAddImage:@selector(intialLoadPhotoFromCameraRoll:) selectorFinished:@selector(initialLoadIsFinished) withCompletionBlock:^(NSError *error) {
             if (error!=nil) {
                 NSLog(@"BPPPhotoStore, init: error loading photos from album %@", [error description]);
             }
@@ -79,133 +130,162 @@
         dispatch_async(dispatch_get_main_queue(), ^{
             [_vc reloadData];
         });
-
 }
 
-// returns UIImage* if there is already a resized image in the cache, otherwise executes completionBlock when it is ready
-- (UIImage*)getResizedImage:(NSString*)url size:(CGSize)size completionBlock:(void (^)(UIImage* resizedImage))completionBlock {
+
+// hopefully this is called with the same CGSize all the time
+- (UIImage*)getCellsizeImage:(NSString*)url size:(CGSize)size completionBlock:(ImageResizeCompletionBlock)completionBlock {
     
-    UIImage* cachedImage = [_resizedImageCache objectForKey:url];
+    UIImage* cachedImage = [_imageCache_cellsize objectForKey:url];
     
     if( cachedImage != nil ) {
-        return cachedImage;
-    } else {
+        if( cachedImage.size.height == size.height && cachedImage.size.width == size.width ) {
+            NSLog(@"BPPPhotoStore: getCellsizeImage: cache HIT");
+            return cachedImage;
+        }
+    }
+    
+    __weak NSCache* imageCache_cellsize = _imageCache_cellsize;
+    __weak NSOperationQueue* imageCacheQueue = _imageCacheQueue;
+    
+    // otherwise, generate a new resized image and populate the cache
+    [self loadImageFromCameraRollByURL:url completionBlock:^(UIImage* fullsizeImage) {
         
-        [_resizedImageCacheOperationQueue addOperationWithBlock: ^ {
+        ImageResizeOperation* resizeOp = [[ImageResizeOperation alloc] initWithImage:fullsizeImage size:size crop:YES resizeFinishCompletionBlock:^(UIImage* resizedImage) {
             
-            // TODO: turn on fullsize image caching for all (here) ?
-            UIImage* img = [self getFullsizeImageSynchronous:url doCacheImage:NO];
-            img = [[BPPAirprintCollagePrinter singleton] cropImage:img scaledToFillSize:size];
-            [_resizedImageCache setObject:img forKey:url];
-
-            completionBlock(img);
+            // cache it, and call completion block from getCellsizeImage's caller
+            NSLog(@"BPPPhotoStore getCellSizeImage: DONE, adding resized image to cache");
+            [imageCache_cellsize setObject:resizedImage forKey:url];
+            if( completionBlock )
+                completionBlock(resizedImage);
+            
+            // generate the rest of the cache sized images
+//            [self getHalfResolutionImage:url completionBlock:nil];
+            // TODO: further perf improvement - somehow pass on the 2er to be used as the 4er's input
+//            [self getQuarterResolutionImage:url completionBlock:nil];
+            // TODO: just an idea if perf is still a problem: instead of doing cellsize first, do 2er first, then do 4er from 2er, and cellsize from 4er
         }];
-    }
+        
+        // run the operation
+        NSLog(@"BPPPhotoStore getCellSizeImage: adding resize op to queue now");
+        [imageCacheQueue addOperation:resizeOp];
+        
+    }];
     
     return nil;
 }
 
-// public.
-- (UIImage*)getFullsizeImage:(NSString*)url completionBlock:(void (^)(UIImage* fullsizeImage))completionBlock {
-    NSLog(@"BPPPhotoStore: getFullSizeImage for %@", url);
+
+- (UIImage*)getHalfResolutionImage:(NSString*)url completionBlock:(ImageResizeCompletionBlock)completionBlock {
+    
+    UIImage* cachedImage = [_imageCache_2er objectForKey:url];
+    BPPAirprintCollagePrinter *ap = [BPPAirprintCollagePrinter singleton];
+    
+    // TODO: this is too dependent upon BPPAirprintCollagePrinter, namely its collage layouts!
+    CGSize targetSize = CGSizeMake(ap.longsidePixels/2, ap.shortsidePixels);
+
+    if( cachedImage != nil ) {
+        NSLog(@"BPPPhotoStore: getHalfResolutionImage: cache HIT");
+        return cachedImage;
+    }
+    
+    __weak NSCache* imageCache_2er = _imageCache_2er;
+    __weak NSOperationQueue* imageCacheQueue = _imageCacheQueue;
+    
+    // otherwise, generate a new resized image and populate the cache
+    [self loadImageFromCameraRollByURL:url completionBlock:^(UIImage* fullsizeImage) {
+        
+        ImageResizeOperation* resizeOp = [[ImageResizeOperation alloc] initWithImage:fullsizeImage size:targetSize crop:NO resizeFinishCompletionBlock:^(UIImage* resizedImage) {
+            
+            // cache it, and call completion block from caller
+            NSLog(@"BPPPhotoStore getHalfResolutionImage: DONE, adding resized image to cache");
+            [imageCache_2er setObject:resizedImage forKey:url];
+            
+            if( completionBlock )
+                completionBlock(resizedImage);
+        }];
+        
+        // run the operation
+        [resizeOp setQueuePriority:NSOperationQueuePriorityLow]; // 2er/4er are low pri
+        NSLog(@"BPPPhotoStore getHalfResolutionImage: adding resize op to queue now");
+        [imageCacheQueue addOperation:resizeOp];
+    }];
+    
+    return nil;
+}
+
+- (UIImage*)getQuarterResolutionImage:(NSString*)url completionBlock:(ImageResizeCompletionBlock)completionBlock {
+    
+    UIImage* cachedImage = [_imageCache_4er objectForKey:url];
+    BPPAirprintCollagePrinter *ap = [BPPAirprintCollagePrinter singleton];
+    
+    // TODO: this is too dependent upon BPPAirprintCollagePrinter, namely its collage layouts!
+    CGSize targetSize = CGSizeMake(ap.longsidePixels/2, ap.shortsidePixels/2);
+    
+    if( cachedImage != nil ) {
+        NSLog(@"BPPPhotoStore: getQuarterResolutionImage: cache HIT");
+        return cachedImage;
+    }
+    
+    __weak NSCache* imageCache_4er = _imageCache_4er;
+    __weak NSOperationQueue* imageCacheQueue = _imageCacheQueue;
+    
+    // otherwise, generate a new resized image and populate the cache
+    [self loadImageFromCameraRollByURL:url completionBlock:^(UIImage* fullsizeImage) {
+        
+        ImageResizeOperation* resizeOp = [[ImageResizeOperation alloc] initWithImage:fullsizeImage size:targetSize crop:NO resizeFinishCompletionBlock:^(UIImage* resizedImage) {
+            
+            // cache it, and call completion block from caller
+            NSLog(@"BPPPhotoStore getQuarterResolutionImage: DONE, adding resized image to cache");
+            [imageCache_4er setObject:resizedImage forKey:url];
+            
+            if( completionBlock )
+                completionBlock(resizedImage);
+        }];
+        
+        // run the operation
+        [resizeOp setQueuePriority:NSOperationQueuePriorityLow]; // 2er/4er are low pri
+        NSLog(@"BPPPhotoStore getQuarterResolutionImage: adding resize op to queue now");
+        [imageCacheQueue addOperation:resizeOp];
+    }];
+    
+    return nil;
+}
+
+
+// private: does not load from cache!
+- (void)loadImageFromCameraRollByURL:(NSString*)url completionBlock:(void (^)(UIImage* fullsizeImage))completionBlock {
+    NSLog(@"BPPPhotoStore: loadImageFromCameraRollByURL for %@", url);
  
-    UIImage* cachedImage = [_fullsizedImageCache objectForKey:url];
-    if( cachedImage != nil )
-        return cachedImage;
-    
     [_photoLibrary assetForURL:[NSURL URLWithString:url] resultBlock:^(ALAsset *asset) {
         ALAssetRepresentation* thisImageRep = asset.defaultRepresentation;
         UIImage* thisImageUIImg = [UIImage imageWithCGImage:thisImageRep.fullResolutionImage scale:thisImageRep.scale orientation:(UIImageOrientation)thisImageRep.orientation];
 
-        completionBlock(thisImageUIImg);
-    } failureBlock:^(NSError *error) {
-        NSAssert(FALSE, @"PhotoStore getFullsizeImage: ERROR, %@", error.localizedDescription);
-    }];
-    
-    return nil;
-}
-
-
-// Private. it's ok if this takes a long time - expectation is that caller puts this in a queue
-- (UIImage*)getFullsizeImageSynchronous:(NSString*)url doCacheImage:(bool)doCacheImage {
-    
-    NSAssert([NSThread currentThread] != [NSThread mainThread], @"THREADING ERROR: don't call getFullsizeImageSynchronous on mainthread, as it has a semaphore block");
-    
-    UIImage* cachedImage = [_fullsizedImageCache objectForKey:url];
-    if( cachedImage != nil )
-        return cachedImage;
-    
-    __block UIImage* retval;
-    dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
-    
-    [_photoLibrary assetForURL:[NSURL URLWithString:url] resultBlock:^(ALAsset *asset) {
-        ALAssetRepresentation* thisImageRep = asset.defaultRepresentation;
-        UIImage* thisImageUIImg = [UIImage imageWithCGImage:thisImageRep.fullResolutionImage scale:thisImageRep.scale orientation:(UIImageOrientation)thisImageRep.orientation];
-        retval = thisImageUIImg;
-        
-        dispatch_semaphore_signal(semaphore);
+        if( completionBlock )
+            completionBlock(thisImageUIImg);
         
     } failureBlock:^(NSError *error) {
-        NSAssert(FALSE, @"PhotoStore getFullsizeImageSnychronous: ERROR, %@", error.localizedDescription);
-        
-        dispatch_semaphore_signal(semaphore);
+        NSAssert(FALSE, @"BPPPhotoStore loadImageFromCameraRollByURL: ERROR, %@", error.localizedDescription);
     }];
-    
-    NSLog(@"PhotoStore getFullsizeImageSnychronous: waiting on semaphore, thread %@...", [NSThread currentThread]);
-    dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
-    NSLog(@"PhotoStore getFullsizeImageSnychronous: ... done");
-
-    if( doCacheImage ) {
-        [_fullsizedImageCache setObject:retval forKey:url];
-        NSLog(@"getFullsizeImageSynchronous: cached image.");
-    }
-    
-    return retval;
 }
 
 
-// TODO: delete method?
-/*
-- (void)populateAllCachesSynchronous:(UIImage*)fullsizeImage cacheKey:(NSString*)cacheKey {
-    
-    NSAssert(self.targetResizeCGSize.height != -1.0, @"populateAllCaches - make sure you first set targetResizeCGSize");
-    
-    // approach: use an NSCache, with an NSOperationQueue that limits the number of concurrent ops to 3.
-    if( [_fullsizedImageCache objectForKey:cacheKey] == nil ) {
-        NSLog(@"populateAllCaches: adding fullsize image to cache, key - %@", cacheKey);
-        [_fullsizedImageCache setObject:fullsizeImage forKey:cacheKey];
-    }
-
-    if( [_resizedImageCache objectForKey:cacheKey] == nil ) {
-
-        [_resizedImageCacheOperationQueue addOperationWithBlock: ^ {
-            UIImage* resizeImg = [self cropImage:fullsizeImage scaledToFillSize:self.targetResizeCGSize];
-            [_resizedImageCache setObject:resizeImg forKey:cacheKey];
-        }];
-    }
-}
- */
 
 // called MULTIPLE TIMES from ALAssetsLibrary+Custom
-- (void)intialLoadPhotoFromCameraRoll:(NSDictionary*)dict {
-    NSString* url = [[dict objectForKey:defImageURLKey] absoluteString];
+- (void)intialLoadPhotoFromCameraRoll:(NSURL*)url {
+
     if( nil == url ) {
         NSAssert(FALSE, @"nilurl in initialLoadPhotosFromCameraRoll");
         return;
     }
-    [_photoURLs addObject:url];
-    NSLog(@"loadPhotoFromCameraRoll: added URL to array - %@", url);
     
-    UIImage* fullsizeImage = [dict objectForKey:defImageKey];
-    if( nil == fullsizeImage ) {
-        NSAssert(FALSE, @"nil fullsizeimage in initialLoadPhotosFromCameraRoll.");
+    if( ! [url isKindOfClass:[NSURL class]] ) {
+        NSAssert(FALSE, @"I expect input as NSURL not NSString, in initialLoadPhotosFromCameraRoll");
         return;
     }
     
-    // do we really need this?
-    // [self populateAllCaches:fullsizeImage cacheKey:url];
-    
-    NSLog(@"intialLoadPhotoFromCameraRoll: Finished loading 1 photo from camera roll...");
+    [_photoURLs addObject:url.absoluteString];
+    NSLog(@"loadPhotoFromCameraRoll: added URL to array - %@", url);
 }
 
 - (void)loadFromFileAndDelete:(NSString*)filename completionBlock:(void(^)(void))completionBlock {
@@ -216,10 +296,6 @@
         return;
     }
     
-    // TODO: optionally cache fullsize image
-    // TODO: optionally precreate resized images and cache them
-    
-    NSLog(@"BPPPhotoStore, loadFromFileandDelete: loaded image from disk.");
     [_photoLibrary saveImage:fullSizeImage toAlbum:cameraRollAlbumName withCompletionBlock:^(NSError *error) {
         
         if( error ) {
@@ -248,26 +324,23 @@
             NSLog(@"loadFromFileAndDelete: deleteFile, deleted %@", filename);
         }
         
-        completionBlock();
-
+        if( completionBlock )
+            completionBlock();
     }];
     
 }
 
+// TODO: not  safe: there could be queued ops to fill the caches while the image itself is deleted
 - (void)deletePhoto:(NSString*)url {
     [self.photoURLs removeObject:url];
-    [_fullsizedImageCache removeObjectForKey:url];
-    [_resizedImageCache removeObjectForKey:url];
+    [_imageCache_2er removeObjectForKey:url];
+    [_imageCache_4er removeObjectForKey:url];
+    [_imageCache_cellsize removeObjectForKey:url];
     NSLog(@"deletePhoto: deleted URL %@", url);
 }
 
 - (void)viewControllerIsRotating {
     // TODO: implement or delete -- invalidate resize caches?
-}
-
-- (void)flushFullsizeCache {
-    [_fullsizedImageCache removeAllObjects];
-    NSLog(@"BPPPhotoStore: cache flushed for fullsize images");
 }
 
 @end

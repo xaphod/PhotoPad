@@ -18,7 +18,8 @@
                            
                            //error handling
                            if (error!=nil) {
-                               completionBlock(error);
+                               if( completionBlock )
+                                   completionBlock(error);
                                return;
                            }
                   
@@ -52,7 +53,8 @@
                                           [group addAsset: asset];
                                           
                                           //run the completion block
-                                          addImageCompletionBlock(assetURL, nil);
+                                          if( addImageCompletionBlock )
+                                              addImageCompletionBlock(assetURL, nil);
                                           
                                       } failureBlock: completionBlock];
                                 
@@ -77,7 +79,9 @@
                                                                         [group addAsset: asset];
                                                                         
                                                                         //call the completion block
-                                                                        completionBlock(nil);
+                                                                        
+                                                                        if( completionBlock )
+                                                                            completionBlock(nil);
                                                                         
                                                                     } failureBlock: completionBlock];
                                                           
@@ -93,7 +97,7 @@
 }
 
 
-- (void)getAllImagesFromAlbum:(NSString*)albumName delegate:(id)delegate selectorAddImage:(SEL)selectorAddImage selectorFinished:(SEL)selectorFinished withCompletionBlock:(SaveImageCompletion)completionBlock {
+- (void)getAllImageURLsFromAlbum:(NSString*)albumName delegate:(id)delegate selectorAddImage:(SEL)selectorAddImage selectorFinished:(SEL)selectorFinished withCompletionBlock:(SaveImageCompletion)completionBlock {
     
     //this *MUST* execute on a background thread, ALAssetLibrary tries to use the main thread and will hang if you're on the main thread.
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^(void){
@@ -115,16 +119,9 @@
                                         
                                         if( result != nil ) {
                                             ALAssetRepresentation* thisImageRep = result.defaultRepresentation;
-                                            UIImage* thisImageUIImg = [UIImage imageWithCGImage:thisImageRep.fullResolutionImage scale:thisImageRep.scale orientation:(UIImageOrientation)thisImageRep.orientation];
-                                            
-                                            if( thisImageUIImg == nil ) {
-                                                NSAssert(FALSE, @"ALAssetsLibrary+CustomPhotoAlbum: thisImageUIImg is nil.");
-                                                return;
-                                            }
-                                            
                                             
                                             if( [delegate respondsToSelector:selectorAddImage] )
-                                                [delegate performSelector:selectorAddImage withObject:[NSDictionary dictionaryWithObjectsAndKeys:thisImageUIImg, defImageKey, thisImageRep.url, defImageURLKey, nil]];
+                                                [delegate performSelector:selectorAddImage withObject:thisImageRep.url];
                                             else
                                                 NSLog(@"getAllImagesFromAlbum: Programming error: no response to add-image selector");
                                         }
@@ -140,16 +137,6 @@
                                 }
                                 
                                 if (group==nil && albumWasFound==NO) {
-                                    //photo albums are over, target album does not exist, thus create it
-                                    
-                                    //create new assets album
-                                    [self addAssetsGroupAlbumWithName:albumName
-                                                          resultBlock:^(ALAssetsGroup *group) {
-                                                          } failureBlock: completionBlock];
-                                    
-                                    NSLog(@"ALAssetsLib: created album %@", albumName);
-                                    //should be the last iteration anyway, but just in case
-                                    
                                     if( [delegate respondsToSelector:selectorFinished] )
                                         [delegate performSelector:selectorFinished];
                                     else
@@ -161,19 +148,5 @@
                             } failureBlock: completionBlock];
     });
 }
-
-/*
-void runOnMainQueueWithoutDeadlocking(void (^block)(void))
-{
-    if ([NSThread isMainThread])
-    {
-        block();
-    }
-    else
-    {
-        dispatch_sync(dispatch_get_main_queue(), block);
-    }
-}
-*/
 
 @end

@@ -28,6 +28,8 @@
     if (self = [super init]) {
         _printerIDs = [NSMutableArray array];
         _lastUsedPrinterIDArrayIndex = -1;
+        self.longsidePixels = CollageLongsidePixels;
+        self.shortsidePixels = CollageShortsidePixels;
     }
     return self;
 }
@@ -119,9 +121,6 @@
         [controller presentAnimated:YES completionHandler:completionHandler];  // iPhone
     }
     
-    BPPPhotoStore* ps = [BPPPhotoStore singleton];
-    [ps flushFullsizeCache];
-
     return YES;
 }
 

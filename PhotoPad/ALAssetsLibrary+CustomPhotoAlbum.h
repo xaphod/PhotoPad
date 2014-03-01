@@ -8,9 +8,6 @@
 #import <Foundation/Foundation.h>
 #import <AssetsLibrary/AssetsLibrary.h>
 
-#define defImageKey @"UIImageKey"
-#define defImageURLKey @"ALAssetRepresentationKey"
-
 typedef void(^SaveImageCompletion)(NSError* error);
 typedef void(^AddImageCompletion)(NSURL* assetURL, NSError* error);
 
@@ -20,10 +17,9 @@ typedef void(^AddImageCompletion)(NSURL* assetURL, NSError* error);
 
 -(void)addAssetURL:(NSURL*)assetURL toAlbum:(NSString*)albumName withCompletionBlock:(SaveImageCompletion)completionBlock withAddImageCompletionBlock:(AddImageCompletion)addImageCompletionBlock;
 
-// input:  album NSString*
-// return: number of images in the album (synchronously)
-// result, if album exists: will call delegate->selector once per image found, with an NSDictionary as object: use defImageKey to get the UIImage*, use defImageURLKey to get the URL.
-// result, if album doesn't exist: album is created, delegate->selector is not called
-- (void)getAllImagesFromAlbum:(NSString*)albumName delegate:(id)delegate selectorAddImage:(SEL)selectorAddImage selectorFinished:(SEL)selectorFinished withCompletionBlock:(SaveImageCompletion)completionBlock;
+// input:  album name NSString*
+// result, if album exists: will call delegate->selectorAddImage once per image found, with an NSString* of its ALAsset URL
+// result, if album doesn't exist: delegate->selectorFinished is called
+- (void)getAllImageURLsFromAlbum:(NSString*)albumName delegate:(id)delegate selectorAddImage:(SEL)selectorAddImage selectorFinished:(SEL)selectorFinished withCompletionBlock:(SaveImageCompletion)completionBlock;
 
 @end
