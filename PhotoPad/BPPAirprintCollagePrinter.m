@@ -253,7 +253,8 @@
     NSLog(@"resizeAndDrawInRec: calling resize. Src: w:%f h:%f. Draw target x:%f y:%f w:%f h:%f", image.size.width, image.size.height, rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
     
     UIImage* resizedAndCroppedImage = [self cropImage:image scaledToFillSize:rect.size];
-    resizedAndCroppedImage = [self tiltAndZoomImage:resizedAndCroppedImage];
+    // TODO: enable tilt?
+    //resizedAndCroppedImage = [self tiltAndZoomImage:resizedAndCroppedImage];
     
     if( nil == resizedAndCroppedImage ) {
         NSLog(@"Failed to resize image!");

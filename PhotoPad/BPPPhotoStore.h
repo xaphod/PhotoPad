@@ -28,10 +28,10 @@ typedef void(^ImageResizeCompletionBlock)(UIImage* resizedImage);
 // these immediately return UIImage* if there is already a resized image in the cache, otherwise executes completionBlock when it is ready (async). The resolution (half, quarter etc) is relative to what BPPAirprintCollagePrinter defines, not the resolution of the input image.
 // caller is expected to manage what thread its completionBlock runs on, ie. if UI is calling, UI should dispatch completionblock on main thread
 - (UIImage*)getHalfResolutionImage:(NSString*)url completionBlock:(ImageResizeCompletionBlock)completionBlock;
-- (UIImage*)getQuarterResolutionImage:(NSString*)url completionBlock:(ImageResizeCompletionBlock)completionBlock;
+- (UIImage*)getQuarterResolutionImage:(UIImage*)halfResImage url:(NSString*)url;
 - (UIImage*)getCellsizeImage:(NSString*)url size:(CGSize)size completionBlock:(ImageResizeCompletionBlock)completionBlock; // performant only when this is called with the same CGSize all the time
     
-
+- (void)didReceiveMemoryWarning;
 
 // UI-related
 - (void)viewControllerIsRotating;

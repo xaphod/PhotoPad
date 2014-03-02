@@ -195,7 +195,7 @@
     // otherwise, generate a new resized image and populate the cache
     [self loadImageFromCameraRollByURL:url completionBlock:^(UIImage* fullsizeImage) {
         
-        ImageResizeOperation* resizeOp = [[ImageResizeOperation alloc] initWithImage:fullsizeImage size:targetSize crop:NO resizeFinishCompletionBlock:^(UIImage* resizedImage) {
+        ImageResizeOperation* resizeOp = [[ImageResizeOperation alloc] initWithImage:fullsizeImage size:targetSize crop:YES resizeFinishCompletionBlock:^(UIImage* resizedImage) {
             
             // cache it, and call completion block from caller
             NSLog(@"BPPPhotoStore getHalfResolutionImage: DONE, adding resized image to cache");
@@ -203,10 +203,13 @@
             
             if( completionBlock )
                 completionBlock(resizedImage);
+            
+            // generate the quarter-size resize too
+            [self getQuarterResolutionImage:resizedImage url:url];
         }];
         
         // run the operation
-        [resizeOp setQueuePriority:NSOperationQueuePriorityLow]; // 2er/4er are low pri
+        //[resizeOp setQueuePriority:NSOperationQueuePriorityLow]; // 2er/4er are low pri
         NSLog(@"BPPPhotoStore getHalfResolutionImage: adding resize op to queue now");
         [imageCacheQueue addOperation:resizeOp];
     }];
@@ -214,42 +217,21 @@
     return nil;
 }
 
-- (UIImage*)getQuarterResolutionImage:(NSString*)url completionBlock:(ImageResizeCompletionBlock)completionBlock {
-    
+- (UIImage*)getQuarterResolutionImage:(UIImage*)halfResImage url:(NSString*)url {
+
     UIImage* cachedImage = [_imageCache_4er objectForKey:url];
-    BPPAirprintCollagePrinter *ap = [BPPAirprintCollagePrinter singleton];
-    
-    // TODO: this is too dependent upon BPPAirprintCollagePrinter, namely its collage layouts!
-    CGSize targetSize = CGSizeMake(ap.longsidePixels/2, ap.shortsidePixels/2);
-    
     if( cachedImage != nil ) {
         NSLog(@"BPPPhotoStore: getQuarterResolutionImage: cache HIT");
         return cachedImage;
     }
-    
-    __weak NSCache* imageCache_4er = _imageCache_4er;
-    __weak NSOperationQueue* imageCacheQueue = _imageCacheQueue;
-    
-    // otherwise, generate a new resized image and populate the cache
-    [self loadImageFromCameraRollByURL:url completionBlock:^(UIImage* fullsizeImage) {
-        
-        ImageResizeOperation* resizeOp = [[ImageResizeOperation alloc] initWithImage:fullsizeImage size:targetSize crop:NO resizeFinishCompletionBlock:^(UIImage* resizedImage) {
-            
-            // cache it, and call completion block from caller
-            NSLog(@"BPPPhotoStore getQuarterResolutionImage: DONE, adding resized image to cache");
-            [imageCache_4er setObject:resizedImage forKey:url];
-            
-            if( completionBlock )
-                completionBlock(resizedImage);
-        }];
-        
-        // run the operation
-        [resizeOp setQueuePriority:NSOperationQueuePriorityLow]; // 2er/4er are low pri
-        NSLog(@"BPPPhotoStore getQuarterResolutionImage: adding resize op to queue now");
-        [imageCacheQueue addOperation:resizeOp];
-    }];
-    
-    return nil;
+
+    BPPAirprintCollagePrinter *ap = [BPPAirprintCollagePrinter singleton];
+    // TODO: this is too dependent upon BPPAirprintCollagePrinter, namely its collage layouts!
+    CGSize targetSize = CGSizeMake(ap.longsidePixels/2, ap.shortsidePixels/2);
+    cachedImage = [ap cropImage:halfResImage scaledToFillSize:targetSize];
+    [_imageCache_4er setObject:cachedImage forKey:url];
+    NSLog(@"BPPPhotoStore: getQuarterResolutionImage: generation complete.");
+    return cachedImage;
 }
 
 
@@ -341,6 +323,12 @@
 
 - (void)viewControllerIsRotating {
     // TODO: implement or delete -- invalidate resize caches?
+}
+
+- (void)didReceiveMemoryWarning {
+    [_imageCache_2er removeAllObjects];
+    [_imageCache_4er removeAllObjects];
+    [_imageCache_cellsize removeAllObjects];
 }
 
 @end
