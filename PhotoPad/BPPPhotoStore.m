@@ -91,7 +91,9 @@
         _photoURLs = [NSMutableArray array];
 
         _imageCache_2er = [[NSCache alloc] init];
+        [_imageCache_2er setTotalCostLimit:10]; // number of images
         _imageCache_4er = [[NSCache alloc] init];
+        [_imageCache_4er setTotalCostLimit:10]; // number of images
         _imageCache_cellsize = [[NSCache alloc] init];
         _imageCacheQueue = [[NSOperationQueue alloc] init];
         _imageCacheQueue.maxConcurrentOperationCount = 3;
@@ -180,9 +182,6 @@
     
     UIImage* cachedImage = [_imageCache_2er objectForKey:url];
     BPPAirprintCollagePrinter *ap = [BPPAirprintCollagePrinter singleton];
-    
-    // TODO: this is too dependent upon BPPAirprintCollagePrinter, namely its collage layouts!
-    CGSize targetSize = CGSizeMake(ap.longsidePixels/2, ap.shortsidePixels);
 
     if( cachedImage != nil ) {
         NSLog(@"BPPPhotoStore: getHalfResolutionImage: cache HIT");
@@ -195,17 +194,21 @@
     // otherwise, generate a new resized image and populate the cache
     [self loadImageFromCameraRollByURL:url completionBlock:^(UIImage* fullsizeImage) {
         
-        ImageResizeOperation* resizeOp = [[ImageResizeOperation alloc] initWithImage:fullsizeImage size:targetSize crop:YES resizeFinishCompletionBlock:^(UIImage* resizedImage) {
+        CGSize targetSize;
+        if( fullsizeImage.size.width > fullsizeImage.size.height )
+            targetSize = CGSizeMake(ap.longsidePixels, ap.shortsidePixels);
+        else
+            targetSize = CGSizeMake(ap.shortsidePixels, ap.longsidePixels);
+        
+        ImageResizeOperation* resizeOp = [[ImageResizeOperation alloc] initWithImage:fullsizeImage size:targetSize crop:NO resizeFinishCompletionBlock:^(UIImage* resizedImage) {
             
             // cache it, and call completion block from caller
             NSLog(@"BPPPhotoStore getHalfResolutionImage: DONE, adding resized image to cache");
-            [imageCache_2er setObject:resizedImage forKey:url];
+            [imageCache_2er setObject:resizedImage forKey:url cost:1];
             
             if( completionBlock )
                 completionBlock(resizedImage);
             
-            // generate the quarter-size resize too
-            [self getQuarterResolutionImage:resizedImage url:url];
         }];
         
         // run the operation
@@ -227,9 +230,15 @@
 
     BPPAirprintCollagePrinter *ap = [BPPAirprintCollagePrinter singleton];
     // TODO: this is too dependent upon BPPAirprintCollagePrinter, namely its collage layouts!
-    CGSize targetSize = CGSizeMake(ap.longsidePixels/2, ap.shortsidePixels/2);
-    cachedImage = [ap cropImage:halfResImage scaledToFillSize:targetSize];
-    [_imageCache_4er setObject:cachedImage forKey:url];
+    CGSize targetSize;
+    
+    if( halfResImage.size.width > halfResImage.size.height )
+        targetSize = CGSizeMake(ap.longsidePixels/2, ap.shortsidePixels/2);
+    else
+        targetSize = CGSizeMake(ap.shortsidePixels/2, ap.longsidePixels/2);
+    
+    cachedImage = [ap fitImage:halfResImage scaledToFillSize:targetSize];
+    [_imageCache_4er setObject:cachedImage forKey:url cost:1];
     NSLog(@"BPPPhotoStore: getQuarterResolutionImage: generation complete.");
     return cachedImage;
 }

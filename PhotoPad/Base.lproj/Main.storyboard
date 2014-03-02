@@ -185,21 +185,30 @@ top - touch here!</string>
                                             <action selector="debugInjectPressed:" destination="oec-va-NCN" eventType="touchUpInside" id="hJZ-wb-uhW"/>
                                         </connections>
                                     </button>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="DG6-sm-F70">
-                                        <rect key="frame" x="40" y="40" width="688" height="604"/>
-                                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="SyB-dw-tQG" userLabel="landscapeImageView">
+                                        <rect key="frame" x="20" y="100" width="728" height="485"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="485" id="jqY-NX-fci"/>
+                                        </constraints>
+                                    </imageView>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Cjg-tN-PS9" userLabel="portraitImageView">
+                                        <rect key="frame" x="170" y="20" width="429" height="644"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </imageView>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstItem="DG6-sm-F70" firstAttribute="leading" secondItem="hDb-2e-3aN" secondAttribute="leading" constant="40" id="7KW-lL-lHv"/>
-                                    <constraint firstAttribute="bottom" secondItem="DG6-sm-F70" secondAttribute="bottom" constant="40" id="Ffs-Dh-wdm"/>
-                                    <constraint firstItem="DG6-sm-F70" firstAttribute="top" secondItem="hDb-2e-3aN" secondAttribute="top" constant="40" id="PyG-YI-Zi0"/>
-                                    <constraint firstAttribute="centerX" secondItem="DG6-sm-F70" secondAttribute="centerX" id="TiK-bB-PEN"/>
+                                    <constraint firstAttribute="bottom" secondItem="Cjg-tN-PS9" secondAttribute="bottom" constant="20" id="1X0-uY-o2f"/>
+                                    <constraint firstItem="Cjg-tN-PS9" firstAttribute="leading" secondItem="hDb-2e-3aN" secondAttribute="leading" constant="170" id="5ei-i2-odH"/>
+                                    <constraint firstItem="SyB-dw-tQG" firstAttribute="leading" secondItem="hDb-2e-3aN" secondAttribute="leading" constant="20" id="FCz-mb-y3n"/>
+                                    <constraint firstItem="SyB-dw-tQG" firstAttribute="top" secondItem="hDb-2e-3aN" secondAttribute="top" constant="100" id="MS0-lw-sTe"/>
+                                    <constraint firstAttribute="trailing" secondItem="Cjg-tN-PS9" secondAttribute="trailing" constant="169" id="QQa-cK-3yg"/>
+                                    <constraint firstAttribute="trailing" secondItem="SyB-dw-tQG" secondAttribute="trailing" constant="20" id="TAe-2q-bWb"/>
                                     <constraint firstAttribute="bottom" secondItem="cNv-4f-PXc" secondAttribute="bottom" constant="40" id="gVY-pE-Qxc"/>
-                                    <constraint firstAttribute="trailing" secondItem="DG6-sm-F70" secondAttribute="trailing" constant="40" id="pdE-rU-WkC"/>
+                                    <constraint firstItem="Cjg-tN-PS9" firstAttribute="top" secondItem="hDb-2e-3aN" secondAttribute="top" constant="20" id="nen-3I-cEO"/>
+                                    <constraint firstAttribute="bottom" secondItem="SyB-dw-tQG" secondAttribute="bottom" constant="99" id="vdZ-w5-bUi"/>
                                     <constraint firstAttribute="trailing" secondItem="cNv-4f-PXc" secondAttribute="trailing" constant="40" id="wJO-0s-lnI"/>
-                                    <constraint firstAttribute="centerY" secondItem="DG6-sm-F70" secondAttribute="centerY" id="zfK-JI-kxY"/>
                                 </constraints>
                             </view>
                         </subviews>
@@ -220,14 +229,11 @@ top - touch here!</string>
                     <connections>
                         <outlet property="collectionView" destination="sSk-Nz-PVT" id="twc-Hs-eUH"/>
                         <outlet property="collectionViewFlowLayoutOutlet" destination="sVp-j7-w08" id="jv4-RH-oKj"/>
+                        <outlet property="landscapeImageViewOutlet" destination="SyB-dw-tQG" id="GHF-Ky-nnx"/>
                         <outlet property="notificationOfNewPhotosButtonOutlet" destination="Vy5-Gt-tED" id="WXW-9s-3iu"/>
                         <outlet property="notificationOfNewPhotosViewOutlet" destination="x5U-mZ-23n" id="gRs-vO-tuo"/>
+                        <outlet property="portraitImageViewOutlet" destination="Cjg-tN-PS9" id="Nd0-vx-wBB"/>
                         <outlet property="previewContainingViewOutlet" destination="hDb-2e-3aN" id="sST-0g-Wre"/>
-                        <outlet property="previewImageViewConstraintBottom" destination="Ffs-Dh-wdm" id="rGf-gi-qWS"/>
-                        <outlet property="previewImageViewConstraintLeft" destination="7KW-lL-lHv" id="OzZ-uD-x3Y"/>
-                        <outlet property="previewImageViewConstraintRight" destination="pdE-rU-WkC" id="3qF-hl-0KD"/>
-                        <outlet property="previewImageViewConstraintTop" destination="PyG-YI-Zi0" id="Rkf-y4-dSj"/>
-                        <outlet property="previewImageViewOutlet" destination="DG6-sm-F70" id="7zy-5t-a1W"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="goB-Tw-rET" userLabel="First Responder" sceneMemberID="firstResponder"/>
