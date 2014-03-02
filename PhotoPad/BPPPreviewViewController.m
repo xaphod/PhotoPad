@@ -17,7 +17,7 @@
     CGFloat cellSize;
     NSIndexPath* _oldestNewestIndexPath;
     BPPPhotoStore* photoStore;
-    
+
     // DEBUG: ReMOVE THIS
     bool debugJPGdone;
 }
@@ -29,6 +29,7 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     
     [self updateUIFromSettings];
@@ -66,8 +67,6 @@
     self.photoToolSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Delete" otherButtonTitles:nil];
     
     self.collectionView.allowsMultipleSelection = YES;
-    self.selectedPhotos = [NSMutableDictionary dictionary];
-    
     
     photoStore = [BPPPhotoStore singletonWithLargestPreviewSize:(self.landscapeImageViewOutlet.frame.size.width * [UIScreen mainScreen].scale) shortsidePixels:(self.landscapeImageViewOutlet.frame.size.height * [UIScreen mainScreen].scale) ]; // ask for permission to photos, etc
     [photoStore setReloadTarget:self.collectionView];
@@ -175,7 +174,7 @@
     // THE COLLECTIONVIEW IS KEYED ON THE URLs
     NSString *url = photoStore.photoURLs[indexPath.row];
     
-    if( [self.selectedPhotos objectForKey:url] != nil ) {
+    if( [self checkIfIndexPathIsSelected:indexPath] ) {
         [cell.checkmarkViewOutlet setChecked:YES];
         cell.selected = TRUE;
     } else {
@@ -187,7 +186,7 @@
     
     __weak UICollectionView* weakCollectionView = collectionView;
     
-    UIImage* instantResult = [photoStore getCellsizeImage:photoStore.photoURLs[indexPath.row] size:size completionBlock:^(UIImage *resizedImage) {
+    UIImage* instantResult = [photoStore getCellsizeImage:url size:size completionBlock:^(UIImage *resizedImage) {
         
         if( [weakCollectionView.indexPathsForVisibleItems containsObject:indexPath] ) {
             // Get hold of main queue (main thread)
@@ -206,7 +205,7 @@
 
 // max 6 selected cells
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
-    if( self.selectedPhotos.count >= 6 ) {
+    if( self.collectionView.indexPathsForSelectedItems.count >= 6 ) {
         UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Maximum 6 Photos" message:@"The maximum number of photos is already selected. To clear the selection, use the clear button." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [alert show];
         return NO;
@@ -221,23 +220,20 @@
     
     NSString *url = photoStore.photoURLs[indexPath.row];
     
-    __weak NSMutableDictionary* selectedPhotos = self.selectedPhotos;
     __weak BPPPreviewViewController* weakSelf = self;
     
     UIImage* retval = [photoStore getHalfResolutionImage:url completionBlock:^(UIImage *resizedImage) {
-        [selectedPhotos setObject:resizedImage forKey:url];
         [[NSOperationQueue mainQueue] addOperationWithBlock: ^ {
             [weakSelf updatePreview];
         }];
     }];
     
     // cache-hit case: block above does not execute completionBlock
-    if( retval ) {
-        [self.selectedPhotos setObject:retval forKey:url];
-        [[NSOperationQueue mainQueue] addOperationWithBlock: ^ {
-            [weakSelf updatePreview];
-        }];
-    }
+    if( retval )
+        [weakSelf updatePreview];
+    
+    self.clearButtonOutlet.hidden = NO;
+
     NSLog(@"Finished selecting item");
 
 }
@@ -246,8 +242,25 @@
 {
     BPPGalleryCell *cell = (BPPGalleryCell*)[collectionView cellForItemAtIndexPath:indexPath];
     [cell.checkmarkViewOutlet setChecked:NO];
-    [self.selectedPhotos removeObjectForKey:photoStore.photoURLs[indexPath.row]];
+    
+    if( collectionView.indexPathsForSelectedItems == nil || collectionView.indexPathsForSelectedItems.count == 0 )
+        self.clearButtonOutlet.hidden = YES;
+
     [self updatePreview];
+}
+
+- (bool)checkIfURLIsSelected:(NSString*)url {
+    for( NSIndexPath* thisPath in self.collectionView.indexPathsForSelectedItems ) {
+        if( [photoStore.photoURLs[thisPath.row] isEqualToString:url] )
+            return YES;
+    }
+    return NO;
+}
+
+- (bool)checkIfIndexPathIsSelected:(NSIndexPath*)indexPath {
+    if( [self.collectionView.indexPathsForSelectedItems containsObject:indexPath] )
+        return YES;
+    return NO;
 }
 
 - (CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout*)collectionViewLayout sizeForItemAtIndexPath:(NSIndexPath *)indexPath {
@@ -297,9 +310,9 @@
     if (buttonIndex == 0) {
         // Delete button was pressed.
         NSString* url = photoStore.photoURLs[_selectedIndex];
-        [self.selectedPhotos removeObjectForKey:url];
         [photoStore deletePhoto:url];
         [_collectionView deleteItemsAtIndexPaths:[NSArray arrayWithObject:[NSIndexPath indexPathForItem:_selectedIndex inSection:0]]];
+        // TODO: check, does doing delete also auto-do deselect? bet it doesn't
     }
 }
 
@@ -313,6 +326,7 @@
         [self collectionView:self.collectionView didDeselectItemAtIndexPath:indexPath];
     }
     
+    [photoStore cacheClean];
     [self updatePreview];
 }
 
@@ -334,18 +348,21 @@
 #pragma mark - Printing
 
 - (IBAction)PrintPressed:(id)sender {
-    NSLog(@"PrintPressed, %lu photos to print.", (unsigned long)self.selectedPhotos.count);
+    NSLog(@"PrintPressed, %lu photos to print.", (unsigned long)self.collectionView.indexPathsForSelectedItems.count);
     
     // TODO: progress indicator -- printCollage takes about 0.5s until it shows iOS print ui
     
+    [self gatherSelectedImages:YES finishedSelector:@selector(startPrinting:)];
+}
+
+- (void)startPrinting:(NSArray*)images {
     BPPAirprintCollagePrinter *ap = [BPPAirprintCollagePrinter singleton];
     
-    if( ! [ap printCollage:[self.selectedPhotos allValues] fromUIBarButton:self.printButtonOulet] ) {
+    if( ! [ap printCollage:images fromCGRect:self.printButtonOutlet.frame fromUIView:self.view] ) {
         NSLog(@"MainVC, got fail for printCollage");
     }
     
     [self clearCellSelections];
-    [self.selectedPhotos removeAllObjects];
 }
 
 // TODO: remove this debug code
@@ -383,13 +400,17 @@
     }
 }
 
-- (NSArray*)gatherSelectedImages {
+- (void)gatherSelectedImages:(SEL)finishedSelector {
+    [self gatherSelectedImages:NO finishedSelector:finishedSelector];
+}
+
+- (void)gatherSelectedImages:(bool)forPrinting finishedSelector:(SEL)finishedSelector {
     
-    if( self.selectedPhotos.count > 6 ) {
+    if( self.collectionView.indexPathsForSelectedItems.count > 6 ) {
         NSAssert(FALSE, @"Don't poke me! cannot handle more than 6 images yet.");
-        return nil;
+        return;
     }
-    if( self.selectedPhotos.count < 2 ) {
+    if( self.collectionView.indexPathsForSelectedItems.count < 2 ) {
         if( self.landscapeImageViewOutlet.image != nil || self.portraitImageViewOutlet.image != nil ) {
             // TODO: going from 2 to 1 selected images -- hide/destroy preview, inform?
             [UIView transitionWithView:self.previewContainingViewOutlet
@@ -403,33 +424,52 @@
             // TODO: going from 0->1 selected images -- inform user to pick another?
             NSLog(@"NOT ENOUGH SELECTED PHOTOS");
         }
-        return nil;
+        return;
     }
     
-    // selectedPhotos has images that are 2er (half) resolution. When making a collage of >=4, use 4er instead
-    NSMutableArray* selectedPhotosArray;
+    NSMutableArray* selectedPhotosArray = [NSMutableArray array];
+    __weak NSMutableArray* weakSelectedPhotos = selectedPhotosArray;
+    int stopTarget = (int)self.collectionView.indexPathsForSelectedItems.count;
     
-    if( self.selectedPhotos.count >= 4 ) {
+    for( NSIndexPath* thisPath in self.collectionView.indexPathsForSelectedItems ) {
+        NSString* url = photoStore.photoURLs[thisPath.row];
         
-        // TODO: this code is a steaming pile
-        selectedPhotosArray = [NSMutableArray array];
-        
-        for( NSString* url in [self.selectedPhotos allKeys] ) {
-            UIImage* selected_4er = [photoStore getQuarterResolutionImage:[self.selectedPhotos objectForKey:url] url:url];
-            [selectedPhotosArray addObject:selected_4er];
+        UIImage* instantResult = [photoStore getHalfResolutionImage:url completionBlock:^(UIImage *resizedImage) {
+                @synchronized( weakSelectedPhotos ) {
+                    [weakSelectedPhotos addObject:resizedImage];
+                    if( weakSelectedPhotos.count == stopTarget )
+                        [self performSelectorOnMainThread:finishedSelector withObject:selectedPhotosArray waitUntilDone:NO];
+                }
+        }];
+        if( instantResult != nil ) {
+            @synchronized( selectedPhotosArray ) {
+                [selectedPhotosArray addObject:instantResult];
+                if( selectedPhotosArray.count == stopTarget )
+                    [self performSelectorOnMainThread:finishedSelector withObject:selectedPhotosArray waitUntilDone:NO];
+            }
         }
-        
-    } else {
-        selectedPhotosArray = [[self.selectedPhotos allValues] mutableCopy];
     }
-    return selectedPhotosArray;
+
+    /* TODO: currently not using 4er cache?
+     if( self.collectionView.indexPathsForSelectedItems.count >= 4 && !forPrinting ) {
+     
+     selectedPhotosArray = [NSMutableArray array];
+     
+     for( NSIndexPath* thisPath in self.collectionView.indexPathsForSelectedItems ) {
+     NSString* url = photoStore.photoURLs[thisPath.row];
+     UIImage* selected_4er = [photoStore getQuarterResolutionImage:[self.selectedPhotos objectForKey:url] url:url];
+     [selectedPhotosArray addObject:selected_4er];
+     }
+     */
 }
 
-- (void)updatePreview {
-    NSArray* images = [self gatherSelectedImages];
-    if( images == nil)
-        return;
 
+- (void)updatePreview {
+    [self gatherSelectedImages:@selector(updatePreviewCallback:)];
+}
+
+- (void)updatePreviewCallback:(NSArray*)images {
+    
     BPPAirprintCollagePrinter *ap = [BPPAirprintCollagePrinter singleton];
     
     bool landscape = [ap isResultingCollageLandscape:images];
@@ -461,6 +501,12 @@
                         
                     }];
     
+}
+
+- (IBAction)clearPressed:(id)sender {
+    [self clearCellSelections];
+    self.clearButtonOutlet.hidden = YES;
+
 }
 
 

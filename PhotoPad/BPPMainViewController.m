@@ -306,9 +306,11 @@
 
     BPPAirprintCollagePrinter *ap = [BPPAirprintCollagePrinter singleton];
     
-    if( ! [ap printCollage:[self.selectedPhotos allValues] fromUIBarButton:self.printButtonOulet] ) {
-        NSLog(@"MainVC, got fail for printCollage");
-    }
+    NSAssert(FALSE, @"not implemented");
+    
+//    if( ! [ap printCollage:[self.selectedPhotos allValues] fromCGRect:self.printButtonOulet fromUIView:self.view ) {
+//        NSLog(@"MainVC, got fail for printCollage");
+//    }
 
     [self clearCellSelections];
     [self.selectedPhotos removeAllObjects];

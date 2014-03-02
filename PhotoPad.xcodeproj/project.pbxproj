@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		22010AAA18A6E1CE00D9A921 /* SSCheckMark.m in Sources */ = {isa = PBXBuildFile; fileRef = 22010AA918A6E1CE00D9A921 /* SSCheckMark.m */; };
+		220D04D118C3D30400FB3FA1 /* BPPEmailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 220D04D018C3D30400FB3FA1 /* BPPEmailViewController.m */; };
 		222CB24318BD08C10000502A /* BPPPreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 222CB24218BD08C10000502A /* BPPPreviewViewController.m */; };
 		222CB24618BD091E0000502A /* BPPViewPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 222CB24518BD091E0000502A /* BPPViewPickerViewController.m */; };
 		2266804718A69F350060FBBE /* MWCaptionView.m in Sources */ = {isa = PBXBuildFile; fileRef = 2266803518A69F350060FBBE /* MWCaptionView.m */; };
@@ -128,6 +129,8 @@
 /* Begin PBXFileReference section */
 		22010AA818A6E1CE00D9A921 /* SSCheckMark.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SSCheckMark.h; path = PhotoPad/SSCheckMark.h; sourceTree = "<group>"; };
 		22010AA918A6E1CE00D9A921 /* SSCheckMark.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = SSCheckMark.m; path = PhotoPad/SSCheckMark.m; sourceTree = "<group>"; };
+		220D04CF18C3D30400FB3FA1 /* BPPEmailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPPEmailViewController.h; sourceTree = "<group>"; };
+		220D04D018C3D30400FB3FA1 /* BPPEmailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BPPEmailViewController.m; sourceTree = "<group>"; };
 		22172F8F18B77D81004358BD /* Backlog.txt */ = {isa = PBXFileReference; lastKnownFileType = text; path = Backlog.txt; sourceTree = "<group>"; };
 		222CB24118BD08C10000502A /* BPPPreviewViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPPPreviewViewController.h; sourceTree = "<group>"; };
 		222CB24218BD08C10000502A /* BPPPreviewViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BPPPreviewViewController.m; sourceTree = "<group>"; };
@@ -469,6 +472,8 @@
 				4D784B0F183D72D1007FB05A /* BPPMainViewController.m */,
 				8627C8E81841679100DA239D /* BPPHelpViewController.h */,
 				8627C8E91841679100DA239D /* BPPHelpViewController.m */,
+				220D04CF18C3D30400FB3FA1 /* BPPEmailViewController.h */,
+				220D04D018C3D30400FB3FA1 /* BPPEmailViewController.m */,
 				863ED9401840608900AB7A6A /* BPPGalleryCell.h */,
 				863ED9411840608900AB7A6A /* BPPGalleryCell.m */,
 				863ED8A9183EC95B00AB7A6A /* EyeFi Responses */,
@@ -916,6 +921,7 @@
 				2266807A18A69F6D0060FBBE /* PSTGridLayoutSection.m in Sources */,
 				4D784B06183D72D1007FB05A /* main.m in Sources */,
 				4D784B7F183D7319007FB05A /* HTTPErrorResponse.m in Sources */,
+				220D04D118C3D30400FB3FA1 /* BPPEmailViewController.m in Sources */,
 				4D784B76183D7319007FB05A /* HTTPConnection.m in Sources */,
 				8627C8E71841573D00DA239D /* MTStatusBarOverlay.m in Sources */,
 				2266807118A69F6D0060FBBE /* PSTCollectionViewController.m in Sources */,

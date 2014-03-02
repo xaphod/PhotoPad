@@ -29,7 +29,6 @@ DONE
 
     12.per image in collage: random amount of tilt + zoom, to make things more interesting
 
-    2. DONE: support landscape mode
     3. DONE: scrolling down thru images is jerky, fix this: image thumbnails too big?
     4. DONE: deselect doesn't work: at least the checkmarks are not removed on deselect
     6. DONE: new images (images downloaded) must be put at START of collection (top left), not bottom

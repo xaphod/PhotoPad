@@ -34,6 +34,7 @@ typedef void(^ImageResizeCompletionBlock)(UIImage* resizedImage);
 - (UIImage*)getCellsizeImage:(NSString*)url size:(CGSize)size completionBlock:(ImageResizeCompletionBlock)completionBlock; // performant only when this is called with the same CGSize all the time
     
 - (void)didReceiveMemoryWarning;
+- (void)cacheClean;
 
 // UI-related
 - (void)viewControllerIsRotating;

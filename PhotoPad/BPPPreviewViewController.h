@@ -18,9 +18,7 @@
 @interface BPPPreviewViewController : UIViewController <MWPhotoBrowserDelegate, UIGestureRecognizerDelegate, UIActionSheetDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout,
     UIScrollViewDelegate>
 
-// @property (strong, nonatomic) NSMutableArray *photoFilenames; // array of filenames with absolute paths
-
-@property(nonatomic, strong) NSMutableDictionary* selectedPhotos; // key = URL (from PhotoStore), value = UIImage*
+//@property(nonatomic, strong) NSMutableDictionary* selectedPhotos; // key = URL (from PhotoStore), value = UIImage*
 @property (nonatomic) NSUInteger selectedIndex;
 
 @property (strong, nonatomic) MWPhotoBrowser *photosBrowser;
@@ -37,9 +35,10 @@
 @property (weak, nonatomic) IBOutlet UIView *previewContainingViewOutlet;
 @property (weak, nonatomic) IBOutlet UIImageView *landscapeImageViewOutlet;
 @property (weak, nonatomic) IBOutlet UIImageView *portraitImageViewOutlet;
-@property (weak, nonatomic) IBOutlet UIBarButtonItem *printButtonOulet;
 @property (weak, nonatomic) IBOutlet UIView *notificationOfNewPhotosViewOutlet;
 @property (weak, nonatomic) IBOutlet UIButton *notificationOfNewPhotosButtonOutlet;
+@property (weak, nonatomic) IBOutlet UIButton *clearButtonOutlet;
+@property (weak, nonatomic) IBOutlet UIButton *printButtonOutlet;
 
 
 @end

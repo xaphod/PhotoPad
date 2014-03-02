@@ -24,7 +24,7 @@
 + (BPPAirprintCollagePrinter *)singleton;              // Call this to get the class
 
 // takes an array of UIImage to print. The UIBarButton is where the UI for printing will be rendered near
-- (bool)printCollage:(NSArray*)images  fromUIBarButton:(UIBarButtonItem*)fromUIBarButton;
+- (bool)printCollage:(NSArray*)images fromCGRect:(CGRect)rect fromUIView:(UIView*)view;
 
 // input collages is an array of arrays of UIImage*
 // output is array of UIImage*

@@ -108,10 +108,11 @@ static BPPPhotoStore *shared = nil;
         _largestPreviewsize_shortsidePixels= shortsidePixels;
 
         _imageCache_2er = [[NSCache alloc] init];
-        [_imageCache_2er setTotalCostLimit:10]; // number of images
+        [_imageCache_2er setTotalCostLimit:7]; // number of images
         _imageCache_4er = [[NSCache alloc] init];
-        [_imageCache_4er setTotalCostLimit:10]; // number of images
+        [_imageCache_4er setTotalCostLimit:7]; // number of images
         _imageCache_cellsize = [[NSCache alloc] init];
+        [_imageCache_cellsize setTotalCostLimit:30];
         _imageCacheQueue = [[NSOperationQueue alloc] init];
         _imageCacheQueue.maxConcurrentOperationCount = 3;
         
@@ -174,7 +175,7 @@ static BPPPhotoStore *shared = nil;
             
             // cache it, and call completion block from getCellsizeImage's caller
             NSLog(@"BPPPhotoStore getCellSizeImage: DONE, adding resized image to cache");
-            [imageCache_cellsize setObject:resizedImage forKey:url];
+            [imageCache_cellsize setObject:resizedImage forKey:url cost:1];
             if( completionBlock )
                 completionBlock(resizedImage);
             
@@ -194,8 +195,11 @@ static BPPPhotoStore *shared = nil;
     return nil;
 }
 
-
 - (UIImage*)getHalfResolutionImage:(NSString*)url completionBlock:(ImageResizeCompletionBlock)completionBlock {
+    return [self getHalfResolutionImage:url pri:NSOperationQueuePriorityNormal completionBlock:completionBlock];
+}
+
+- (UIImage*)getHalfResolutionImage:(NSString*)url pri:(NSOperationQueuePriority)pri completionBlock:(ImageResizeCompletionBlock)completionBlock {
     
     UIImage* cachedImage = [_imageCache_2er objectForKey:url];
     BPPAirprintCollagePrinter *ap = [BPPAirprintCollagePrinter singleton];
@@ -230,7 +234,7 @@ static BPPPhotoStore *shared = nil;
                 
             }];
             // run the operation
-            //[resizeOp setQueuePriority:NSOperationQueuePriorityLow]; // 2er/4er are low pri
+            [resizeOp setQueuePriority:pri];
             NSLog(@"BPPPhotoStore getHalfResolutionImage: adding resize op to queue now");
             [imageCacheQueue addOperation:resizeOp];
             
@@ -347,6 +351,11 @@ static BPPPhotoStore *shared = nil;
             NSLog(@"loadFromFileAndDelete: deleteFile, deleted %@", filename);
         }
         
+        // generate 2er
+        [self getHalfResolutionImage:assetURL.absoluteString pri:NSOperationQueuePriorityLow completionBlock:^(UIImage *resizedImage) {
+            NSLog(@"loadFromFileAndDelete: generated 2er cache resize");
+        }];
+        
         if( completionBlock )
             completionBlock();
     }];
@@ -370,6 +379,11 @@ static BPPPhotoStore *shared = nil;
     [_imageCache_2er removeAllObjects];
     [_imageCache_4er removeAllObjects];
     [_imageCache_cellsize removeAllObjects];
+}
+
+- (void)cacheClean {
+    [_imageCache_2er removeAllObjects];
+    [_imageCache_4er removeAllObjects];
 }
 
 @end

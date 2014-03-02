@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4514" systemVersion="13B42" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="RTl-KA-cyl">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4514" systemVersion="13C64" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="RTl-KA-cyl">
     <dependencies>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3747"/>
     </dependencies>
@@ -14,7 +14,7 @@
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <connections>
-                        <segue destination="J2i-WT-5lf" kind="relationship" relationship="rootViewController" id="G1h-rm-CD3"/>
+                        <segue destination="oec-va-NCN" kind="relationship" relationship="rootViewController" id="hFT-2B-ySJ"/>
                     </connections>
                 </navigationController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="2r2-Ro-wxc" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -171,6 +171,56 @@ top - touch here!</string>
                                 <rect key="frame" x="0.0" y="320" width="768" height="704"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="SyB-dw-tQG" userLabel="landscapeImageView">
+                                        <rect key="frame" x="20" y="109" width="728" height="485"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    </imageView>
+                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Cjg-tN-PS9" userLabel="portraitImageView">
+                                        <rect key="frame" x="170" y="20" width="429" height="664"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                    </imageView>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dBX-PL-m9r">
+                                        <rect key="frame" x="670" y="126" width="81" height="58"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="81" id="bJd-zB-blR"/>
+                                            <constraint firstAttribute="height" constant="58" id="mR7-PN-fim"/>
+                                        </constraints>
+                                        <state key="normal" title="PRINT">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="PrintPressed:" destination="oec-va-NCN" eventType="touchUpInside" id="MdF-al-teJ"/>
+                                        </connections>
+                                    </button>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZBQ-Bw-o8m">
+                                        <rect key="frame" x="677" y="64" width="67" height="54"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="54" id="iHl-rO-hT8"/>
+                                            <constraint firstAttribute="width" constant="67" id="opj-aZ-BSK"/>
+                                        </constraints>
+                                        <state key="normal" title="EMAIL">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <segue destination="EvB-v4-FIj" kind="modal" identifier="showEmail" modalPresentationStyle="formSheet" id="nkR-2D-awy"/>
+                                        </connections>
+                                    </button>
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MxQ-8b-LYQ">
+                                        <rect key="frame" x="673" y="0.0" width="75" height="51"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <constraints>
+                                            <constraint firstAttribute="width" constant="75" id="PNv-Fn-KR8"/>
+                                            <constraint firstAttribute="height" constant="51" id="Vbk-Qp-2dd"/>
+                                        </constraints>
+                                        <state key="normal" title="CLEAR">
+                                            <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="clearPressed:" destination="oec-va-NCN" eventType="touchUpInside" id="xxw-Ue-duT"/>
+                                        </connections>
+                                    </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cNv-4f-PXc">
                                         <rect key="frame" x="578" y="594" width="150" height="70"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -185,26 +235,23 @@ top - touch here!</string>
                                             <action selector="debugInjectPressed:" destination="oec-va-NCN" eventType="touchUpInside" id="hJZ-wb-uhW"/>
                                         </connections>
                                     </button>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="SyB-dw-tQG" userLabel="landscapeImageView">
-                                        <rect key="frame" x="20" y="109" width="728" height="485"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    </imageView>
-                                    <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Cjg-tN-PS9" userLabel="portraitImageView">
-                                        <rect key="frame" x="170" y="20" width="429" height="664"/>
-                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                    </imageView>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
                                     <constraint firstAttribute="bottom" secondItem="Cjg-tN-PS9" secondAttribute="bottom" constant="20" id="0HI-8z-rb9"/>
                                     <constraint firstItem="Cjg-tN-PS9" firstAttribute="top" secondItem="hDb-2e-3aN" secondAttribute="top" constant="20" id="218-ub-OAU"/>
                                     <constraint firstAttribute="bottom" secondItem="cNv-4f-PXc" secondAttribute="bottom" constant="40" id="2K8-J8-JBW"/>
-                                    <constraint firstAttribute="centerY" secondItem="SyB-dw-tQG" secondAttribute="centerY" id="2so-sO-lyp"/>
                                     <constraint firstAttribute="trailing" secondItem="Cjg-tN-PS9" secondAttribute="trailing" constant="169" id="88a-wn-jFn"/>
+                                    <constraint firstAttribute="trailing" secondItem="ZBQ-Bw-o8m" secondAttribute="trailing" constant="24" id="AJd-0K-G09"/>
+                                    <constraint firstAttribute="trailing" secondItem="dBX-PL-m9r" secondAttribute="trailing" constant="17" id="FtX-oQ-9WO"/>
                                     <constraint firstItem="SyB-dw-tQG" firstAttribute="leading" secondItem="hDb-2e-3aN" secondAttribute="leading" constant="20" id="Hz6-FC-u87"/>
                                     <constraint firstItem="SyB-dw-tQG" firstAttribute="top" secondItem="hDb-2e-3aN" secondAttribute="top" constant="109" id="Zxg-T6-uY3"/>
+                                    <constraint firstItem="MxQ-8b-LYQ" firstAttribute="top" secondItem="hDb-2e-3aN" secondAttribute="top" id="cOm-gT-5jC"/>
                                     <constraint firstItem="Cjg-tN-PS9" firstAttribute="leading" secondItem="hDb-2e-3aN" secondAttribute="leading" constant="170" id="dds-oo-k5O"/>
+                                    <constraint firstAttribute="trailing" secondItem="MxQ-8b-LYQ" secondAttribute="trailing" constant="20" id="ika-wX-563"/>
                                     <constraint firstAttribute="trailing" secondItem="SyB-dw-tQG" secondAttribute="trailing" constant="20" id="lsd-bj-FbI"/>
+                                    <constraint firstItem="dBX-PL-m9r" firstAttribute="top" secondItem="ZBQ-Bw-o8m" secondAttribute="bottom" constant="8" id="nFb-z1-cbg"/>
+                                    <constraint firstItem="ZBQ-Bw-o8m" firstAttribute="top" secondItem="MxQ-8b-LYQ" secondAttribute="bottom" constant="13" id="oUn-eI-MZs"/>
                                     <constraint firstAttribute="trailing" secondItem="cNv-4f-PXc" secondAttribute="trailing" constant="40" id="rQF-uq-5lI"/>
                                     <constraint firstAttribute="bottom" secondItem="SyB-dw-tQG" secondAttribute="bottom" constant="110" id="vo9-Ev-s29"/>
                                 </constraints>
@@ -225,6 +272,7 @@ top - touch here!</string>
                     </view>
                     <navigationItem key="navigationItem" id="sF9-Md-uwQ"/>
                     <connections>
+                        <outlet property="clearButtonOutlet" destination="MxQ-8b-LYQ" id="wBo-iQ-WMA"/>
                         <outlet property="collectionView" destination="sSk-Nz-PVT" id="twc-Hs-eUH"/>
                         <outlet property="collectionViewFlowLayoutOutlet" destination="sVp-j7-w08" id="jv4-RH-oKj"/>
                         <outlet property="landscapeImageViewOutlet" destination="SyB-dw-tQG" id="GHF-Ky-nnx"/>
@@ -232,6 +280,7 @@ top - touch here!</string>
                         <outlet property="notificationOfNewPhotosViewOutlet" destination="x5U-mZ-23n" id="gRs-vO-tuo"/>
                         <outlet property="portraitImageViewOutlet" destination="Cjg-tN-PS9" id="Nd0-vx-wBB"/>
                         <outlet property="previewContainingViewOutlet" destination="hDb-2e-3aN" id="sST-0g-Wre"/>
+                        <outlet property="printButtonOutlet" destination="dBX-PL-m9r" id="Use-nF-liK"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="goB-Tw-rET" userLabel="First Responder" sceneMemberID="firstResponder"/>
@@ -411,6 +460,51 @@ top - touch here!</string>
             </objects>
             <point key="canvasLocation" x="1029" y="889"/>
         </scene>
+        <!--Email View Controller-->
+        <scene sceneID="yQd-Ws-y57">
+            <objects>
+                <viewController id="EvB-v4-FIj" customClass="BPPEmailViewController" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="frt-IC-d5E"/>
+                        <viewControllerLayoutGuide type="bottom" id="tmO-Hv-zrs"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="PeM-Ak-xYL">
+                        <rect key="frame" x="0.0" y="0.0" width="540" height="620"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <subviews>
+                            <webView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rOo-c2-BsD">
+                                <rect key="frame" x="0.0" y="0.0" width="540" height="620"/>
+                                <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                                <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
+                            </webView>
+                        </subviews>
+                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                    </view>
+                    <connections>
+                        <outlet property="webViewOutlet" destination="rOo-c2-BsD" id="vDc-gs-zrn"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="0K5-ox-CVl" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="1008" y="1736"/>
+        </scene>
+        <!--View Controller-->
+        <scene sceneID="sRt-rj-mRs">
+            <objects>
+                <viewController id="tQy-hg-Wqa" sceneMemberID="viewController">
+                    <layoutGuides>
+                        <viewControllerLayoutGuide type="top" id="8qW-gd-6kf"/>
+                        <viewControllerLayoutGuide type="bottom" id="4n1-hK-Fqs"/>
+                    </layoutGuides>
+                    <view key="view" contentMode="scaleToFill" id="BIm-vd-Ojt">
+                        <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
+                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
+                    </view>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="puH-E7-0pW" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+        </scene>
     </scenes>
     <resources>
         <image name="Print" width="20" height="20"/>
@@ -420,4 +514,7 @@ top - touch here!</string>
         <simulatedOrientationMetrics key="orientation"/>
         <simulatedScreenMetrics key="destination"/>
     </simulatedMetricsContainer>
+    <inferredMetricsTieBreakers>
+        <segue reference="aOW-UX-NyN"/>
+    </inferredMetricsTieBreakers>
 </document>

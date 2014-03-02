@@ -36,7 +36,7 @@
 
 // public
 // creates collages of up to 6 images in a single image
-- (bool)printCollage:(NSArray*)images fromUIBarButton:(UIBarButtonItem*)fromUIBarButton {
+- (bool)printCollage:(NSArray*)images fromCGRect:(CGRect)rect fromUIView:(UIView*)view {
     if( images.count < 2 ) {
         // must pass in at least 2 images
         NSLog(@"printCollage: must print at least 2 images");
@@ -114,7 +114,7 @@
     
     if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiomPad)
     {
-        [controller presentFromBarButtonItem:fromUIBarButton animated:YES completionHandler:completionHandler];  // iPad
+        [controller presentFromRect:rect inView:view animated:YES completionHandler:completionHandler];
     }
     else
     {
@@ -139,7 +139,7 @@
             // loop exit condition: between 0 and 6: exactly one last collage
             NSArray *collage = [images subarrayWithRange:NSMakeRange( imagesConsumed, (images.count-imagesConsumed) )];
             [groupedCollages addObject:collage];
-            NSLog(@"AirprintCollagePrinter: Made FINAL collage %lu, size is %lu", groupedCollages.count, images.count-imagesConsumed);
+            NSLog(@"AirprintCollagePrinter: Made FINAL collage %lu, size is %u", (unsigned long)groupedCollages.count, images.count-imagesConsumed);
             imagesConsumed = (int)images.count;
         } else {
             
@@ -156,12 +156,12 @@
             
             NSArray *collage = [images subarrayWithRange:NSMakeRange( imagesConsumed, batchSize )];
             [groupedCollages addObject:collage];
-            NSLog(@"AirprintCollagePrinter: Made collage %lu, size is %d", groupedCollages.count, batchSize);
+            NSLog(@"AirprintCollagePrinter: Made collage %lu, size is %d", (unsigned long)groupedCollages.count, batchSize);
             imagesConsumed += batchSize;
         }
     }
     
-    NSLog(@"makeCollageUIImageGroupings: returning %lu groups", groupedCollages.count);
+    NSLog(@"makeCollageUIImageGroupings: returning %lu groups", (unsigned long)groupedCollages.count);
     return groupedCollages;
 }
 
