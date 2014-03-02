@@ -1,10 +1,6 @@
 Backlog - Tim
 
-BUG: slow perf on make collages when fullsize images given!
-
 1. TODOs in code
-
-- preview doesn't rotate when it should go landscape etc
 
 - after choosing 1, put it in a 2-er collage with a ? or grey square
 
@@ -21,6 +17,8 @@ Main screen
 21. images printed to collage: apply a style (edit) them?
 22. publish to the instagram feed of the wedding??
 23. make squares at top to be portrait, not square???? and later have a setting to change it to landscape
+
+More perf: Get rid of selectedPhotos if possible - directly ask for 4ers without asking for 2ers
 
 
 DONE
