@@ -20,6 +20,8 @@ typedef void(^ImageResizeCompletionBlock)(UIImage* resizedImage);
 
 
 + (BPPPhotoStore *)singleton;              // Call this to get the class
++ (BPPPhotoStore *)singletonWithLargestPreviewSize:(CGFloat)longsidePixels shortsidePixels:(CGFloat)shortsidePixels;
+
 
 - (void)loadFromFileAndDelete:(NSString*)filename completionBlock:(void(^)(void))completionBlock;   // load into photo-store from file, and delete it
 

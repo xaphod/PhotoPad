@@ -83,7 +83,7 @@
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
                             <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" indicatorStyle="white" minimumZoomScale="0.0" maximumZoomScale="0.0" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="sSk-Nz-PVT">
-                                <rect key="frame" x="0.0" y="20" width="768" height="320"/>
+                                <rect key="frame" x="0.0" y="0.0" width="768" height="320"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <constraints>
                                     <constraint firstAttribute="height" constant="320" id="24u-gG-lT0"/>
@@ -168,11 +168,11 @@ top - touch here!</string>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hDb-2e-3aN">
-                                <rect key="frame" x="0.0" y="340" width="768" height="684"/>
+                                <rect key="frame" x="0.0" y="320" width="768" height="704"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cNv-4f-PXc">
-                                        <rect key="frame" x="578" y="574" width="150" height="70"/>
+                                        <rect key="frame" x="578" y="594" width="150" height="70"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="70" id="eTB-XQ-ciE"/>
@@ -186,43 +186,41 @@ top - touch here!</string>
                                         </connections>
                                     </button>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="SyB-dw-tQG" userLabel="landscapeImageView">
-                                        <rect key="frame" x="20" y="100" width="728" height="485"/>
+                                        <rect key="frame" x="20" y="109" width="728" height="485"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <constraints>
-                                            <constraint firstAttribute="height" constant="485" id="jqY-NX-fci"/>
-                                        </constraints>
                                     </imageView>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="Cjg-tN-PS9" userLabel="portraitImageView">
-                                        <rect key="frame" x="170" y="20" width="429" height="644"/>
+                                        <rect key="frame" x="170" y="20" width="429" height="664"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </imageView>
                                 </subviews>
                                 <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="bottom" secondItem="Cjg-tN-PS9" secondAttribute="bottom" constant="20" id="1X0-uY-o2f"/>
-                                    <constraint firstItem="Cjg-tN-PS9" firstAttribute="leading" secondItem="hDb-2e-3aN" secondAttribute="leading" constant="170" id="5ei-i2-odH"/>
-                                    <constraint firstItem="SyB-dw-tQG" firstAttribute="leading" secondItem="hDb-2e-3aN" secondAttribute="leading" constant="20" id="FCz-mb-y3n"/>
-                                    <constraint firstItem="SyB-dw-tQG" firstAttribute="top" secondItem="hDb-2e-3aN" secondAttribute="top" constant="100" id="MS0-lw-sTe"/>
-                                    <constraint firstAttribute="trailing" secondItem="Cjg-tN-PS9" secondAttribute="trailing" constant="169" id="QQa-cK-3yg"/>
-                                    <constraint firstAttribute="trailing" secondItem="SyB-dw-tQG" secondAttribute="trailing" constant="20" id="TAe-2q-bWb"/>
-                                    <constraint firstAttribute="bottom" secondItem="cNv-4f-PXc" secondAttribute="bottom" constant="40" id="gVY-pE-Qxc"/>
-                                    <constraint firstItem="Cjg-tN-PS9" firstAttribute="top" secondItem="hDb-2e-3aN" secondAttribute="top" constant="20" id="nen-3I-cEO"/>
-                                    <constraint firstAttribute="bottom" secondItem="SyB-dw-tQG" secondAttribute="bottom" constant="99" id="vdZ-w5-bUi"/>
-                                    <constraint firstAttribute="trailing" secondItem="cNv-4f-PXc" secondAttribute="trailing" constant="40" id="wJO-0s-lnI"/>
+                                    <constraint firstAttribute="bottom" secondItem="Cjg-tN-PS9" secondAttribute="bottom" constant="20" id="0HI-8z-rb9"/>
+                                    <constraint firstItem="Cjg-tN-PS9" firstAttribute="top" secondItem="hDb-2e-3aN" secondAttribute="top" constant="20" id="218-ub-OAU"/>
+                                    <constraint firstAttribute="bottom" secondItem="cNv-4f-PXc" secondAttribute="bottom" constant="40" id="2K8-J8-JBW"/>
+                                    <constraint firstAttribute="centerY" secondItem="SyB-dw-tQG" secondAttribute="centerY" id="2so-sO-lyp"/>
+                                    <constraint firstAttribute="trailing" secondItem="Cjg-tN-PS9" secondAttribute="trailing" constant="169" id="88a-wn-jFn"/>
+                                    <constraint firstItem="SyB-dw-tQG" firstAttribute="leading" secondItem="hDb-2e-3aN" secondAttribute="leading" constant="20" id="Hz6-FC-u87"/>
+                                    <constraint firstItem="SyB-dw-tQG" firstAttribute="top" secondItem="hDb-2e-3aN" secondAttribute="top" constant="109" id="Zxg-T6-uY3"/>
+                                    <constraint firstItem="Cjg-tN-PS9" firstAttribute="leading" secondItem="hDb-2e-3aN" secondAttribute="leading" constant="170" id="dds-oo-k5O"/>
+                                    <constraint firstAttribute="trailing" secondItem="SyB-dw-tQG" secondAttribute="trailing" constant="20" id="lsd-bj-FbI"/>
+                                    <constraint firstAttribute="trailing" secondItem="cNv-4f-PXc" secondAttribute="trailing" constant="40" id="rQF-uq-5lI"/>
+                                    <constraint firstAttribute="bottom" secondItem="SyB-dw-tQG" secondAttribute="bottom" constant="110" id="vo9-Ev-s29"/>
                                 </constraints>
                             </view>
                         </subviews>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
-                            <constraint firstItem="hDb-2e-3aN" firstAttribute="leading" secondItem="Exh-5S-ovk" secondAttribute="leading" id="6Bt-EL-LRA"/>
-                            <constraint firstItem="hDb-2e-3aN" firstAttribute="top" secondItem="sSk-Nz-PVT" secondAttribute="bottom" id="7fr-m5-nCB"/>
-                            <constraint firstAttribute="trailing" secondItem="hDb-2e-3aN" secondAttribute="trailing" id="ATy-74-6Ab"/>
-                            <constraint firstItem="sSk-Nz-PVT" firstAttribute="leading" secondItem="Exh-5S-ovk" secondAttribute="leading" id="KNZ-V0-Ng2"/>
+                            <constraint firstItem="sSk-Nz-PVT" firstAttribute="top" secondItem="Exh-5S-ovk" secondAttribute="top" id="0e1-gc-xDG"/>
+                            <constraint firstItem="tA0-Vr-WJ6" firstAttribute="top" secondItem="hDb-2e-3aN" secondAttribute="bottom" id="CnD-K0-Idv"/>
+                            <constraint firstAttribute="trailing" secondItem="sSk-Nz-PVT" secondAttribute="trailing" id="Scg-T7-bkc"/>
                             <constraint firstItem="x5U-mZ-23n" firstAttribute="top" secondItem="Exh-5S-ovk" secondAttribute="top" constant="50" id="avz-LX-XHT"/>
                             <constraint firstAttribute="trailing" secondItem="x5U-mZ-23n" secondAttribute="trailing" constant="20" id="dVs-06-VzT"/>
-                            <constraint firstAttribute="trailing" secondItem="sSk-Nz-PVT" secondAttribute="trailing" id="dci-Tf-229"/>
-                            <constraint firstItem="sSk-Nz-PVT" firstAttribute="top" secondItem="nc0-ZD-BNP" secondAttribute="bottom" id="iFE-3z-dGw"/>
-                            <constraint firstItem="tA0-Vr-WJ6" firstAttribute="top" secondItem="hDb-2e-3aN" secondAttribute="bottom" id="tH4-C2-szC"/>
+                            <constraint firstItem="hDb-2e-3aN" firstAttribute="top" secondItem="sSk-Nz-PVT" secondAttribute="bottom" id="rA3-PX-fpr"/>
+                            <constraint firstItem="hDb-2e-3aN" firstAttribute="leading" secondItem="Exh-5S-ovk" secondAttribute="leading" id="sPG-mt-Rnx"/>
+                            <constraint firstItem="sSk-Nz-PVT" firstAttribute="leading" secondItem="Exh-5S-ovk" secondAttribute="leading" id="uMa-la-ttA"/>
+                            <constraint firstAttribute="trailing" secondItem="hDb-2e-3aN" secondAttribute="trailing" id="xyt-D5-aYe"/>
                         </constraints>
                     </view>
                     <navigationItem key="navigationItem" id="sF9-Md-uwQ"/>

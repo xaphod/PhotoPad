@@ -67,6 +67,9 @@
     NSCache* _imageCache_cellsize; // resolution of cellsize. Currently is a square aspect ratio
 
     NSOperationQueue* _imageCacheQueue; // all operations in same queue, so that the priorities can be relevant to one-another
+    
+    CGFloat _largestPreviewsize_longsidePixels; // used to figure out the resize target for cached resized images
+    CGFloat _largestPreviewsize_shortsidePixels;
 
     UICollectionView* _vc;
 }
@@ -76,19 +79,33 @@
 
 @implementation BPPPhotoStore
 
-+ (BPPPhotoStore *)singleton {
-    static dispatch_once_t pred;
-    static BPPPhotoStore *shared = nil;
+static dispatch_once_t pred;
+static BPPPhotoStore *shared = nil;
+
++ (BPPPhotoStore *)singletonWithLargestPreviewSize:(CGFloat)longsidePixels shortsidePixels:(CGFloat)shortsidePixels {
     
     dispatch_once(&pred, ^{
-        shared = [[BPPPhotoStore alloc] init];
+        shared = [[BPPPhotoStore alloc] initWithLargestPreviewSize:longsidePixels shortsidePixels:shortsidePixels];
+        NSLog(@"BPPPhotoStore generated, long pixels %f, short %f", longsidePixels, shortsidePixels);
     });
     return shared;
 }
 
-- (id)init {
++ (BPPPhotoStore *)singleton {
+    
+    dispatch_once(&pred, ^{
+        BPPAirprintCollagePrinter *ap = [BPPAirprintCollagePrinter singleton];
+        shared = [[BPPPhotoStore alloc] initWithLargestPreviewSize:ap.longsidePixels shortsidePixels:ap.shortsidePixels];
+    });
+    return shared;
+}
+
+- (id)initWithLargestPreviewSize:(CGFloat)longsidePixels shortsidePixels:(CGFloat)shortsidePixels {
     if (self = [super init]) {
         _photoURLs = [NSMutableArray array];
+        
+        _largestPreviewsize_longsidePixels = longsidePixels;
+        _largestPreviewsize_shortsidePixels= shortsidePixels;
 
         _imageCache_2er = [[NSCache alloc] init];
         [_imageCache_2er setTotalCostLimit:10]; // number of images
@@ -195,26 +212,35 @@
     [self loadImageFromCameraRollByURL:url completionBlock:^(UIImage* fullsizeImage) {
         
         CGSize targetSize;
-        if( fullsizeImage.size.width > fullsizeImage.size.height )
-            targetSize = CGSizeMake(ap.longsidePixels, ap.shortsidePixels);
-        else
-            targetSize = CGSizeMake(ap.shortsidePixels, ap.longsidePixels);
+        if( fullsizeImage.size.width > fullsizeImage.size.height ) {
+            targetSize = CGSizeMake(MAX(ap.longsidePixels, _largestPreviewsize_longsidePixels), MAX(ap.shortsidePixels, _largestPreviewsize_shortsidePixels) );
+        } else {
+            targetSize = CGSizeMake(MAX(ap.shortsidePixels, _largestPreviewsize_shortsidePixels), MAX(ap.longsidePixels, _largestPreviewsize_longsidePixels) );
+        }
         
-        ImageResizeOperation* resizeOp = [[ImageResizeOperation alloc] initWithImage:fullsizeImage size:targetSize crop:NO resizeFinishCompletionBlock:^(UIImage* resizedImage) {
+        if( targetSize.height < fullsizeImage.size.height && targetSize.width < fullsizeImage.size.width ) {
+            ImageResizeOperation* resizeOp = [[ImageResizeOperation alloc] initWithImage:fullsizeImage size:targetSize crop:NO resizeFinishCompletionBlock:^(UIImage* resizedImage) {
+                
+                // cache it, and call completion block from caller
+                NSLog(@"BPPPhotoStore getHalfResolutionImage: DONE, adding resized image to cache. w: %f  h: %f", targetSize.width, targetSize.height);
+                [imageCache_2er setObject:resizedImage forKey:url cost:1];
+                
+                if( completionBlock )
+                    completionBlock(resizedImage);
+                
+            }];
+            // run the operation
+            //[resizeOp setQueuePriority:NSOperationQueuePriorityLow]; // 2er/4er are low pri
+            NSLog(@"BPPPhotoStore getHalfResolutionImage: adding resize op to queue now");
+            [imageCacheQueue addOperation:resizeOp];
             
-            // cache it, and call completion block from caller
-            NSLog(@"BPPPhotoStore getHalfResolutionImage: DONE, adding resized image to cache");
-            [imageCache_2er setObject:resizedImage forKey:url cost:1];
-            
+        } else {
+            NSLog(@"BPPPhotoStore getHalfResolutionImage: not resizing (too small). Current w: %f  h: %f", fullsizeImage.size.width, fullsizeImage.size.height);
+            [imageCache_2er setObject:fullsizeImage forKey:url cost:1];
             if( completionBlock )
-                completionBlock(resizedImage);
-            
-        }];
+                completionBlock(fullsizeImage);
+        }
         
-        // run the operation
-        //[resizeOp setQueuePriority:NSOperationQueuePriorityLow]; // 2er/4er are low pri
-        NSLog(@"BPPPhotoStore getHalfResolutionImage: adding resize op to queue now");
-        [imageCacheQueue addOperation:resizeOp];
     }];
     
     return nil;
@@ -232,14 +258,20 @@
     // TODO: this is too dependent upon BPPAirprintCollagePrinter, namely its collage layouts!
     CGSize targetSize;
     
-    if( halfResImage.size.width > halfResImage.size.height )
-        targetSize = CGSizeMake(ap.longsidePixels/2, ap.shortsidePixels/2);
-    else
-        targetSize = CGSizeMake(ap.shortsidePixels/2, ap.longsidePixels/2);
+    if( halfResImage.size.width > halfResImage.size.height ) {
+        targetSize = CGSizeMake(MAX(ap.longsidePixels/2, _largestPreviewsize_longsidePixels/2), MAX(ap.shortsidePixels/2, _largestPreviewsize_shortsidePixels/2) );
+    } else {
+        targetSize = CGSizeMake(MAX(ap.shortsidePixels/2, _largestPreviewsize_shortsidePixels/2), MAX(ap.longsidePixels/2, _largestPreviewsize_longsidePixels/2) );
+    }
     
-    cachedImage = [ap fitImage:halfResImage scaledToFillSize:targetSize];
-    [_imageCache_4er setObject:cachedImage forKey:url cost:1];
-    NSLog(@"BPPPhotoStore: getQuarterResolutionImage: generation complete.");
+    if( targetSize.height < halfResImage.size.height && targetSize.width < halfResImage.size.width ) {
+        cachedImage = [ap fitImage:halfResImage scaledToFillSize:targetSize];
+        [_imageCache_4er setObject:cachedImage forKey:url cost:1];
+        NSLog(@"BPPPhotoStore: getQuarterResolutionImage: generation complete. w: %f  h: %f", targetSize.width, targetSize.height);
+    } else {
+        NSLog(@"BPPPhotoStore: getQuarterResolutionImage: quarter would be too small, just returning halfres");
+        cachedImage = halfResImage;
+    }
     return cachedImage;
 }
 

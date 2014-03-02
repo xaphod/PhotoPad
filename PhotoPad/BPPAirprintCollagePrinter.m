@@ -200,7 +200,7 @@
             
             [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[0] rect:CGRectMake(CollageBorderPixels, CollageBorderPixels, width1and2, height1and2) ];
             [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[1] rect:CGRectMake(CollageBorderPixels, 2*CollageBorderPixels + height1and2, width1and2, height1and2) ];
-            [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[2] rect:CGRectMake( 2*CollageBorderPixels+width1and2, CollageBorderPixels, longsideLength - (3*CollageBorderPixels) - width1and2, shortsideLength - (2*CollageBorderPixels))];
+            [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[2] rect:CGRectMake( 2*CollageBorderPixels+width1and2, CollageBorderPixels, longsideLength - (3*CollageBorderPixels) - width1and2, 2*height1and2 + CollageBorderPixels)];
             
         } else if( imagesOfThisCollage.count == 4 ) {
             // orientation: **PORTRAIT**

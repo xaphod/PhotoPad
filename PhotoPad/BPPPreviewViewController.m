@@ -68,7 +68,8 @@
     self.collectionView.allowsMultipleSelection = YES;
     self.selectedPhotos = [NSMutableDictionary dictionary];
     
-    photoStore = [BPPPhotoStore singleton]; // ask for permission to photos, etc
+    
+    photoStore = [BPPPhotoStore singletonWithLargestPreviewSize:(self.landscapeImageViewOutlet.frame.size.width * [UIScreen mainScreen].scale) shortsidePixels:(self.landscapeImageViewOutlet.frame.size.height * [UIScreen mainScreen].scale) ]; // ask for permission to photos, etc
     [photoStore setReloadTarget:self.collectionView];
 }
 
@@ -91,6 +92,8 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
     NSLog(@"\n\n************************MEMORY WARNING BPPPreviewVC!************************\n\n");
+    self.landscapeImageViewOutlet.image = nil;
+    self.portraitImageViewOutlet.image = nil;
     [photoStore didReceiveMemoryWarning];
 }
 
