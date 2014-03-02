@@ -18,8 +18,6 @@
     NSIndexPath* _oldestNewestIndexPath;
     BPPPhotoStore* photoStore;
     
-    CGRect _initialPreviewImageViewFrameRect;
-    
     // DEBUG: ReMOVE THIS
     bool debugJPGdone;
 }
@@ -84,9 +82,6 @@
     }
      */
     
-    // save initial image preview ImageView height / width
-    _initialPreviewImageViewFrameRect = self.previewImageViewOutlet.frame;
-
     NSLog(@"containerView has %d constraints", (int)self.previewContainingViewOutlet.constraints.count);
 
 }
@@ -95,6 +90,8 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+    NSLog(@"\n\n************************MEMORY WARNING BPPPreviewVC!************************\n\n");
+    [photoStore didReceiveMemoryWarning];
 }
 
 - (void)updateUIFromSettings
@@ -184,13 +181,15 @@
     }
     
     CGSize size = CGSizeMake(cellSize, cellSize);
-
-    UIImage* instantResult = [photoStore getResizedImage:photoStore.photoURLs[indexPath.row] size:size completionBlock:^(UIImage *resizedImage) {
-
-        if( [_collectionView.indexPathsForVisibleItems containsObject:indexPath] ) {
+    
+    __weak UICollectionView* weakCollectionView = collectionView;
+    
+    UIImage* instantResult = [photoStore getCellsizeImage:photoStore.photoURLs[indexPath.row] size:size completionBlock:^(UIImage *resizedImage) {
+        
+        if( [weakCollectionView.indexPathsForVisibleItems containsObject:indexPath] ) {
             // Get hold of main queue (main thread)
             [[NSOperationQueue mainQueue] addOperationWithBlock: ^ {
-                BPPGalleryCell *thisCell = (BPPGalleryCell*)[_collectionView cellForItemAtIndexPath:indexPath];
+                BPPGalleryCell *thisCell = (BPPGalleryCell*)[weakCollectionView cellForItemAtIndexPath:indexPath];
                 thisCell.asset = resizedImage;
             }];
         }
@@ -218,11 +217,24 @@
     [cell.checkmarkViewOutlet setChecked:YES];
     
     NSString *url = photoStore.photoURLs[indexPath.row];
-    [photoStore getFullsizeImage:url completionBlock:^(UIImage *fullsizeImage) {
-        [self.selectedPhotos setObject:fullsizeImage forKey:url];
-        [self updatePreview];
+    
+    __weak NSMutableDictionary* selectedPhotos = self.selectedPhotos;
+    __weak BPPPreviewViewController* weakSelf = self;
+    
+    UIImage* retval = [photoStore getHalfResolutionImage:url completionBlock:^(UIImage *resizedImage) {
+        [selectedPhotos setObject:resizedImage forKey:url];
+        [[NSOperationQueue mainQueue] addOperationWithBlock: ^ {
+            [weakSelf updatePreview];
+        }];
     }];
     
+    // cache-hit case: block above does not execute completionBlock
+    if( retval ) {
+        [self.selectedPhotos setObject:retval forKey:url];
+        [[NSOperationQueue mainQueue] addOperationWithBlock: ^ {
+            [weakSelf updatePreview];
+        }];
+    }
     NSLog(@"Finished selecting item");
 
 }
@@ -297,6 +309,8 @@
         [self.collectionView deselectItemAtIndexPath:indexPath animated:YES];
         [self collectionView:self.collectionView didDeselectItemAtIndexPath:indexPath];
     }
+    
+    [self updatePreview];
 }
 
 
@@ -366,66 +380,84 @@
     }
 }
 
-- (void)updatePreview {
-    @synchronized( self.previewImageViewOutlet ) {
-        
-        if( self.selectedPhotos.count > 6 ) {
-            NSAssert(FALSE, @"Don't poke me! UpdatePreview cannot handle more than 6 images yet.");
-            return;
-        }
-        if( self.selectedPhotos.count < 2 ) {
-            if( self.previewImageViewOutlet.image != nil ) {
-                // TODO: going from 2 to 1 selected images -- hide/destroy preview, inform?
-                [UIView transitionWithView:self.previewImageViewOutlet
-                                  duration:1.0f
-                                   options:UIViewAnimationOptionTransitionCrossDissolve
-                                animations:^{
-                                    self.previewImageViewOutlet.image = nil;
-                                } completion:nil];
-            } else {
-                // TODO: going from 0->1 selected images -- inform user to pick another?
-            }
-            return;
-        }
-        
-        BPPAirprintCollagePrinter* ap = [BPPAirprintCollagePrinter singleton];
-        NSArray* selectedPhotosArray = [self.selectedPhotos allValues];
-        
-        NSLog(@"PERF DEBUG: makeCollageImages START");
-        UIImage* updatedPreview = [ap makeCollageImages:[NSArray arrayWithObject:selectedPhotosArray]][0];
-        NSLog(@"PERF DEBUG: makeCollageImages END");
-
-        if( updatedPreview.size.width > _initialPreviewImageViewFrameRect.size.width || updatedPreview.size.height > _initialPreviewImageViewFrameRect.size.height ) {
-            
-            // image is too big to fit in here. Find longest side and resize
-            updatedPreview = [ap fitImage:updatedPreview scaledToFillSize:_initialPreviewImageViewFrameRect.size];
-            NSLog(@"new updatedPreview width %f height %f", updatedPreview.size.width, updatedPreview.size.height);
-        }
-        
-        CGFloat vertConstraints = (self.previewContainingViewOutlet.frame.size.height - updatedPreview.size.height) / 2;
-        CGFloat horzConstraints = (self.previewContainingViewOutlet.frame.size.width - updatedPreview.size.width) / 2;
-        NSLog(@"new constraint sizes: vert %f, horz %f", vertConstraints, horzConstraints);
-
-        self.previewImageViewConstraintLeft.constant = horzConstraints;
-        self.previewImageViewConstraintRight.constant = horzConstraints;
-        self.previewImageViewConstraintTop.constant = vertConstraints;
-        self.previewImageViewConstraintBottom.constant = vertConstraints;
-
-        
-        [UIView transitionWithView:self.previewImageViewOutlet
-                          duration:0.7f
-                           options:UIViewAnimationOptionTransitionCrossDissolve
-                        animations:^{
-//                            self.previewImageViewOutlet.frame = CGRectMake(0, 0, updatedPreview.size.width, updatedPreview.size.height);
-                            self.previewImageViewOutlet.image = updatedPreview;
-                            [self.view layoutIfNeeded];
-                        } completion:^(bool finished){
-                            NSLog(@"containerView has %d constraints", (int)self.previewContainingViewOutlet.constraints.count);
-
-                        }];
-        
-        
+- (NSArray*)gatherSelectedImages {
+    
+    if( self.selectedPhotos.count > 6 ) {
+        NSAssert(FALSE, @"Don't poke me! cannot handle more than 6 images yet.");
+        return nil;
     }
+    if( self.selectedPhotos.count < 2 ) {
+        if( self.landscapeImageViewOutlet.image != nil || self.portraitImageViewOutlet.image != nil ) {
+            // TODO: going from 2 to 1 selected images -- hide/destroy preview, inform?
+            [UIView transitionWithView:self.previewContainingViewOutlet
+                              duration:1.0f
+                               options:UIViewAnimationOptionTransitionCrossDissolve
+                            animations:^{
+                                self.landscapeImageViewOutlet.image = nil;
+                                self.portraitImageViewOutlet.image = nil;
+                            } completion:nil];
+        } else {
+            // TODO: going from 0->1 selected images -- inform user to pick another?
+            NSLog(@"NOT ENOUGH SELECTED PHOTOS");
+        }
+        return nil;
+    }
+    
+    // selectedPhotos has images that are 2er (half) resolution. When making a collage of >=4, use 4er instead
+    NSMutableArray* selectedPhotosArray;
+    
+    if( self.selectedPhotos.count >= 4 ) {
+        
+        // TODO: this code is a steaming pile
+        selectedPhotosArray = [NSMutableArray array];
+        
+        for( NSString* url in [self.selectedPhotos allKeys] ) {
+            UIImage* selected_4er = [photoStore getQuarterResolutionImage:[self.selectedPhotos objectForKey:url] url:url];
+            [selectedPhotosArray addObject:selected_4er];
+        }
+        
+    } else {
+        selectedPhotosArray = [[self.selectedPhotos allValues] mutableCopy];
+    }
+    return selectedPhotosArray;
+}
+
+- (void)updatePreview {
+    NSArray* images = [self gatherSelectedImages];
+    if( images == nil)
+        return;
+
+    BPPAirprintCollagePrinter *ap = [BPPAirprintCollagePrinter singleton];
+    
+    bool landscape = [ap isResultingCollageLandscape:images];
+    UIImageView* correctImageView = self.landscapeImageViewOutlet;
+    UIImageView* wrongImageView = self.portraitImageViewOutlet;
+    CGFloat longside = self.landscapeImageViewOutlet.frame.size.width * [UIScreen mainScreen].scale;
+    CGFloat shortside= self.landscapeImageViewOutlet.frame.size.height * [UIScreen mainScreen].scale;
+    
+    if( ! landscape ) {
+        correctImageView = self.portraitImageViewOutlet;
+        wrongImageView = self.landscapeImageViewOutlet;
+        longside = self.portraitImageViewOutlet.frame.size.height * [UIScreen mainScreen].scale;
+        shortside= self.portraitImageViewOutlet.frame.size.width * [UIScreen mainScreen].scale;
+
+        NSLog(@"updatePreview: landscape NO");
+    } else {
+        NSLog(@"updatePreview: landscape YES");
+    }
+
+    UIImage* updatedPreview = [ap makeCollageImages:[NSArray arrayWithObject:images] longsideLength:longside shortsideLength:shortside][0];
+
+    [UIView transitionWithView:self.previewContainingViewOutlet
+                      duration:0.7f
+                       options:UIViewAnimationOptionTransitionCrossDissolve
+                    animations:^{
+                        correctImageView.image = updatedPreview;
+                        wrongImageView.image = nil;
+                    } completion:^(BOOL finished){
+                        
+                    }];
+    
 }
 
 

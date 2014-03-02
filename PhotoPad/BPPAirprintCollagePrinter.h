@@ -29,6 +29,10 @@
 // input collages is an array of arrays of UIImage*
 // output is array of UIImage*
 - (NSArray*)makeCollageImages:(NSArray*)collages;
+- (NSArray*)makeCollageImages:(NSArray*)collages longsideLength:(CGFloat)longsideLength shortsideLength:(CGFloat)shortsideLength;
+
+// input is an array of UIImage
+- (bool)isResultingCollageLandscape:(NSArray*)images;
 
 // some utility functions for other classes
 // resize images
@@ -38,5 +42,7 @@
 
 
 @property NSMutableArray* printerIDs; // array of strings
+@property NSInteger longsidePixels; // used when other classes are preparing images for this class
+@property NSInteger shortsidePixels;
 
 @end

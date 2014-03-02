@@ -1,12 +1,6 @@
 Backlog - Tim
 
-BUG: slow perf on make collages when fullsize images given!
-
-0. prep design workpackage for Matt - define asset deliverables (which icons etc)
 1. TODOs in code
-1b.DONE: Stop saving images inside app's own xcappdata -- save to photo roll instead, own folder
-
-- preview doesn't rotate when it should go landscape etc
 
 - after choosing 1, put it in a 2-er collage with a ? or grey square
 
@@ -24,9 +18,12 @@ Main screen
 22. publish to the instagram feed of the wedding??
 23. make squares at top to be portrait, not square???? and later have a setting to change it to landscape
 
+More perf: Get rid of selectedPhotos if possible - directly ask for 4ers without asking for 2ers
+
 
 DONE
 
+1b.DONE: Stop saving images inside app's own xcappdata -- save to photo roll instead, own folder
 - max 6 selection
 
     12.per image in collage: random amount of tilt + zoom, to make things more interesting

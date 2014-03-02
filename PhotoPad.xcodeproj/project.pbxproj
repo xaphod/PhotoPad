@@ -33,6 +33,7 @@
 		2266807918A69F6D0060FBBE /* PSTGridLayoutRow.m in Sources */ = {isa = PBXBuildFile; fileRef = 2266806B18A69F6D0060FBBE /* PSTGridLayoutRow.m */; };
 		2266807A18A69F6D0060FBBE /* PSTGridLayoutSection.m in Sources */ = {isa = PBXBuildFile; fileRef = 2266806D18A69F6D0060FBBE /* PSTGridLayoutSection.m */; };
 		228FABDD18A7967300DB5BDF /* BPPAirprintCollagePrinter.m in Sources */ = {isa = PBXBuildFile; fileRef = 228FABDC18A7967300DB5BDF /* BPPAirprintCollagePrinter.m */; };
+		2299712318C1370400CAEA56 /* RZSquaresLoading.m in Sources */ = {isa = PBXBuildFile; fileRef = 2299712218C1370400CAEA56 /* RZSquaresLoading.m */; };
 		229FAFD418BDF7B700165F0C /* ALAssetsLibrary+CustomPhotoAlbum.m in Sources */ = {isa = PBXBuildFile; fileRef = 229FAFD318BDF7B700165F0C /* ALAssetsLibrary+CustomPhotoAlbum.m */; };
 		229FAFD718BE0F2900165F0C /* BPPPhotoStore.m in Sources */ = {isa = PBXBuildFile; fileRef = 229FAFD618BE0F2900165F0C /* BPPPhotoStore.m */; };
 		229FAFDA18C09BAA00165F0C /* TTAlertView.m in Sources */ = {isa = PBXBuildFile; fileRef = 229FAFD918C09BAA00165F0C /* TTAlertView.m */; };
@@ -182,6 +183,8 @@
 		2266806D18A69F6D0060FBBE /* PSTGridLayoutSection.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PSTGridLayoutSection.m; sourceTree = "<group>"; };
 		228FABDB18A7967300DB5BDF /* BPPAirprintCollagePrinter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPPAirprintCollagePrinter.h; sourceTree = "<group>"; };
 		228FABDC18A7967300DB5BDF /* BPPAirprintCollagePrinter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BPPAirprintCollagePrinter.m; sourceTree = "<group>"; };
+		2299712118C1370400CAEA56 /* RZSquaresLoading.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RZSquaresLoading.h; sourceTree = "<group>"; };
+		2299712218C1370400CAEA56 /* RZSquaresLoading.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RZSquaresLoading.m; sourceTree = "<group>"; };
 		229FAFD218BDF7B700165F0C /* ALAssetsLibrary+CustomPhotoAlbum.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "ALAssetsLibrary+CustomPhotoAlbum.h"; sourceTree = "<group>"; };
 		229FAFD318BDF7B700165F0C /* ALAssetsLibrary+CustomPhotoAlbum.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "ALAssetsLibrary+CustomPhotoAlbum.m"; sourceTree = "<group>"; };
 		229FAFD518BE0F2900165F0C /* BPPPhotoStore.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPPPhotoStore.h; sourceTree = "<group>"; };
@@ -394,6 +397,16 @@
 			path = PSTCollectionView;
 			sourceTree = "<group>";
 		};
+		2299712018C1370400CAEA56 /* RZSquaresLoading */ = {
+			isa = PBXGroup;
+			children = (
+				2299712118C1370400CAEA56 /* RZSquaresLoading.h */,
+				2299712218C1370400CAEA56 /* RZSquaresLoading.m */,
+			);
+			name = RZSquaresLoading;
+			path = ../RZSquaresLoading/RZSquaresLoading;
+			sourceTree = "<group>";
+		};
 		22A3DE8D18BA61110041FDC6 /* Assets */ = {
 			isa = PBXGroup;
 			children = (
@@ -505,6 +518,7 @@
 		4D784B31183D7303007FB05A /* External */ = {
 			isa = PBXGroup;
 			children = (
+				2299712018C1370400CAEA56 /* RZSquaresLoading */,
 				229FAFD818C09BAA00165F0C /* TTAlertView.h */,
 				229FAFD918C09BAA00165F0C /* TTAlertView.m */,
 				8627C8E51841573D00DA239D /* MTStatusBarOverlay.h */,
@@ -949,6 +963,7 @@
 				863ED92D18403D1700AB7A6A /* SDWebImagePrefetcher.m in Sources */,
 				2266807618A69F6D0060FBBE /* PSTCollectionViewUpdateItem.m in Sources */,
 				4D784B8B183D7319007FB05A /* ContextFilterLogFormatter.m in Sources */,
+				2299712318C1370400CAEA56 /* RZSquaresLoading.m in Sources */,
 				2266807718A69F6D0060FBBE /* PSTGridLayoutInfo.m in Sources */,
 				228FABDD18A7967300DB5BDF /* BPPAirprintCollagePrinter.m in Sources */,
 				229FAFDA18C09BAA00165F0C /* TTAlertView.m in Sources */,

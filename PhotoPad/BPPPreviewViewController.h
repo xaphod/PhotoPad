@@ -35,17 +35,11 @@
 @property (strong, nonatomic) UIActionSheet *photoToolSheet;
 
 @property (weak, nonatomic) IBOutlet UIView *previewContainingViewOutlet;
-@property (weak, nonatomic) IBOutlet UIImageView *previewImageViewOutlet;
+@property (weak, nonatomic) IBOutlet UIImageView *landscapeImageViewOutlet;
+@property (weak, nonatomic) IBOutlet UIImageView *portraitImageViewOutlet;
 @property (weak, nonatomic) IBOutlet UIBarButtonItem *printButtonOulet;
 @property (weak, nonatomic) IBOutlet UIView *notificationOfNewPhotosViewOutlet;
 @property (weak, nonatomic) IBOutlet UIButton *notificationOfNewPhotosButtonOutlet;
-
-// imageViewConstraints
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *previewImageViewConstraintLeft;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *previewImageViewConstraintBottom;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *previewImageViewConstraintTop;
-@property (weak, nonatomic) IBOutlet NSLayoutConstraint *previewImageViewConstraintRight;
-
 
 
 @end
