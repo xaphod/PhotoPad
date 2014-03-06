@@ -323,8 +323,11 @@
     
     for( id indexPath in selectedIndexPaths ) {
         [self.collectionView deselectItemAtIndexPath:indexPath animated:YES];
-        [self collectionView:self.collectionView didDeselectItemAtIndexPath:indexPath];
+        BPPGalleryCell *cell = (BPPGalleryCell*)[self.collectionView cellForItemAtIndexPath:indexPath];
+        [cell.checkmarkViewOutlet setChecked:NO];
     }
+    
+    NSAssert(self.collectionView.indexPathsForSelectedItems.count == 0, @"Error, there shouldn't be anything selected when pressing clear");
     
     [photoStore cacheClean];
     [self updatePreview];
