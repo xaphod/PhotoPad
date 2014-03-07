@@ -12,11 +12,13 @@
 #import "UIColor+Hex.h"
 #import "BPPAirprintCollagePrinter.h"
 #import "BPPPhotoStore.h"
+#import "BlurredProgressViewController.h"
 
 @interface BPPPreviewViewController () {
     CGFloat cellSize;
     NSIndexPath* _oldestNewestIndexPath;
     BPPPhotoStore* photoStore;
+    BlurredProgressViewController* _blurVC;
 
     // DEBUG: ReMOVE THIS
     bool debugJPGdone;
@@ -215,6 +217,12 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
+    if( _blurVC == nil ) {
+        _blurVC = [[BlurredProgressViewController alloc] init];
+        [_blurVC snapScreenNow:self.view];
+    }
+    [self presentViewController:_blurVC animated:NO completion:nil];
+    
     BPPGalleryCell *cell = (BPPGalleryCell*)[collectionView cellForItemAtIndexPath:indexPath];
     [cell.checkmarkViewOutlet setChecked:YES];
     
@@ -281,6 +289,9 @@
 // stop showing newimagesnotification when visible cell it was marking comes into view
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
+    if( _blurVC != nil )
+        [_blurVC snapScreenNow:self.view];
+
     NSArray* visibleIndexPaths = [self.collectionView indexPathsForVisibleItems];
     for( NSIndexPath* thisIndexPath in visibleIndexPaths ) {
         if( thisIndexPath.row >= _oldestNewestIndexPath.row ) {
@@ -427,6 +438,10 @@
             // TODO: going from 0->1 selected images -- inform user to pick another?
             NSLog(@"NOT ENOUGH SELECTED PHOTOS");
         }
+        
+        if( _blurVC != nil )
+            [_blurVC dismiss];
+        
         return;
     }
     
@@ -493,6 +508,9 @@
     }
 
     UIImage* updatedPreview = [ap makeCollageImages:[NSArray arrayWithObject:images] longsideLength:longside shortsideLength:shortside][0];
+    
+    if( _blurVC != nil )
+        [_blurVC dismiss];
 
     [UIView transitionWithView:self.previewContainingViewOutlet
                       duration:0.7f
@@ -501,7 +519,6 @@
                         correctImageView.image = updatedPreview;
                         wrongImageView.image = nil;
                     } completion:^(BOOL finished){
-                        
                     }];
     
 }
