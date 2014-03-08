@@ -17,6 +17,11 @@
 
 #define DEG2RAD(X) ((X)*M_PI/180)
 
+typedef void(^MakeCollageCompletionBlock)(NSArray* collageImages);
+typedef void(^printSuccessBlock)(void);
+typedef void(^printFailBlock)(NSError* error);
+
+
 @interface BPPAirprintCollagePrinter : NSObject {
     int _lastUsedPrinterIDArrayIndex;
 }
@@ -24,12 +29,16 @@
 + (BPPAirprintCollagePrinter *)singleton;              // Call this to get the class
 
 // takes an array of UIImage to print. The UIBarButton is where the UI for printing will be rendered near
-- (bool)printCollage:(NSArray*)images fromCGRect:(CGRect)rect fromUIView:(UIView*)view;
+- (bool)printCollage:(NSArray*)images fromCGRect:(CGRect)rect fromUIView:(UIView*)view successBlock:(printSuccessBlock)successBlock failBlock:(printFailBlock)failBlock;
 
 // input collages is an array of arrays of UIImage*
-// output is array of UIImage*
+// output is array of UIImage*, resized to #define'd sizes
 - (NSArray*)makeCollageImages:(NSArray*)collages;
-- (NSArray*)makeCollageImages:(NSArray*)collages longsideLength:(CGFloat)longsideLength shortsideLength:(CGFloat)shortsideLength;
+
+// input collages is an array of arrays of UIImage*
+// output is array of UIImage*, resized to given sizes
+// an NSArray is only returned, if completionBlock is nil; otherwise you get the result in the completionBlock instead
+- (NSArray*)makeCollageImages:(NSArray*)collages longsideLength:(CGFloat)longsideLength shortsideLength:(CGFloat)shortsideLength completionBlock:(MakeCollageCompletionBlock)completionBlock;
 
 // input is an array of UIImage
 - (bool)isResultingCollageLandscape:(NSArray*)images;

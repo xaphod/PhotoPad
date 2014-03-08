@@ -3,7 +3,6 @@
 //  iOSync
 //
 //  Created by Tim Carr on 2/3/14.
-//  Copyright (c) 2014 Swisscom AG. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
@@ -15,12 +14,14 @@
 
     UIView* _topContainerView;
     UIImage* _outputImg;
-    bool _processed;
     dispatch_semaphore_t _dismissSemaphore;
     dispatch_semaphore_t _snapSemaphore;
 }
 
 - (void)snapScreenNow:(UIView*)view ;
 - (void)dismiss;
+
+// set this to true if you will call snapScreenNow and then immediately show the view
+@property bool synchronousMode;
 
 @end

@@ -12,13 +12,11 @@
 #import "UIColor+Hex.h"
 #import "BPPAirprintCollagePrinter.h"
 #import "BPPPhotoStore.h"
-#import "BlurredProgressViewController.h"
 
 @interface BPPPreviewViewController () {
     CGFloat cellSize;
     NSIndexPath* _oldestNewestIndexPath;
     BPPPhotoStore* photoStore;
-    BlurredProgressViewController* _blurVC;
 
     // DEBUG: ReMOVE THIS
     bool debugJPGdone;
@@ -72,6 +70,12 @@
     
     photoStore = [BPPPhotoStore singletonWithLargestPreviewSize:(self.landscapeImageViewOutlet.frame.size.width * [UIScreen mainScreen].scale) shortsidePixels:(self.landscapeImageViewOutlet.frame.size.height * [UIScreen mainScreen].scale) ]; // ask for permission to photos, etc
     [photoStore setReloadTarget:self.collectionView];
+    
+    self.loadingAnimationStrongOutlet = [[RZSquaresLoading alloc] initWithFrame:self.loadingAnimationStrongOutlet.frame];
+    [self.loadingAnimationStrongOutlet setColor:[UIColor orangeColor]];
+    [self.loadingAnimationStrongOutlet setAlpha:0.0];
+    [self.loadingAnimationStrongOutlet setHidden:YES];
+    [self.previewContainingViewOutlet addSubview:self.loadingAnimationStrongOutlet];
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -92,7 +96,7 @@
 {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
-    NSLog(@"\n\n************************MEMORY WARNING BPPPreviewVC!************************\n\n");
+    NSLog(@"\n\n\n************************MEMORY WARNING BPPPreviewVC!************************\n\n\n");
     self.landscapeImageViewOutlet.image = nil;
     self.portraitImageViewOutlet.image = nil;
     [photoStore didReceiveMemoryWarning];
@@ -188,20 +192,16 @@
     
     __weak UICollectionView* weakCollectionView = collectionView;
     
-    UIImage* instantResult = [photoStore getCellsizeImage:url size:size completionBlock:^(UIImage *resizedImage) {
+    [photoStore getCellsizeImage:url size:size completionBlock:^(UIImage *resizedImage) {
         
-        if( [weakCollectionView.indexPathsForVisibleItems containsObject:indexPath] ) {
-            // Get hold of main queue (main thread)
-            [[NSOperationQueue mainQueue] addOperationWithBlock: ^ {
-                BPPGalleryCell *thisCell = (BPPGalleryCell*)[weakCollectionView cellForItemAtIndexPath:indexPath];
-                thisCell.asset = resizedImage;
-            }];
-        }
+        // Get hold of main queue (main thread)
+        [[NSOperationQueue mainQueue] addOperationWithBlock: ^ {
+            
+            BPPGalleryCell *thisCell = (BPPGalleryCell*)[weakCollectionView cellForItemAtIndexPath:indexPath];
+            thisCell.asset = resizedImage;
+        }];
     }];
     
-    if( instantResult != nil )
-        cell.asset = instantResult;
-
     return cell;
 }
 
@@ -217,28 +217,19 @@
 
 - (void)collectionView:(UICollectionView *)collectionView didSelectItemAtIndexPath:(NSIndexPath *)indexPath
 {
-    if( _blurVC == nil ) {
-        _blurVC = [[BlurredProgressViewController alloc] init];
-        [_blurVC snapScreenNow:self.view];
-    }
-    [self presentViewController:_blurVC animated:NO completion:nil];
     
     BPPGalleryCell *cell = (BPPGalleryCell*)[collectionView cellForItemAtIndexPath:indexPath];
     [cell.checkmarkViewOutlet setChecked:YES];
-    
+
     NSString *url = photoStore.photoURLs[indexPath.row];
     
     __weak BPPPreviewViewController* weakSelf = self;
     
-    UIImage* retval = [photoStore getHalfResolutionImage:url completionBlock:^(UIImage *resizedImage) {
+    [photoStore getHalfResolutionImage:url completionBlock:^(UIImage *resizedImage) {
         [[NSOperationQueue mainQueue] addOperationWithBlock: ^ {
             [weakSelf updatePreview];
         }];
     }];
-    
-    // cache-hit case: block above does not execute completionBlock
-    if( retval )
-        [weakSelf updatePreview];
     
     self.clearButtonOutlet.hidden = NO;
 
@@ -289,9 +280,6 @@
 // stop showing newimagesnotification when visible cell it was marking comes into view
 - (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
 {
-    if( _blurVC != nil )
-        [_blurVC snapScreenNow:self.view];
-
     NSArray* visibleIndexPaths = [self.collectionView indexPathsForVisibleItems];
     for( NSIndexPath* thisIndexPath in visibleIndexPaths ) {
         if( thisIndexPath.row >= _oldestNewestIndexPath.row ) {
@@ -329,6 +317,7 @@
 
 - (void)clearCellSelections {
     NSLog(@"clearCellSelections begin");
+    self.clearButtonOutlet.hidden = YES;
     
     NSArray* selectedIndexPaths = [self.collectionView indexPathsForSelectedItems];
     
@@ -372,11 +361,23 @@
 - (void)startPrinting:(NSArray*)images {
     BPPAirprintCollagePrinter *ap = [BPPAirprintCollagePrinter singleton];
     
-    if( ! [ap printCollage:images fromCGRect:self.printButtonOutlet.frame fromUIView:self.view] ) {
+    
+    
+    if( ! [ap printCollage:images fromCGRect:self.printButtonOutlet.frame fromUIView:self.view successBlock:^{
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Printing Successful" message:@"Your photo(s) will print soon. Please take the photo and put it in the wedding album for the happy couple, and write a nice message with it!" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+        
+        [self clearCellSelections];
+
+    } failBlock:^(NSError *error) {
+        NSString* displayStr = [NSString stringWithFormat:@"Oh no! The printer didn't work. Please go get Tim and tell him about it. Your pictures have been saved, so you can try again later.\n\nError -- descrip: %@, domain %@ with error code %d", error.localizedDescription, error.domain, (int)error.code];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Printing Error" message:displayStr delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        [alert show];
+        
+    }] ) {
         NSLog(@"MainVC, got fail for printCollage");
     }
-    
-    [self clearCellSelections];
+
 }
 
 // TODO: remove this debug code
@@ -426,7 +427,7 @@
     }
     if( self.collectionView.indexPathsForSelectedItems.count < 2 ) {
         if( self.landscapeImageViewOutlet.image != nil || self.portraitImageViewOutlet.image != nil ) {
-            // TODO: going from 2 to 1 selected images -- hide/destroy preview, inform?
+
             [UIView transitionWithView:self.previewContainingViewOutlet
                               duration:1.0f
                                options:UIViewAnimationOptionTransitionCrossDissolve
@@ -439,9 +440,8 @@
             NSLog(@"NOT ENOUGH SELECTED PHOTOS");
         }
         
-        if( _blurVC != nil )
-            [_blurVC dismiss];
-        
+        self.loadingAnimationStrongOutlet.hidden = YES;
+        self.loadingAnimationStrongOutlet.alpha = 0.0;
         return;
     }
     
@@ -452,41 +452,28 @@
     for( NSIndexPath* thisPath in self.collectionView.indexPathsForSelectedItems ) {
         NSString* url = photoStore.photoURLs[thisPath.row];
         
-        UIImage* instantResult = [photoStore getHalfResolutionImage:url completionBlock:^(UIImage *resizedImage) {
+        [photoStore getHalfResolutionImage:url completionBlock:^(UIImage *resizedImage) {
                 @synchronized( weakSelectedPhotos ) {
                     [weakSelectedPhotos addObject:resizedImage];
                     if( weakSelectedPhotos.count == stopTarget )
                         [self performSelectorOnMainThread:finishedSelector withObject:selectedPhotosArray waitUntilDone:NO];
                 }
         }];
-        if( instantResult != nil ) {
-            @synchronized( selectedPhotosArray ) {
-                [selectedPhotosArray addObject:instantResult];
-                if( selectedPhotosArray.count == stopTarget )
-                    [self performSelectorOnMainThread:finishedSelector withObject:selectedPhotosArray waitUntilDone:NO];
-            }
-        }
     }
-
-    /* TODO: currently not using 4er cache?
-     if( self.collectionView.indexPathsForSelectedItems.count >= 4 && !forPrinting ) {
-     
-     selectedPhotosArray = [NSMutableArray array];
-     
-     for( NSIndexPath* thisPath in self.collectionView.indexPathsForSelectedItems ) {
-     NSString* url = photoStore.photoURLs[thisPath.row];
-     UIImage* selected_4er = [photoStore getQuarterResolutionImage:[self.selectedPhotos objectForKey:url] url:url];
-     [selectedPhotosArray addObject:selected_4er];
-     }
-     */
 }
 
 
 - (void)updatePreview {
+    NSLog(@"updatePreview: thread %@", [NSThread currentThread]);
+    self.loadingAnimationStrongOutlet.hidden = NO;
+    self.loadingAnimationStrongOutlet.alpha = 1.0;
+
     [self gatherSelectedImages:@selector(updatePreviewCallback:)];
 }
 
 - (void)updatePreviewCallback:(NSArray*)images {
+    
+    NSAssert(images.count >= 2, @"updatePreviewCallback must get called with at least 2 images");
     
     BPPAirprintCollagePrinter *ap = [BPPAirprintCollagePrinter singleton];
     
@@ -507,26 +494,31 @@
         NSLog(@"updatePreview: landscape YES");
     }
 
-    UIImage* updatedPreview = [ap makeCollageImages:[NSArray arrayWithObject:images] longsideLength:longside shortsideLength:shortside][0];
-    
-    if( _blurVC != nil )
-        [_blurVC dismiss];
-
-    [UIView transitionWithView:self.previewContainingViewOutlet
-                      duration:0.7f
-                       options:UIViewAnimationOptionTransitionCrossDissolve
-                    animations:^{
-                        correctImageView.image = updatedPreview;
-                        wrongImageView.image = nil;
-                    } completion:^(BOOL finished){
-                    }];
+    [ap makeCollageImages:[NSArray arrayWithObject:images] longsideLength:longside shortsideLength:shortside completionBlock:^(NSArray *collageImages) {
+        
+        dispatch_sync(dispatch_get_main_queue(), ^{
+            
+            NSAssert(collageImages.count >= 1, @"Expected at least 1 result from makeCollageImages !");
+            
+            [UIView transitionWithView:self.previewContainingViewOutlet
+                              duration:0.7f
+                               options:UIViewAnimationOptionTransitionCrossDissolve
+                            animations:^{
+                                correctImageView.image = collageImages[0];
+                                wrongImageView.image = nil;
+                                self.loadingAnimationStrongOutlet.hidden = YES;
+                                self.loadingAnimationStrongOutlet.alpha = 0.0;
+                                
+                            } completion:^(BOOL finished){
+                            }];
+        });
+        
+    }];
     
 }
 
 - (IBAction)clearPressed:(id)sender {
     [self clearCellSelections];
-    self.clearButtonOutlet.hidden = YES;
-
 }
 
 

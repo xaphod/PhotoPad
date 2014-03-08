@@ -171,6 +171,15 @@ top - touch here!</string>
                                 <rect key="frame" x="0.0" y="320" width="768" height="704"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="duE-tM-bjX" customClass="RZSquaresLoading">
+                                        <rect key="frame" x="334" y="302" width="100" height="100"/>
+                                        <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="100" id="IVv-AF-qxC"/>
+                                            <constraint firstAttribute="width" constant="100" id="cy8-lV-z6u"/>
+                                        </constraints>
+                                    </view>
                                     <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="SyB-dw-tQG" userLabel="landscapeImageView">
                                         <rect key="frame" x="20" y="109" width="728" height="485"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
@@ -244,6 +253,7 @@ top - touch here!</string>
                                     <constraint firstAttribute="trailing" secondItem="Cjg-tN-PS9" secondAttribute="trailing" constant="169" id="88a-wn-jFn"/>
                                     <constraint firstAttribute="trailing" secondItem="ZBQ-Bw-o8m" secondAttribute="trailing" constant="24" id="AJd-0K-G09"/>
                                     <constraint firstAttribute="trailing" secondItem="dBX-PL-m9r" secondAttribute="trailing" constant="17" id="FtX-oQ-9WO"/>
+                                    <constraint firstAttribute="centerY" secondItem="duE-tM-bjX" secondAttribute="centerY" id="G27-dr-pFe"/>
                                     <constraint firstItem="SyB-dw-tQG" firstAttribute="leading" secondItem="hDb-2e-3aN" secondAttribute="leading" constant="20" id="Hz6-FC-u87"/>
                                     <constraint firstItem="SyB-dw-tQG" firstAttribute="top" secondItem="hDb-2e-3aN" secondAttribute="top" constant="109" id="Zxg-T6-uY3"/>
                                     <constraint firstItem="MxQ-8b-LYQ" firstAttribute="top" secondItem="hDb-2e-3aN" secondAttribute="top" id="cOm-gT-5jC"/>
@@ -252,6 +262,7 @@ top - touch here!</string>
                                     <constraint firstAttribute="trailing" secondItem="SyB-dw-tQG" secondAttribute="trailing" constant="20" id="lsd-bj-FbI"/>
                                     <constraint firstItem="dBX-PL-m9r" firstAttribute="top" secondItem="ZBQ-Bw-o8m" secondAttribute="bottom" constant="8" id="nFb-z1-cbg"/>
                                     <constraint firstItem="ZBQ-Bw-o8m" firstAttribute="top" secondItem="MxQ-8b-LYQ" secondAttribute="bottom" constant="13" id="oUn-eI-MZs"/>
+                                    <constraint firstAttribute="centerX" secondItem="duE-tM-bjX" secondAttribute="centerX" id="r3A-0d-4e7"/>
                                     <constraint firstAttribute="trailing" secondItem="cNv-4f-PXc" secondAttribute="trailing" constant="40" id="rQF-uq-5lI"/>
                                     <constraint firstAttribute="bottom" secondItem="SyB-dw-tQG" secondAttribute="bottom" constant="110" id="vo9-Ev-s29"/>
                                 </constraints>
@@ -276,6 +287,7 @@ top - touch here!</string>
                         <outlet property="collectionView" destination="sSk-Nz-PVT" id="twc-Hs-eUH"/>
                         <outlet property="collectionViewFlowLayoutOutlet" destination="sVp-j7-w08" id="jv4-RH-oKj"/>
                         <outlet property="landscapeImageViewOutlet" destination="SyB-dw-tQG" id="GHF-Ky-nnx"/>
+                        <outlet property="loadingAnimationStrongOutlet" destination="duE-tM-bjX" id="Ph8-6T-PQ6"/>
                         <outlet property="notificationOfNewPhotosButtonOutlet" destination="Vy5-Gt-tED" id="WXW-9s-3iu"/>
                         <outlet property="notificationOfNewPhotosViewOutlet" destination="x5U-mZ-23n" id="gRs-vO-tuo"/>
                         <outlet property="portraitImageViewOutlet" destination="Cjg-tN-PS9" id="Nd0-vx-wBB"/>

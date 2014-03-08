@@ -36,7 +36,8 @@
 
 // public
 // creates collages of up to 6 images in a single image
-- (bool)printCollage:(NSArray*)images fromCGRect:(CGRect)rect fromUIView:(UIView*)view {
+- (bool)printCollage:(NSArray*)images fromCGRect:(CGRect)rect fromUIView:(UIView*)view successBlock:(printSuccessBlock)successBlock failBlock:(printFailBlock)failBlock {
+    
     if( images.count < 2 ) {
         // must pass in at least 2 images
         NSLog(@"printCollage: must print at least 2 images");
@@ -102,13 +103,17 @@
             } else {
                 NSLog(@"printerCollage, not saving printer ID because it is already known");
             }
-            // TODO: UI confirmation of success here?
+            if( successBlock )
+                successBlock();
+
         } else {
-            if( error )
+            if( error ) {
                 NSLog(@"printCollage: printing FAILED! due to error in domain %@ with error code %d", error.domain, (int)error.code);
-            else
+                failBlock(error);
+            } else {
                 NSLog(@"printCollage: printing cancelled by user");
             // TODO: UI confirmation of cancel here?
+            }
         }
     };
     
@@ -168,13 +173,31 @@
 // public
 - (NSArray*)makeCollageImages:(NSArray*)collages {
     // default size is full 300dpi size
-    return [self makeCollageImages:collages longsideLength:CollageLongsidePixels shortsideLength:CollageShortsidePixels];
+    return [self makeCollageImages:collages longsideLength:CollageLongsidePixels shortsideLength:CollageShortsidePixels completionBlock:nil];
 }
 
-- (NSArray*)makeCollageImages:(NSArray*)collages longsideLength:(CGFloat)longsideLength shortsideLength:(CGFloat)shortsideLength {
+- (NSArray*)makeCollageImages:(NSArray*)collages longsideLength:(CGFloat)longsideLength shortsideLength:(CGFloat)shortsideLength completionBlock:(MakeCollageCompletionBlock)completionBlock {
     
-    NSLog(@"PERF DEBUG: makeCollageImages START, longsideLength %f, short %f", longsideLength, shortsideLength);
-    
+    if( completionBlock != nil ) {
+        NSLog(@"PERF DEBUG: makeCollageImages ASYNC START w/%lu set of images, longsideLength %f, short %f", (unsigned long)collages.count, longsideLength, shortsideLength);
+
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            
+            NSArray *retval = [self makeCollageImagesWork:collages longsideLength:longsideLength shortsideLength:shortsideLength];
+            NSAssert(retval.count >= 1, @"COULD NOT MAKE COLLAGES in makeCollageImagesWork");
+            completionBlock(retval);
+        });
+        
+        return nil;
+    } else {
+        NSLog(@"PERF DEBUG: makeCollageImages SYNC START w/%lu images, longsideLength %f, short %f", (unsigned long)collages.count, longsideLength, shortsideLength);
+
+        return [self makeCollageImagesWork:collages longsideLength:longsideLength shortsideLength:shortsideLength];
+    }
+}
+
+- (NSArray*)makeCollageImagesWork:(NSArray*)collages longsideLength:(CGFloat)longsideLength shortsideLength:(CGFloat)shortsideLength {
+
     NSMutableArray *retval = [NSMutableArray array];
     
     for (id thisID in collages) {

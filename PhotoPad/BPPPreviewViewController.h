@@ -8,6 +8,7 @@
 
 #import <UIKit/UIKit.h>
 #import "MWPhotoBrowser.h"
+#import "RZSquaresLoading.h"
 
 #define DEVICE_IS_LANDSCAPE UIInterfaceOrientationIsLandscape([UIApplication sharedApplication].statusBarOrientation)
 
@@ -39,6 +40,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *notificationOfNewPhotosButtonOutlet;
 @property (weak, nonatomic) IBOutlet UIButton *clearButtonOutlet;
 @property (weak, nonatomic) IBOutlet UIButton *printButtonOutlet;
+@property (strong, nonatomic) IBOutlet RZSquaresLoading *loadingAnimationStrongOutlet;
 
 
 @end

@@ -37,7 +37,7 @@
             image = [ap fitImage:self.sourceImage scaledToFillSize:self.size];
         
 
-        NSLog(@"ImageResizeOperation complete: new size w %f h %f. Calling CompletionBlock now...", self.size.width, self.size.height);
+        NSLog(@"ImageResizeOperation complete: new size w %f h %f", self.size.width, self.size.height);
         if( self.myCompletionBlock )
             self.myCompletionBlock(image);
     }
@@ -112,7 +112,7 @@ static BPPPhotoStore *shared = nil;
         _imageCache_4er = [[NSCache alloc] init];
         [_imageCache_4er setTotalCostLimit:7]; // number of images
         _imageCache_cellsize = [[NSCache alloc] init];
-        [_imageCache_cellsize setTotalCostLimit:30];
+        [_imageCache_cellsize setTotalCostLimit:15];
         _imageCacheQueue = [[NSOperationQueue alloc] init];
         _imageCacheQueue.maxConcurrentOperationCount = 3;
         
@@ -154,14 +154,16 @@ static BPPPhotoStore *shared = nil;
 
 
 // hopefully this is called with the same CGSize all the time
-- (UIImage*)getCellsizeImage:(NSString*)url size:(CGSize)size completionBlock:(ImageResizeCompletionBlock)completionBlock {
+- (void)getCellsizeImage:(NSString*)url size:(CGSize)size completionBlock:(ImageResizeCompletionBlock)completionBlock {
     
     UIImage* cachedImage = [_imageCache_cellsize objectForKey:url];
     
     if( cachedImage != nil ) {
         if( cachedImage.size.height == size.height && cachedImage.size.width == size.width ) {
             NSLog(@"BPPPhotoStore: getCellsizeImage: cache HIT");
-            return cachedImage;
+            if( completionBlock )
+                completionBlock(cachedImage);
+            return;
         }
     }
     
@@ -191,22 +193,23 @@ static BPPPhotoStore *shared = nil;
         [imageCacheQueue addOperation:resizeOp];
         
     }];
+}
+
+- (void)getHalfResolutionImage:(NSString*)url completionBlock:(ImageResizeCompletionBlock)completionBlock {
     
-    return nil;
+    [self getHalfResolutionImage:url pri:NSOperationQueuePriorityNormal completionBlock:completionBlock];
 }
 
-- (UIImage*)getHalfResolutionImage:(NSString*)url completionBlock:(ImageResizeCompletionBlock)completionBlock {
-    return [self getHalfResolutionImage:url pri:NSOperationQueuePriorityNormal completionBlock:completionBlock];
-}
-
-- (UIImage*)getHalfResolutionImage:(NSString*)url pri:(NSOperationQueuePriority)pri completionBlock:(ImageResizeCompletionBlock)completionBlock {
+- (void)getHalfResolutionImage:(NSString*)url pri:(NSOperationQueuePriority)pri completionBlock:(ImageResizeCompletionBlock)completionBlock {
     
     UIImage* cachedImage = [_imageCache_2er objectForKey:url];
     BPPAirprintCollagePrinter *ap = [BPPAirprintCollagePrinter singleton];
 
     if( cachedImage != nil ) {
         NSLog(@"BPPPhotoStore: getHalfResolutionImage: cache HIT");
-        return cachedImage;
+        if( completionBlock )
+            completionBlock( cachedImage );
+        return;
     }
     
     __weak NSCache* imageCache_2er = _imageCache_2er;
@@ -246,8 +249,7 @@ static BPPPhotoStore *shared = nil;
         }
         
     }];
-    
-    return nil;
+  
 }
 
 - (UIImage*)getQuarterResolutionImage:(UIImage*)halfResImage url:(NSString*)url {

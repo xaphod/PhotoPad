@@ -43,6 +43,7 @@
 
 - (void)commonSetup:(float)size
 {
+    NSLog(@"rzsquares commonsetup");
     float gap = 0.04;
     _gapSize = size * gap;
     _squareSize = size * (1.0 - 2 * gap) / 3;
