@@ -12,11 +12,41 @@
 
 #import "HTTPServer.h"
 
+@interface BPPAppDelegate() {
+    NSString* _emailFilePath;
+    NSMutableArray* _emailAddresses;
+}
+@end
+
 @implementation BPPAppDelegate
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     [[UIApplication sharedApplication] setIdleTimerDisabled:YES];
+    
+    // where email addresses will be read/written
+    NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
+	NSString *documentsDirectory = [paths objectAtIndex:0];
+	_emailFilePath = [documentsDirectory stringByAppendingPathComponent:@"emailaddresses.txt"];
+    
+    NSFileManager *fileManager = [NSFileManager defaultManager];
+	if( [fileManager fileExistsAtPath:_emailFilePath] ) {
+        
+        NSString* existingEmailAddresses = [NSString stringWithContentsOfFile:_emailFilePath encoding:NSUTF8StringEncoding error:nil];
+
+        _emailAddresses = [[existingEmailAddresses componentsSeparatedByString:@"\n"] mutableCopy];
+        
+        // remove empty lines
+        for( int i=0 ; i < _emailAddresses.count ; i++ ) {
+            if( [_emailAddresses[i] isEqualToString:@""] )
+                [_emailAddresses removeObjectAtIndex:i];
+        }
+        
+        NSLog(@"%lu existing email addresses: %@", (unsigned long)_emailAddresses.count, existingEmailAddresses);
+    } else {
+        NSLog(@"No existing email addresses on disk");
+        _emailAddresses = [NSMutableArray array];
+    }
     
     // Initalize our http server
 	_httpServer = [[HTTPServer alloc] init];
@@ -79,5 +109,36 @@
 {
     // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
 }
+
+- (void)writeEmailAddresses {
+    
+    @synchronized( _emailAddresses ) {
+        
+        NSData* data = [[self getStringOfAllEmailAddresses] dataUsingEncoding:NSUTF8StringEncoding];
+        [data writeToFile:_emailFilePath atomically:YES];
+    }
+}
+
+- (void)addEmailAddress:(NSString*)email {
+    @synchronized( _emailAddresses ) {
+        [_emailAddresses addObject:email];
+        [self writeEmailAddresses];
+    }
+}
+
+- (NSString*)getStringOfAllEmailAddresses {
+    NSString* bigString = @"";
+
+    @synchronized( _emailAddresses ) {
+        
+        for( id str in _emailAddresses ) {
+            bigString = [bigString stringByAppendingString:str];
+            bigString = [bigString stringByAppendingString:@"\n"];
+        }
+        
+        return bigString;
+    }
+}
+
 
 @end

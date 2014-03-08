@@ -12,11 +12,13 @@
 #import "UIColor+Hex.h"
 #import "BPPAirprintCollagePrinter.h"
 #import "BPPPhotoStore.h"
+#import "BPPAppDelegate.h"
 
 @interface BPPPreviewViewController () {
     CGFloat cellSize;
     NSIndexPath* _oldestNewestIndexPath;
     BPPPhotoStore* photoStore;
+    dispatch_semaphore_t _previewSemaphore;
 
     // DEBUG: ReMOVE THIS
     bool debugJPGdone;
@@ -66,6 +68,11 @@
     [_collectionView addGestureRecognizer:longPress];
     self.photoToolSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Delete" otherButtonTitles:nil];
     
+    longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(emailButtonLongPress:)];
+    longPress.minimumPressDuration = 3; // 3 seconds pressing to activate!
+    [self.emailButtonOutlet addGestureRecognizer:longPress];
+
+    
     self.collectionView.allowsMultipleSelection = YES;
     
     photoStore = [BPPPhotoStore singletonWithLargestPreviewSize:(self.landscapeImageViewOutlet.frame.size.width * [UIScreen mainScreen].scale) shortsidePixels:(self.landscapeImageViewOutlet.frame.size.height * [UIScreen mainScreen].scale) ]; // ask for permission to photos, etc
@@ -76,6 +83,8 @@
     [self.loadingAnimationStrongOutlet setAlpha:0.0];
     [self.loadingAnimationStrongOutlet setHidden:YES];
     [self.previewContainingViewOutlet addSubview:self.loadingAnimationStrongOutlet];
+    
+    _previewSemaphore = dispatch_semaphore_create(1);
 }
 
 - (void)viewDidAppear:(BOOL)animated
@@ -88,8 +97,6 @@
     }
      */
     
-    NSLog(@"containerView has %d constraints", (int)self.previewContainingViewOutlet.constraints.count);
-
 }
 
 - (void)didReceiveMemoryWarning
@@ -208,7 +215,7 @@
 // max 6 selected cells
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     if( self.collectionView.indexPathsForSelectedItems.count >= 6 ) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Maximum 6 Photos" message:@"The maximum number of photos is already selected. To clear the selection, use the clear button." delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Maximum 6 Photos" message:@"The maximum number of photos is already selected. To clear the selection, use the clear button." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [alert show];
         return NO;
     }
@@ -364,14 +371,14 @@
     
     
     if( ! [ap printCollage:images fromCGRect:self.printButtonOutlet.frame fromUIView:self.view successBlock:^{
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Printing Successful" message:@"Your photo(s) will print soon. Please take the photo and put it in the wedding album for the happy couple, and write a nice message with it!" delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Printing Successful" message:@"Your photo(s) will print soon. Please take the photo and put it in the wedding album for the happy couple, and write a nice message with it!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [alert show];
         
         [self clearCellSelections];
 
     } failBlock:^(NSError *error) {
         NSString* displayStr = [NSString stringWithFormat:@"Oh no! The printer didn't work. Please go get Tim and tell him about it. Your pictures have been saved, so you can try again later.\n\nError -- descrip: %@, domain %@ with error code %d", error.localizedDescription, error.domain, (int)error.code];
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Printing Error" message:displayStr delegate:self cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Printing Error" message:displayStr delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [alert show];
         
     }] ) {
@@ -442,6 +449,7 @@
         
         self.loadingAnimationStrongOutlet.hidden = YES;
         self.loadingAnimationStrongOutlet.alpha = 0.0;
+
         return;
     }
     
@@ -465,6 +473,16 @@
 
 - (void)updatePreview {
     NSLog(@"updatePreview: thread %@", [NSThread currentThread]);
+
+    /*
+    if( _updatingPreview.boolValue == YES ) {
+        NSLog(@"updatePreview: TOO FAST!!!");
+        return;
+    }
+    
+    _updatingPreview = [NSNumber numberWithBool:TRUE];
+     */
+    
     self.loadingAnimationStrongOutlet.hidden = NO;
     self.loadingAnimationStrongOutlet.alpha = 1.0;
 
@@ -493,8 +511,12 @@
     } else {
         NSLog(@"updatePreview: landscape YES");
     }
+    
+    __weak dispatch_semaphore_t semaphore = _previewSemaphore;
 
     [ap makeCollageImages:[NSArray arrayWithObject:images] longsideLength:longside shortsideLength:shortside completionBlock:^(NSArray *collageImages) {
+        
+        dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
         
         dispatch_sync(dispatch_get_main_queue(), ^{
             
@@ -512,7 +534,8 @@
                             } completion:^(BOOL finished){
                             }];
         });
-        
+
+        dispatch_semaphore_signal(_previewSemaphore);
     }];
     
 }
@@ -521,5 +544,54 @@
     [self clearCellSelections];
 }
 
+// email button long press
+- (void)emailButtonLongPress:(UILongPressGestureRecognizer*)gesture {
+    if ( gesture.state == UIGestureRecognizerStateEnded ) {
+        NSLog(@"Email Long Press");
+        
+        UIAlertView *passwordAlert = [[UIAlertView alloc] initWithTitle:@"Password" message:@"" delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel",nil) otherButtonTitles:NSLocalizedString(@"OK",nil), nil];
+        passwordAlert.alertViewStyle = UIAlertViewStyleSecureTextInput;
+        [passwordAlert show];
+        
+    }
+}
+
+- (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
+    
+    // rough password check
+    if( [[alertView textFieldAtIndex:0].text isEqualToString:@"rush2112"] ) {
+        
+        BPPAppDelegate *appDelegate = (BPPAppDelegate *)[[UIApplication sharedApplication] delegate];
+
+        MFMailComposeViewController *mailController = [[MFMailComposeViewController alloc] init];
+        
+        // TODO: add support to set name of wedding in settings, and use it here in subject
+        [mailController setSubject:@"Eyefi Booth - email addresses"];
+        [mailController setMessageBody:[appDelegate getStringOfAllEmailAddresses] isHTML:NO];
+        
+        mailController.mailComposeDelegate = self;
+        
+       UINavigationController *myNavController = [self navigationController];
+        
+        if ( mailController != nil ) {
+            if ([MFMailComposeViewController canSendMail]){
+                [myNavController presentViewController:mailController animated:YES completion:^{
+                    nil;
+                }];
+            } else {
+                NSLog(@"ERROR: uh oh MFMailComposeVC cannot send mail!");
+            }
+        }
+
+        // TODO: ofer to clear list of emails now it is sent
+        
+    }
+}
+
+- (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error {
+    [controller dismissViewControllerAnimated:YES completion:^{
+        
+    }];
+}
 
 @end

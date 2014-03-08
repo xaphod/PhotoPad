@@ -286,6 +286,7 @@ top - touch here!</string>
                         <outlet property="clearButtonOutlet" destination="MxQ-8b-LYQ" id="wBo-iQ-WMA"/>
                         <outlet property="collectionView" destination="sSk-Nz-PVT" id="twc-Hs-eUH"/>
                         <outlet property="collectionViewFlowLayoutOutlet" destination="sVp-j7-w08" id="jv4-RH-oKj"/>
+                        <outlet property="emailButtonOutlet" destination="ZBQ-Bw-o8m" id="FFk-gG-SeL"/>
                         <outlet property="landscapeImageViewOutlet" destination="SyB-dw-tQG" id="GHF-Ky-nnx"/>
                         <outlet property="loadingAnimationStrongOutlet" destination="duE-tM-bjX" id="Ph8-6T-PQ6"/>
                         <outlet property="notificationOfNewPhotosButtonOutlet" destination="Vy5-Gt-tED" id="WXW-9s-3iu"/>
@@ -484,15 +485,79 @@ top - touch here!</string>
                         <rect key="frame" x="0.0" y="0.0" width="540" height="620"/>
                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                         <subviews>
-                            <webView contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="rOo-c2-BsD">
-                                <rect key="frame" x="0.0" y="0.0" width="540" height="620"/>
+                            <webView contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="rOo-c2-BsD">
+                                <rect key="frame" x="15" y="0.0" width="510" height="620"/>
                                 <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                                 <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="calibratedRGB"/>
                             </webView>
+                            <textField opaque="NO" clipsSubviews="YES" contentMode="scaleToFill" contentHorizontalAlignment="left" contentVerticalAlignment="center" borderStyle="roundedRect" placeholder="  email address" minimumFontSize="17" clearButtonMode="whileEditing" translatesAutoresizingMaskIntoConstraints="NO" id="zbZ-ze-l9O">
+                                <rect key="frame" x="91" y="259" width="359" height="60"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="60" id="K4w-11-mqc"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                <textInputTraits key="textInputTraits" autocorrectionType="no" keyboardType="emailAddress" returnKeyType="go"/>
+                                <connections>
+                                    <outlet property="delegate" destination="EvB-v4-FIj" id="FmU-1W-bYg"/>
+                                </connections>
+                            </textField>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6Ah-WG-kcN">
+                                <rect key="frame" x="91" y="356" width="359" height="60"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="0.0" green="0.50196081399917603" blue="0.25098040699958801" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="width" constant="359" id="3EH-ft-fk8"/>
+                                    <constraint firstAttribute="height" constant="60" id="Bb8-hd-9dI"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="24"/>
+                                <state key="normal" title="OK">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="OKButtonPressed:" destination="EvB-v4-FIj" eventType="touchUpInside" id="8AF-bk-Ypy"/>
+                                </connections>
+                            </button>
+                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="JbL-fx-vjZ">
+                                <rect key="frame" x="91" y="427" width="359" height="40"/>
+                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                <color key="backgroundColor" red="0.50196081399917603" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="40" id="Zyg-Bz-VkL"/>
+                                    <constraint firstAttribute="width" constant="359" id="nde-fK-3xb"/>
+                                </constraints>
+                                <fontDescription key="fontDescription" type="system" pointSize="18"/>
+                                <state key="normal" title="Cancel">
+                                    <color key="titleColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                                <connections>
+                                    <action selector="CancelButtonPressed:" destination="EvB-v4-FIj" eventType="touchUpInside" id="Fed-E4-pDK"/>
+                                    <action selector="OKButtonPressed:" destination="EvB-v4-FIj" eventType="touchUpInside" id="T4I-Sz-P7X"/>
+                                </connections>
+                            </button>
                         </subviews>
-                        <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                        <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                        <constraints>
+                            <constraint firstItem="6Ah-WG-kcN" firstAttribute="leading" secondItem="PeM-Ak-xYL" secondAttribute="leading" constant="91" id="IgH-UT-Hoo"/>
+                            <constraint firstAttribute="trailing" secondItem="6Ah-WG-kcN" secondAttribute="trailing" constant="90" id="O36-8k-xbV"/>
+                            <constraint firstItem="JbL-fx-vjZ" firstAttribute="top" secondItem="6Ah-WG-kcN" secondAttribute="bottom" constant="11" id="SfU-cL-Fiu"/>
+                            <constraint firstItem="rOo-c2-BsD" firstAttribute="leading" secondItem="PeM-Ak-xYL" secondAttribute="leading" constant="15" id="V4x-RO-oqY"/>
+                            <constraint firstItem="tmO-Hv-zrs" firstAttribute="top" secondItem="rOo-c2-BsD" secondAttribute="bottom" id="V96-Xf-ok4"/>
+                            <constraint firstItem="rOo-c2-BsD" firstAttribute="top" secondItem="frt-IC-d5E" secondAttribute="bottom" id="bko-Df-kZv"/>
+                            <constraint firstAttribute="trailing" secondItem="zbZ-ze-l9O" secondAttribute="trailing" constant="90" id="dNf-cT-b31"/>
+                            <constraint firstItem="JbL-fx-vjZ" firstAttribute="leading" secondItem="PeM-Ak-xYL" secondAttribute="leading" constant="91" id="fHL-yq-RQH"/>
+                            <constraint firstAttribute="trailing" secondItem="rOo-c2-BsD" secondAttribute="trailing" constant="15" id="p0k-qk-5Fw"/>
+                            <constraint firstAttribute="trailing" secondItem="JbL-fx-vjZ" secondAttribute="trailing" constant="90" id="p0p-qL-a9y"/>
+                            <constraint firstItem="6Ah-WG-kcN" firstAttribute="top" secondItem="zbZ-ze-l9O" secondAttribute="bottom" constant="37" id="p2f-JV-1O5"/>
+                            <constraint firstItem="tmO-Hv-zrs" firstAttribute="top" secondItem="JbL-fx-vjZ" secondAttribute="bottom" constant="153" id="slK-WD-dbB"/>
+                            <constraint firstItem="zbZ-ze-l9O" firstAttribute="leading" secondItem="PeM-Ak-xYL" secondAttribute="leading" constant="91" id="xOq-9F-fmv"/>
+                        </constraints>
                     </view>
                     <connections>
+                        <outlet property="OKbuttonOutlet" destination="6Ah-WG-kcN" id="6LQ-5A-MQK"/>
+                        <outlet property="emailTextFieldOutlet" destination="zbZ-ze-l9O" id="S5m-w8-xjn"/>
                         <outlet property="webViewOutlet" destination="rOo-c2-BsD" id="vDc-gs-zrn"/>
                     </connections>
                 </viewController>

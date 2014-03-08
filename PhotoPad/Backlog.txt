@@ -5,8 +5,6 @@ Backlog - Tim
 
 - after choosing 1, put it in a 2-er collage with a ? or grey square
 
-Main screen
-    5. Image downloaded (eyefi): make this bigger?
     6d.old/stale selections -- time them out??
     7. print icon must be much bigger
     8. add ability to email self - email a link set in settings, with a ready-date also set in settings

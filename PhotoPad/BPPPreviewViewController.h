@@ -17,7 +17,7 @@
 
 
 @interface BPPPreviewViewController : UIViewController <MWPhotoBrowserDelegate, UIGestureRecognizerDelegate, UIActionSheetDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout,
-    UIScrollViewDelegate>
+    UIScrollViewDelegate,  UIAlertViewDelegate, MFMailComposeViewControllerDelegate>
 
 //@property(nonatomic, strong) NSMutableDictionary* selectedPhotos; // key = URL (from PhotoStore), value = UIImage*
 @property (nonatomic) NSUInteger selectedIndex;
@@ -41,6 +41,7 @@
 @property (weak, nonatomic) IBOutlet UIButton *clearButtonOutlet;
 @property (weak, nonatomic) IBOutlet UIButton *printButtonOutlet;
 @property (strong, nonatomic) IBOutlet RZSquaresLoading *loadingAnimationStrongOutlet;
+@property (weak, nonatomic) IBOutlet UIButton *emailButtonOutlet;
 
 
 @end

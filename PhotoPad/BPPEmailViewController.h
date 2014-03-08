@@ -8,8 +8,10 @@
 
 #import <UIKit/UIKit.h>
 
-@interface BPPEmailViewController : UIViewController
+@interface BPPEmailViewController : UIViewController 
 
 @property (weak, nonatomic) IBOutlet UIWebView *webViewOutlet;
+@property (weak, nonatomic) IBOutlet UIButton *OKbuttonOutlet;
+@property (weak, nonatomic) IBOutlet UITextField *emailTextFieldOutlet;
 
 @end

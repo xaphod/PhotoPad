@@ -17,4 +17,8 @@
 @property (strong, nonatomic) UIWindow *window;
 @property (strong, nonatomic) MTStatusBarOverlay *overlay;
 
+
+- (void)addEmailAddress:(NSString*)email;
+- (NSString*)getStringOfAllEmailAddresses;
+
 @end

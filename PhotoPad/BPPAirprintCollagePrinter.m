@@ -11,8 +11,6 @@
 
 @implementation BPPAirprintCollagePrinter
 
-// TODO:
-// test making collages of mixed images - some resize by width
 
 + (BPPAirprintCollagePrinter *)singleton {
     static dispatch_once_t pred;
@@ -198,94 +196,98 @@
 
 - (NSArray*)makeCollageImagesWork:(NSArray*)collages longsideLength:(CGFloat)longsideLength shortsideLength:(CGFloat)shortsideLength {
 
-    NSMutableArray *retval = [NSMutableArray array];
-    
-    for (id thisID in collages) {
+    // not sure it needs to be synchronized...
+    @synchronized(_printerIDs) {
         
-        UIGraphicsBeginImageContextWithOptions(CGSizeMake(longsideLength, shortsideLength), YES, 1.0);
-        [[UIColor CollageBorderUIColor] setFill];
-        UIRectFill(CGRectMake(0, 0, longsideLength, shortsideLength));
+        NSMutableArray *retval = [NSMutableArray array];
         
-        NSArray* imagesOfThisCollage = (NSArray*)thisID;
-        
-        if( imagesOfThisCollage.count == 2 ) {
-            // orientation: landscape
+        for (id thisID in collages) {
             
-            [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[0] rect:CGRectMake(CollageBorderPixels, CollageBorderPixels, (longsideLength - (3*CollageBorderPixels) ) / 2, (shortsideLength - (2*CollageBorderPixels) ) )];
-            
-            [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[1] rect:CGRectMake((longsideLength/2) + (CollageBorderPixels/2), CollageBorderPixels, (longsideLength - (3*CollageBorderPixels) ) / 2, (shortsideLength - (2*CollageBorderPixels) ) )];
-            
-        } else if( imagesOfThisCollage.count == 3 ) {
-            // all squares
-           
-            int width1and2 = (longsideLength - (3*CollageBorderPixels) ) / 3;
-            int height1and2= (shortsideLength - (3*CollageBorderPixels) )/ 2;
-            
-            [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[0] rect:CGRectMake(CollageBorderPixels, CollageBorderPixels, width1and2, height1and2) ];
-            [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[1] rect:CGRectMake(CollageBorderPixels, 2*CollageBorderPixels + height1and2, width1and2, height1and2) ];
-            [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[2] rect:CGRectMake( 2*CollageBorderPixels+width1and2, CollageBorderPixels, longsideLength - (3*CollageBorderPixels) - width1and2, 2*height1and2 + CollageBorderPixels)];
-            
-        } else if( imagesOfThisCollage.count == 4 ) {
-            // orientation: **PORTRAIT**
-
-            UIGraphicsEndImageContext();
-            UIGraphicsBeginImageContextWithOptions(CGSizeMake(shortsideLength, longsideLength), YES, 1.0);
+            UIGraphicsBeginImageContextWithOptions(CGSizeMake(longsideLength, shortsideLength), YES, 1.0);
             [[UIColor CollageBorderUIColor] setFill];
-            UIRectFill(CGRectMake(0, 0, shortsideLength, longsideLength));
+            UIRectFill(CGRectMake(0, 0, longsideLength, shortsideLength));
             
-            [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[0] rect:CGRectMake(CollageBorderPixels, CollageBorderPixels, (shortsideLength - 3*CollageBorderPixels) / 2, (longsideLength - 3*CollageBorderPixels) / 2) ];
-            [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[1] rect:CGRectMake((shortsideLength/2) + (CollageBorderPixels/2), CollageBorderPixels, (shortsideLength - 3*CollageBorderPixels) / 2, (longsideLength - 3*CollageBorderPixels) / 2) ];
-            [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[2] rect:CGRectMake(CollageBorderPixels, (longsideLength/2) + (CollageBorderPixels/2), (shortsideLength - 3*CollageBorderPixels) / 2, (longsideLength - 3*CollageBorderPixels) / 2) ];
-            [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[3] rect:CGRectMake((shortsideLength/2) + (CollageBorderPixels/2), (longsideLength/2) + (CollageBorderPixels/2), (shortsideLength - 3*CollageBorderPixels) / 2, (longsideLength - 3*CollageBorderPixels) / 2) ];
+            NSArray* imagesOfThisCollage = (NSArray*)thisID;
             
-        } else if( imagesOfThisCollage.count == 5 ) {
-            // orientation: **PORTRAIT**
-
+            if( imagesOfThisCollage.count == 2 ) {
+                // orientation: landscape
+                
+                [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[0] rect:CGRectMake(CollageBorderPixels, CollageBorderPixels, (longsideLength - (3*CollageBorderPixels) ) / 2, (shortsideLength - (2*CollageBorderPixels) ) )];
+                
+                [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[1] rect:CGRectMake((longsideLength/2) + (CollageBorderPixels/2), CollageBorderPixels, (longsideLength - (3*CollageBorderPixels) ) / 2, (shortsideLength - (2*CollageBorderPixels) ) )];
+                
+            } else if( imagesOfThisCollage.count == 3 ) {
+                // all squares
+                
+                int width1and2 = (longsideLength - (3*CollageBorderPixels) ) / 3;
+                int height1and2= (shortsideLength - (3*CollageBorderPixels) )/ 2;
+                
+                [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[0] rect:CGRectMake(CollageBorderPixels, CollageBorderPixels, width1and2, height1and2) ];
+                [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[1] rect:CGRectMake(CollageBorderPixels, 2*CollageBorderPixels + height1and2, width1and2, height1and2) ];
+                [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[2] rect:CGRectMake( 2*CollageBorderPixels+width1and2, CollageBorderPixels, longsideLength - (3*CollageBorderPixels) - width1and2, 2*height1and2 + CollageBorderPixels)];
+                
+            } else if( imagesOfThisCollage.count == 4 ) {
+                // orientation: **PORTRAIT**
+                
+                UIGraphicsEndImageContext();
+                UIGraphicsBeginImageContextWithOptions(CGSizeMake(shortsideLength, longsideLength), YES, 1.0);
+                [[UIColor CollageBorderUIColor] setFill];
+                UIRectFill(CGRectMake(0, 0, shortsideLength, longsideLength));
+                
+                [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[0] rect:CGRectMake(CollageBorderPixels, CollageBorderPixels, (shortsideLength - 3*CollageBorderPixels) / 2, (longsideLength - 3*CollageBorderPixels) / 2) ];
+                [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[1] rect:CGRectMake((shortsideLength/2) + (CollageBorderPixels/2), CollageBorderPixels, (shortsideLength - 3*CollageBorderPixels) / 2, (longsideLength - 3*CollageBorderPixels) / 2) ];
+                [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[2] rect:CGRectMake(CollageBorderPixels, (longsideLength/2) + (CollageBorderPixels/2), (shortsideLength - 3*CollageBorderPixels) / 2, (longsideLength - 3*CollageBorderPixels) / 2) ];
+                [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[3] rect:CGRectMake((shortsideLength/2) + (CollageBorderPixels/2), (longsideLength/2) + (CollageBorderPixels/2), (shortsideLength - 3*CollageBorderPixels) / 2, (longsideLength - 3*CollageBorderPixels) / 2) ];
+                
+            } else if( imagesOfThisCollage.count == 5 ) {
+                // orientation: **PORTRAIT**
+                
+                UIGraphicsEndImageContext();
+                UIGraphicsBeginImageContextWithOptions(CGSizeMake(shortsideLength, longsideLength), YES, 1.0);
+                [[UIColor CollageBorderUIColor] setFill];
+                UIRectFill(CGRectMake(0, 0, shortsideLength, longsideLength));
+                
+                int width13  = (shortsideLength - 3*CollageBorderPixels) / 2;
+                int height13 = (longsideLength - 3*CollageBorderPixels) / 2;
+                int width245 = width13;
+                int height245= (longsideLength - 4*CollageBorderPixels) / 3;
+                
+                [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[0] rect:CGRectMake(CollageBorderPixels, CollageBorderPixels, width13, height13) ];
+                [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[1] rect:CGRectMake( 2*CollageBorderPixels + width13, CollageBorderPixels, width245, height245 ) ];
+                [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[2] rect:CGRectMake(CollageBorderPixels, 2*CollageBorderPixels + height13, width13, height13 ) ];
+                [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[3] rect:CGRectMake(2*CollageBorderPixels + width13, 2*CollageBorderPixels + height245, width245, height245) ];
+                
+                [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[4] rect:CGRectMake( 2*CollageBorderPixels + width13, 3*CollageBorderPixels + 2*height245, width245, height245 )];
+                
+            } else if( imagesOfThisCollage.count == 6 ) {
+                // orientation: landscape
+                
+                int cellWidth = (longsideLength - (4*CollageBorderPixels)) / 3;
+                int cellHeight= (shortsideLength- (3*CollageBorderPixels)) / 2;
+                
+                [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[0] rect:CGRectMake(CollageBorderPixels, CollageBorderPixels, cellWidth, cellHeight) ];
+                
+                [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[1] rect:CGRectMake(2*CollageBorderPixels + cellWidth, CollageBorderPixels, cellWidth, cellHeight) ];
+                
+                [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[2] rect:CGRectMake(3*CollageBorderPixels + 2*cellWidth, CollageBorderPixels, cellWidth, cellHeight) ];
+                
+                [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[3] rect:CGRectMake(CollageBorderPixels, 2*CollageBorderPixels + cellHeight, cellWidth, cellHeight) ];
+                
+                [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[4] rect:CGRectMake(2*CollageBorderPixels + cellWidth, 2*CollageBorderPixels + cellHeight, cellWidth, cellHeight) ];
+                
+                [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[5] rect:CGRectMake(3*CollageBorderPixels + 2*cellWidth, 2*CollageBorderPixels + cellHeight, cellWidth, cellHeight) ];
+            }
+            
+            UIImage* collageImage = UIGraphicsGetImageFromCurrentImageContext();
+            [retval addObject:collageImage];
+            NSLog(@"makeCollageImages: adding collage UIImage");
             UIGraphicsEndImageContext();
-            UIGraphicsBeginImageContextWithOptions(CGSizeMake(shortsideLength, longsideLength), YES, 1.0);
-            [[UIColor CollageBorderUIColor] setFill];
-            UIRectFill(CGRectMake(0, 0, shortsideLength, longsideLength));
             
-            int width13  = (shortsideLength - 3*CollageBorderPixels) / 2;
-            int height13 = (longsideLength - 3*CollageBorderPixels) / 2;
-            int width245 = width13;
-            int height245= (longsideLength - 4*CollageBorderPixels) / 3;
-            
-            [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[0] rect:CGRectMake(CollageBorderPixels, CollageBorderPixels, width13, height13) ];
-            [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[1] rect:CGRectMake( 2*CollageBorderPixels + width13, CollageBorderPixels, width245, height245 ) ];
-            [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[2] rect:CGRectMake(CollageBorderPixels, 2*CollageBorderPixels + height13, width13, height13 ) ];
-            [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[3] rect:CGRectMake(2*CollageBorderPixels + width13, 2*CollageBorderPixels + height245, width245, height245) ];
-
-            [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[4] rect:CGRectMake( 2*CollageBorderPixels + width13, 3*CollageBorderPixels + 2*height245, width245, height245 )];
-            
-        } else if( imagesOfThisCollage.count == 6 ) {
-            // orientation: landscape
-            
-            int cellWidth = (longsideLength - (4*CollageBorderPixels)) / 3;
-            int cellHeight= (shortsideLength- (3*CollageBorderPixels)) / 2;
-            
-            [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[0] rect:CGRectMake(CollageBorderPixels, CollageBorderPixels, cellWidth, cellHeight) ];
-            
-            [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[1] rect:CGRectMake(2*CollageBorderPixels + cellWidth, CollageBorderPixels, cellWidth, cellHeight) ];
-            
-            [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[2] rect:CGRectMake(3*CollageBorderPixels + 2*cellWidth, CollageBorderPixels, cellWidth, cellHeight) ];
-            
-            [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[3] rect:CGRectMake(CollageBorderPixels, 2*CollageBorderPixels + cellHeight, cellWidth, cellHeight) ];
-            
-            [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[4] rect:CGRectMake(2*CollageBorderPixels + cellWidth, 2*CollageBorderPixels + cellHeight, cellWidth, cellHeight) ];
-            
-            [self resizeAndDrawInRect:(UIImage*)imagesOfThisCollage[5] rect:CGRectMake(3*CollageBorderPixels + 2*cellWidth, 2*CollageBorderPixels + cellHeight, cellWidth, cellHeight) ];
-        }
+        } // end for
         
-        UIImage* collageImage = UIGraphicsGetImageFromCurrentImageContext();
-        [retval addObject:collageImage];
-        NSLog(@"makeCollageImages: adding collage UIImage");
-        UIGraphicsEndImageContext();
-
-    } // end for
-    
-    NSLog(@"PERF DEBUG: makeCollageImages END");
-    return retval;
+        NSLog(@"PERF DEBUG: makeCollageImages END");
+        return retval;
+    }
 }
 
 - (bool)isResultingCollageLandscape:(NSArray*)images {
