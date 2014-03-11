@@ -303,7 +303,7 @@
     
     UIImage* resizedAndCroppedImage = [self cropImage:image scaledToFillSize:rect.size];
     // TODO: enable tilt?
-    //resizedAndCroppedImage = [self tiltAndZoomImage:resizedAndCroppedImage];
+    resizedAndCroppedImage = [self tiltAndZoomImage:resizedAndCroppedImage];
     
     if( nil == resizedAndCroppedImage ) {
         NSLog(@"Failed to resize image!");
@@ -318,9 +318,9 @@
 // private - adds a random amount of tilt & zoom to make the image more interesting
 - (UIImage*)tiltAndZoomImage:(UIImage*)image {
     
-    NSInteger tiltAngle = [self getRandomNumberBetween:0 maxNumber:30];
-    tiltAngle = tiltAngle - 15;
-    NSInteger extraZoom = [self getRandomNumberBetween:0 maxNumber:10];
+    NSInteger tiltAngle = [self getRandomNumberBetween:0 maxNumber:20];
+    tiltAngle = tiltAngle - 10;
+    NSInteger extraZoom = [self getRandomNumberBetween:0 maxNumber:20];
     extraZoom = 1 + (extraZoom/100);
     NSLog(@"Tilting with angle %ld", (long)tiltAngle);
     

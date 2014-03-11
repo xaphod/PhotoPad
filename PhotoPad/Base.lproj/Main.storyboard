@@ -534,7 +534,6 @@ top - touch here!</string>
                                 </state>
                                 <connections>
                                     <action selector="CancelButtonPressed:" destination="EvB-v4-FIj" eventType="touchUpInside" id="Fed-E4-pDK"/>
-                                    <action selector="OKButtonPressed:" destination="EvB-v4-FIj" eventType="touchUpInside" id="T4I-Sz-P7X"/>
                                 </connections>
                             </button>
                         </subviews>

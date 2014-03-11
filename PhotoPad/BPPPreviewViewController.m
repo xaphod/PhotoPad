@@ -32,6 +32,13 @@
 {
     [super viewDidLoad];
     
+    // show loading animation until loading images from camera roll is complete
+    self.loadingAnimationStrongOutlet = [[RZSquaresLoading alloc] initWithFrame:self.loadingAnimationStrongOutlet.frame];
+    [self.loadingAnimationStrongOutlet setColor:[UIColor orangeColor]];
+    self.loadingAnimationStrongOutlet.hidden = NO;
+    self.loadingAnimationStrongOutlet.alpha = 1.0;
+    [self.previewContainingViewOutlet addSubview:self.loadingAnimationStrongOutlet];
+    
     [[UIApplication sharedApplication] setStatusBarStyle:UIStatusBarStyleLightContent];
     
     [self updateUIFromSettings];
@@ -47,15 +54,6 @@
                                                 name:@"EyeFiUnarchiveComplete"
                                               object:nil];
     
-    //_photoFilenames = [NSMutableArray array];
-    //NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
-    // [_photoFilenames addObjectsFromArray: [[NSBundle bundleWithPath:[paths objectAtIndex:0]] pathsForResourcesOfType:@".JPG" inDirectory:nil]];
-    // want to display newest at top
-    // // [_photoFilenames sortUsingSelector:@selector(localizedCaseInsensitiveCompare:)];
-    // // _photoFilenames = [[[_photoFilenames reverseObjectEnumerator] allObjects] mutableCopy];
-
-
-
     
     // Setup the photo browser.
     _photosBrowser = [[MWPhotoBrowser alloc] initWithDelegate:self];
@@ -76,13 +74,7 @@
     self.collectionView.allowsMultipleSelection = YES;
     
     photoStore = [BPPPhotoStore singletonWithLargestPreviewSize:(self.landscapeImageViewOutlet.frame.size.width * [UIScreen mainScreen].scale) shortsidePixels:(self.landscapeImageViewOutlet.frame.size.height * [UIScreen mainScreen].scale) ]; // ask for permission to photos, etc
-    [photoStore setReloadTarget:self.collectionView];
-    
-    self.loadingAnimationStrongOutlet = [[RZSquaresLoading alloc] initWithFrame:self.loadingAnimationStrongOutlet.frame];
-    [self.loadingAnimationStrongOutlet setColor:[UIColor orangeColor]];
-    [self.loadingAnimationStrongOutlet setAlpha:0.0];
-    [self.loadingAnimationStrongOutlet setHidden:YES];
-    [self.previewContainingViewOutlet addSubview:self.loadingAnimationStrongOutlet];
+    [photoStore registerCallbackAfterCameraRollLoadComplete:self selector:@selector(loadingImagesComplete)];
     
     _previewSemaphore = dispatch_semaphore_create(1);
 }
@@ -124,6 +116,12 @@
     self.navigationController.navigationBar.topItem.title = (windowTitle) ?: @"Browse All Photos";
 }
 
+// called by photostore when loading is complete, and when an image is removed (URL deleted) from camera roll
+- (void)loadingImagesComplete {
+    [self.collectionView reloadData];
+    [self.loadingAnimationStrongOutlet setAlpha:0.0];
+    [self.loadingAnimationStrongOutlet setHidden:YES];
+}
 
 
 #pragma mark - Photo Gallery
@@ -474,15 +472,6 @@
 - (void)updatePreview {
     NSLog(@"updatePreview: thread %@", [NSThread currentThread]);
 
-    /*
-    if( _updatingPreview.boolValue == YES ) {
-        NSLog(@"updatePreview: TOO FAST!!!");
-        return;
-    }
-    
-    _updatingPreview = [NSNumber numberWithBool:TRUE];
-     */
-    
     self.loadingAnimationStrongOutlet.hidden = NO;
     self.loadingAnimationStrongOutlet.alpha = 1.0;
 

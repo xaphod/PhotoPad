@@ -38,8 +38,7 @@ typedef void(^ImageResizeCompletionBlock)(UIImage* resizedImage);
 
 // UI-related
 - (void)viewControllerIsRotating;
-- (void)setReloadTarget:(UICollectionView*)vc;
-
+- (void)registerCallbackAfterCameraRollLoadComplete:(id)delegate selector:(SEL)selector; // if you want photostore to call a method when loading from camera roll is complete, then call this. Callback will be on main thread. Also called when image is detected as missing from camera roll (ie URL removed).
 
 @property (nonatomic) NSMutableArray* photoURLs; // array of NSString*, repesenting the photos in camera roll -- URLs are ALAssetRepresentation URLs (camera roll)
 

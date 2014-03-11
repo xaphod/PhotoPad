@@ -304,7 +304,7 @@
     
     // TODO: progress indicator -- printCollage takes about 0.5s until it shows iOS print ui
 
-    BPPAirprintCollagePrinter *ap = [BPPAirprintCollagePrinter singleton];
+//    BPPAirprintCollagePrinter *ap = [BPPAirprintCollagePrinter singleton];
     
     NSAssert(FALSE, @"not implemented");
     

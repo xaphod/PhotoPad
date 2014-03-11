@@ -71,7 +71,8 @@
     CGFloat _largestPreviewsize_longsidePixels; // used to figure out the resize target for cached resized images
     CGFloat _largestPreviewsize_shortsidePixels;
 
-    UICollectionView* _vc;
+    id _loadCompleteDelegate;
+    SEL _loadCompleteSelector;
 }
 
 @end
@@ -138,18 +139,19 @@ static BPPPhotoStore *shared = nil;
     return self;
 }
 
-- (void)setReloadTarget:(UICollectionView*)vc {
-    NSLog(@"BPPPhotoStore: reloadTarget set.");
-    _vc = vc;
+- (void)registerCallbackAfterCameraRollLoadComplete:(id)delegate selector:(SEL)selector {
+    _loadCompleteDelegate = delegate;
+    _loadCompleteSelector = selector;
 }
 
-
+// called when images finish loading from camera roll, and when image is deleted
 - (void)initialLoadIsFinished {
-    NSLog(@"BPPPhotoStore: initialLoadIsFinished, calling reloadTarget->reloadData");
-    if( _vc )
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [_vc reloadData];
-        });
+    NSLog(@"BPPPhotoStore: initialLoadIsFinished, calling delegate->selector");
+    if( _loadCompleteDelegate && _loadCompleteSelector )
+        if( [_loadCompleteDelegate respondsToSelector:_loadCompleteSelector])
+            dispatch_async(dispatch_get_main_queue(), ^{
+                [_loadCompleteDelegate performSelector:_loadCompleteSelector];
+            });
 }
 
 
@@ -173,24 +175,32 @@ static BPPPhotoStore *shared = nil;
     // otherwise, generate a new resized image and populate the cache
     [self loadImageFromCameraRollByURL:url completionBlock:^(UIImage* fullsizeImage) {
         
-        ImageResizeOperation* resizeOp = [[ImageResizeOperation alloc] initWithImage:fullsizeImage size:size crop:YES resizeFinishCompletionBlock:^(UIImage* resizedImage) {
+        if( fullsizeImage == nil ) {
+            // ie photo deleted
+            [self.photoURLs removeObject:url];
+            [self initialLoadIsFinished];
+            NSLog(@"Didn't find image for URL: %@", url);
+        } else {
+            ImageResizeOperation* resizeOp = [[ImageResizeOperation alloc] initWithImage:fullsizeImage size:size crop:YES resizeFinishCompletionBlock:^(UIImage* resizedImage) {
+                
+                // cache it, and call completion block from getCellsizeImage's caller
+                NSLog(@"BPPPhotoStore getCellSizeImage: DONE, adding resized image to cache");
+                [imageCache_cellsize setObject:resizedImage forKey:url cost:1];
+                if( completionBlock )
+                    completionBlock(resizedImage);
+                
+                // generate the rest of the cache sized images
+                //            [self getHalfResolutionImage:url completionBlock:nil];
+                // TODO: further perf improvement - somehow pass on the 2er to be used as the 4er's input
+                //            [self getQuarterResolutionImage:url completionBlock:nil];
+                // TODO: just an idea if perf is still a problem: instead of doing cellsize first, do 2er first, then do 4er from 2er, and cellsize from 4er
+                
+            }];
             
-            // cache it, and call completion block from getCellsizeImage's caller
-            NSLog(@"BPPPhotoStore getCellSizeImage: DONE, adding resized image to cache");
-            [imageCache_cellsize setObject:resizedImage forKey:url cost:1];
-            if( completionBlock )
-                completionBlock(resizedImage);
-            
-            // generate the rest of the cache sized images
-//            [self getHalfResolutionImage:url completionBlock:nil];
-            // TODO: further perf improvement - somehow pass on the 2er to be used as the 4er's input
-//            [self getQuarterResolutionImage:url completionBlock:nil];
-            // TODO: just an idea if perf is still a problem: instead of doing cellsize first, do 2er first, then do 4er from 2er, and cellsize from 4er
-        }];
-        
-        // run the operation
-        NSLog(@"BPPPhotoStore getCellSizeImage: adding resize op to queue now");
-        [imageCacheQueue addOperation:resizeOp];
+            // run the operation
+            NSLog(@"BPPPhotoStore getCellSizeImage: adding resize op to queue now");
+            [imageCacheQueue addOperation:resizeOp];
+        }
         
     }];
 }
@@ -218,38 +228,45 @@ static BPPPhotoStore *shared = nil;
     // otherwise, generate a new resized image and populate the cache
     [self loadImageFromCameraRollByURL:url completionBlock:^(UIImage* fullsizeImage) {
         
-        CGSize targetSize;
-        if( fullsizeImage.size.width > fullsizeImage.size.height ) {
-            targetSize = CGSizeMake(MAX(ap.longsidePixels, _largestPreviewsize_longsidePixels), MAX(ap.shortsidePixels, _largestPreviewsize_shortsidePixels) );
+        if( fullsizeImage == nil ) {
+            // ie photo deleted
+            [self.photoURLs removeObject:url];
+            [self initialLoadIsFinished];
+            NSLog(@"Didn't find image for URL: %@", url);
         } else {
-            targetSize = CGSizeMake(MAX(ap.shortsidePixels, _largestPreviewsize_shortsidePixels), MAX(ap.longsidePixels, _largestPreviewsize_longsidePixels) );
-        }
-        
-        if( targetSize.height < fullsizeImage.size.height && targetSize.width < fullsizeImage.size.width ) {
-            ImageResizeOperation* resizeOp = [[ImageResizeOperation alloc] initWithImage:fullsizeImage size:targetSize crop:NO resizeFinishCompletionBlock:^(UIImage* resizedImage) {
-                
-                // cache it, and call completion block from caller
-                NSLog(@"BPPPhotoStore getHalfResolutionImage: DONE, adding resized image to cache. w: %f  h: %f", targetSize.width, targetSize.height);
-                [imageCache_2er setObject:resizedImage forKey:url cost:1];
-                
-                if( completionBlock )
-                    completionBlock(resizedImage);
-                
-            }];
-            // run the operation
-            [resizeOp setQueuePriority:pri];
-            NSLog(@"BPPPhotoStore getHalfResolutionImage: adding resize op to queue now");
-            [imageCacheQueue addOperation:resizeOp];
             
-        } else {
-            NSLog(@"BPPPhotoStore getHalfResolutionImage: not resizing (too small). Current w: %f  h: %f", fullsizeImage.size.width, fullsizeImage.size.height);
-            [imageCache_2er setObject:fullsizeImage forKey:url cost:1];
-            if( completionBlock )
-                completionBlock(fullsizeImage);
+            CGSize targetSize;
+            if( fullsizeImage.size.width > fullsizeImage.size.height ) {
+                targetSize = CGSizeMake(MAX(ap.longsidePixels, _largestPreviewsize_longsidePixels), MAX(ap.shortsidePixels, _largestPreviewsize_shortsidePixels) );
+            } else {
+                targetSize = CGSizeMake(MAX(ap.shortsidePixels, _largestPreviewsize_shortsidePixels), MAX(ap.longsidePixels, _largestPreviewsize_longsidePixels) );
+            }
+            
+            if( targetSize.height < fullsizeImage.size.height && targetSize.width < fullsizeImage.size.width ) {
+                ImageResizeOperation* resizeOp = [[ImageResizeOperation alloc] initWithImage:fullsizeImage size:targetSize crop:NO resizeFinishCompletionBlock:^(UIImage* resizedImage) {
+                    
+                    // cache it, and call completion block from caller
+                    NSLog(@"BPPPhotoStore getHalfResolutionImage: DONE, adding resized image to cache. w: %f  h: %f", targetSize.width, targetSize.height);
+                    [imageCache_2er setObject:resizedImage forKey:url cost:1];
+                    
+                    if( completionBlock )
+                        completionBlock(resizedImage);
+                    
+                }];
+                // run the operation
+                [resizeOp setQueuePriority:pri];
+                NSLog(@"BPPPhotoStore getHalfResolutionImage: adding resize op to queue now");
+                [imageCacheQueue addOperation:resizeOp];
+                
+            } else {
+                NSLog(@"BPPPhotoStore getHalfResolutionImage: not resizing (too small). Current w: %f  h: %f", fullsizeImage.size.width, fullsizeImage.size.height);
+                [imageCache_2er setObject:fullsizeImage forKey:url cost:1];
+                if( completionBlock )
+                    completionBlock(fullsizeImage);
+            }
         }
-        
     }];
-  
+    
 }
 
 - (UIImage*)getQuarterResolutionImage:(UIImage*)halfResImage url:(NSString*)url {

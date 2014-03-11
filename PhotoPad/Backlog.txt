@@ -5,19 +5,9 @@ Backlog - Tim
 
 - after choosing 1, put it in a 2-er collage with a ? or grey square
 
-    6d.old/stale selections -- time them out??
-    7. print icon must be much bigger
-    8. add ability to email self - email a link set in settings, with a ready-date also set in settings
-    8b.app must collect all email addresses -- where does it store them or how does it send them?
     9. update or get rid of help
-18. busy-UI while loading imges at start
-19. mid-size cache for preview, or other approach to speed up selection & preview generation?
 20. localize into german?
-21. images printed to collage: apply a style (edit) them?
 22. publish to the instagram feed of the wedding??
-23. make squares at top to be portrait, not square???? and later have a setting to change it to landscape
-
-More perf: Get rid of selectedPhotos if possible - directly ask for 4ers without asking for 2ers
 
 
 DONE
