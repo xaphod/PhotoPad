@@ -30,7 +30,7 @@
 {
     [super viewDidLoad];
     
-    NSString *htmlFile = [[NSBundle mainBundle] pathForResource:@"Email" ofType:@"html"];
+    NSString *htmlFile = [[NSBundle mainBundle] pathForResource:@"Email-localized" ofType:@"html"];
     NSString* htmlString = [NSString stringWithContentsOfFile:htmlFile encoding:NSUTF8StringEncoding error:nil];
     [self.webViewOutlet loadHTMLString:htmlString baseURL:nil];
     

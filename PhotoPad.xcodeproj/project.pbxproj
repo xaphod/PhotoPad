@@ -17,7 +17,7 @@
 		220118FE18D7951000223BCD /* right_round-64.png in Resources */ = {isa = PBXBuildFile; fileRef = 220118F618D7951000223BCD /* right_round-64.png */; };
 		220118FF18D7951000223BCD /* right_round-64@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 220118F718D7951000223BCD /* right_round-64@2x.png */; };
 		2201190518D7A53E00223BCD /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 2201190718D7A53E00223BCD /* Localizable.strings */; };
-		2201190A18D7AA8D00223BCD /* Email.html in Resources */ = {isa = PBXBuildFile; fileRef = 2201190C18D7AA8D00223BCD /* Email.html */; };
+		2201190A18D7AA8D00223BCD /* Email-localized.html in Resources */ = {isa = PBXBuildFile; fileRef = 2201190C18D7AA8D00223BCD /* Email-localized.html */; };
 		220D04D118C3D30400FB3FA1 /* BPPEmailViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 220D04D018C3D30400FB3FA1 /* BPPEmailViewController.m */; };
 		222CB24318BD08C10000502A /* BPPPreviewViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 222CB24218BD08C10000502A /* BPPPreviewViewController.m */; };
 		222CB24618BD091E0000502A /* BPPViewPickerViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 222CB24518BD091E0000502A /* BPPViewPickerViewController.m */; };
@@ -153,9 +153,9 @@
 		2201190618D7A53E00223BCD /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = Base; path = Base.lproj/Localizable.strings; sourceTree = "<group>"; };
 		2201190818D7A54300223BCD /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		2201190918D7A54500223BCD /* de */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = de; path = de.lproj/Localizable.strings; sourceTree = "<group>"; };
-		2201190B18D7AA8D00223BCD /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = Base; path = Base.lproj/Email.html; sourceTree = "<group>"; };
-		2201190D18D7AA8F00223BCD /* en */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = en; path = en.lproj/Email.html; sourceTree = "<group>"; };
-		2201190E18D7AA9000223BCD /* de */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = de; path = de.lproj/Email.html; sourceTree = "<group>"; };
+		2201190B18D7AA8D00223BCD /* Base */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = Base; path = "Base.lproj/Email-localized.html"; sourceTree = "<group>"; };
+		2201190D18D7AA8F00223BCD /* en */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = en; path = "en.lproj/Email-localized.html"; sourceTree = "<group>"; };
+		2201190E18D7AA9000223BCD /* de */ = {isa = PBXFileReference; lastKnownFileType = text.html; name = de; path = "de.lproj/Email-localized.html"; sourceTree = "<group>"; };
 		2201191018D7ABE700223BCD /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Main.strings; sourceTree = "<group>"; };
 		220D04CF18C3D30400FB3FA1 /* BPPEmailViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BPPEmailViewController.h; sourceTree = "<group>"; };
 		220D04D018C3D30400FB3FA1 /* BPPEmailViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BPPEmailViewController.m; sourceTree = "<group>"; };
@@ -535,7 +535,7 @@
 				4D784B02183D72D1007FB05A /* InfoPlist.strings */,
 				4D784B05183D72D1007FB05A /* main.m */,
 				4D784B07183D72D1007FB05A /* PhotoPad-Prefix.pch */,
-				2201190C18D7AA8D00223BCD /* Email.html */,
+				2201190C18D7AA8D00223BCD /* Email-localized.html */,
 				8627C8EB1842660D00DA239D /* Help.html */,
 				2201190718D7A53E00223BCD /* Localizable.strings */,
 			);
@@ -933,7 +933,7 @@
 				863ED8C3183F0BBA00AB7A6A /* GetPhotoStatus.xml in Resources */,
 				863ED8C5183F1FEA00AB7A6A /* UploadPhoto.xml in Resources */,
 				220118FD18D7951000223BCD /* printer-64@2x.png in Resources */,
-				2201190A18D7AA8D00223BCD /* Email.html in Resources */,
+				2201190A18D7AA8D00223BCD /* Email-localized.html in Resources */,
 				220118F918D7951000223BCD /* cancel-64@2x.png in Resources */,
 				863ED8A8183EC90000AB7A6A /* StartSession.xml in Resources */,
 				22A3DE9518BAB2300041FDC6 /* debug2.jpg in Resources */,
@@ -1082,14 +1082,14 @@
 			name = Localizable.strings;
 			sourceTree = "<group>";
 		};
-		2201190C18D7AA8D00223BCD /* Email.html */ = {
+		2201190C18D7AA8D00223BCD /* Email-localized.html */ = {
 			isa = PBXVariantGroup;
 			children = (
 				2201190B18D7AA8D00223BCD /* Base */,
 				2201190D18D7AA8F00223BCD /* en */,
 				2201190E18D7AA9000223BCD /* de */,
 			);
-			name = Email.html;
+			name = "Email-localized.html";
 			sourceTree = "<group>";
 		};
 		4D784B02183D72D1007FB05A /* InfoPlist.strings */ = {
