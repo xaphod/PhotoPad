@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="4514" systemVersion="13C64" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="RTl-KA-cyl">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="5053" systemVersion="13C64" targetRuntime="iOS.CocoaTouch.iPad" propertyAccessControl="none" useAutolayout="YES" initialViewController="RTl-KA-cyl">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3747"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="3733"/>
     </dependencies>
     <scenes>
         <!--Navigation Controller-->
@@ -140,15 +140,13 @@
                                 </connections>
                             </collectionView>
                             <view hidden="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="x5U-mZ-23n">
-                                <rect key="frame" x="648" y="50" width="100" height="100"/>
+                                <rect key="frame" x="674" y="210" width="80" height="80"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <subviews>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vy5-Gt-tED">
-                                        <rect key="frame" x="10" y="10" width="80" height="80"/>
+                                    <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Vy5-Gt-tED">
+                                        <rect key="frame" x="10" y="10" width="64" height="64"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                        <state key="normal">
-                                            <string key="title">New photos at the 
-top - touch here!</string>
+                                        <state key="normal" image="right_round-64.png">
                                             <color key="titleColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
@@ -157,14 +155,10 @@ top - touch here!</string>
                                         </connections>
                                     </button>
                                 </subviews>
-                                <color key="backgroundColor" red="0.0" green="0.71240482230000002" blue="0.1016174227" alpha="0.66000000000000003" colorSpace="calibratedRGB"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
                                 <constraints>
-                                    <constraint firstAttribute="height" constant="100" id="B6e-UU-BcT"/>
-                                    <constraint firstItem="Vy5-Gt-tED" firstAttribute="top" secondItem="x5U-mZ-23n" secondAttribute="top" constant="10" id="RVM-QK-G1n"/>
-                                    <constraint firstAttribute="bottom" secondItem="Vy5-Gt-tED" secondAttribute="bottom" constant="10" id="bMK-PM-e2S"/>
-                                    <constraint firstAttribute="trailing" secondItem="Vy5-Gt-tED" secondAttribute="trailing" constant="10" id="dit-Cf-mm1"/>
-                                    <constraint firstAttribute="width" constant="100" id="g6z-Vk-xmd"/>
-                                    <constraint firstItem="Vy5-Gt-tED" firstAttribute="leading" secondItem="x5U-mZ-23n" secondAttribute="leading" constant="10" id="qmu-cJ-U2h"/>
+                                    <constraint firstAttribute="width" constant="80" id="IaY-jF-sE9"/>
+                                    <constraint firstAttribute="height" constant="80" id="uFD-Rb-Thj"/>
                                 </constraints>
                             </view>
                             <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="hDb-2e-3aN">
@@ -188,50 +182,50 @@ top - touch here!</string>
                                         <rect key="frame" x="170" y="20" width="429" height="664"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </imageView>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dBX-PL-m9r">
-                                        <rect key="frame" x="670" y="126" width="81" height="58"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dBX-PL-m9r">
+                                        <rect key="frame" x="694" y="637" width="45" height="45"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="81" id="bJd-zB-blR"/>
-                                            <constraint firstAttribute="height" constant="58" id="mR7-PN-fim"/>
+                                            <constraint firstAttribute="width" constant="45" id="bJd-zB-blR"/>
+                                            <constraint firstAttribute="height" constant="45" id="mR7-PN-fim"/>
                                         </constraints>
-                                        <state key="normal" title="PRINT">
+                                        <state key="normal" image="printer-64.png">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
                                             <action selector="PrintPressed:" destination="oec-va-NCN" eventType="touchUpInside" id="MdF-al-teJ"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZBQ-Bw-o8m">
-                                        <rect key="frame" x="677" y="64" width="67" height="54"/>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZBQ-Bw-o8m">
+                                        <rect key="frame" x="623" y="637" width="45" height="45"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="54" id="iHl-rO-hT8"/>
-                                            <constraint firstAttribute="width" constant="67" id="opj-aZ-BSK"/>
+                                            <constraint firstAttribute="height" constant="45" id="iHl-rO-hT8"/>
+                                            <constraint firstAttribute="width" constant="45" id="opj-aZ-BSK"/>
                                         </constraints>
-                                        <state key="normal" title="EMAIL">
+                                        <state key="normal" image="message-64.png">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
                                             <segue destination="EvB-v4-FIj" kind="modal" identifier="showEmail" modalPresentationStyle="formSheet" id="nkR-2D-awy"/>
                                         </connections>
                                     </button>
-                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MxQ-8b-LYQ">
-                                        <rect key="frame" x="673" y="0.0" width="75" height="51"/>
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="MxQ-8b-LYQ">
+                                        <rect key="frame" x="694" y="20" width="45" height="45"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="75" id="PNv-Fn-KR8"/>
-                                            <constraint firstAttribute="height" constant="51" id="Vbk-Qp-2dd"/>
+                                            <constraint firstAttribute="width" constant="45" id="PNv-Fn-KR8"/>
+                                            <constraint firstAttribute="height" constant="45" id="Vbk-Qp-2dd"/>
                                         </constraints>
-                                        <state key="normal" title="CLEAR">
+                                        <state key="normal" image="cancel-64.png">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                         </state>
                                         <connections>
                                             <action selector="clearPressed:" destination="oec-va-NCN" eventType="touchUpInside" id="xxw-Ue-duT"/>
                                         </connections>
                                     </button>
-                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cNv-4f-PXc">
-                                        <rect key="frame" x="578" y="594" width="150" height="70"/>
+                                    <button hidden="YES" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="cNv-4f-PXc">
+                                        <rect key="frame" x="12" y="614" width="150" height="70"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <constraints>
                                             <constraint firstAttribute="height" constant="70" id="eTB-XQ-ciE"/>
@@ -249,21 +243,21 @@ top - touch here!</string>
                                 <constraints>
                                     <constraint firstAttribute="bottom" secondItem="Cjg-tN-PS9" secondAttribute="bottom" constant="20" id="0HI-8z-rb9"/>
                                     <constraint firstItem="Cjg-tN-PS9" firstAttribute="top" secondItem="hDb-2e-3aN" secondAttribute="top" constant="20" id="218-ub-OAU"/>
-                                    <constraint firstAttribute="bottom" secondItem="cNv-4f-PXc" secondAttribute="bottom" constant="40" id="2K8-J8-JBW"/>
+                                    <constraint firstAttribute="bottom" secondItem="cNv-4f-PXc" secondAttribute="bottom" constant="20" id="2K8-J8-JBW"/>
                                     <constraint firstAttribute="trailing" secondItem="Cjg-tN-PS9" secondAttribute="trailing" constant="169" id="88a-wn-jFn"/>
-                                    <constraint firstAttribute="trailing" secondItem="ZBQ-Bw-o8m" secondAttribute="trailing" constant="24" id="AJd-0K-G09"/>
-                                    <constraint firstAttribute="trailing" secondItem="dBX-PL-m9r" secondAttribute="trailing" constant="17" id="FtX-oQ-9WO"/>
+                                    <constraint firstAttribute="trailing" secondItem="ZBQ-Bw-o8m" secondAttribute="trailing" constant="100" id="AJd-0K-G09"/>
+                                    <constraint firstAttribute="trailing" secondItem="dBX-PL-m9r" secondAttribute="trailing" constant="29" id="FtX-oQ-9WO"/>
                                     <constraint firstAttribute="centerY" secondItem="duE-tM-bjX" secondAttribute="centerY" id="G27-dr-pFe"/>
                                     <constraint firstItem="SyB-dw-tQG" firstAttribute="leading" secondItem="hDb-2e-3aN" secondAttribute="leading" constant="20" id="Hz6-FC-u87"/>
                                     <constraint firstItem="SyB-dw-tQG" firstAttribute="top" secondItem="hDb-2e-3aN" secondAttribute="top" constant="109" id="Zxg-T6-uY3"/>
-                                    <constraint firstItem="MxQ-8b-LYQ" firstAttribute="top" secondItem="hDb-2e-3aN" secondAttribute="top" id="cOm-gT-5jC"/>
+                                    <constraint firstItem="MxQ-8b-LYQ" firstAttribute="top" secondItem="hDb-2e-3aN" secondAttribute="top" constant="20" id="cOm-gT-5jC"/>
                                     <constraint firstItem="Cjg-tN-PS9" firstAttribute="leading" secondItem="hDb-2e-3aN" secondAttribute="leading" constant="170" id="dds-oo-k5O"/>
-                                    <constraint firstAttribute="trailing" secondItem="MxQ-8b-LYQ" secondAttribute="trailing" constant="20" id="ika-wX-563"/>
+                                    <constraint firstAttribute="trailing" secondItem="MxQ-8b-LYQ" secondAttribute="trailing" constant="29" id="ika-wX-563"/>
                                     <constraint firstAttribute="trailing" secondItem="SyB-dw-tQG" secondAttribute="trailing" constant="20" id="lsd-bj-FbI"/>
-                                    <constraint firstItem="dBX-PL-m9r" firstAttribute="top" secondItem="ZBQ-Bw-o8m" secondAttribute="bottom" constant="8" id="nFb-z1-cbg"/>
-                                    <constraint firstItem="ZBQ-Bw-o8m" firstAttribute="top" secondItem="MxQ-8b-LYQ" secondAttribute="bottom" constant="13" id="oUn-eI-MZs"/>
+                                    <constraint firstItem="dBX-PL-m9r" firstAttribute="top" secondItem="ZBQ-Bw-o8m" secondAttribute="bottom" constant="-45" id="nFb-z1-cbg"/>
+                                    <constraint firstItem="ZBQ-Bw-o8m" firstAttribute="top" secondItem="MxQ-8b-LYQ" secondAttribute="bottom" constant="572" id="oUn-eI-MZs"/>
                                     <constraint firstAttribute="centerX" secondItem="duE-tM-bjX" secondAttribute="centerX" id="r3A-0d-4e7"/>
-                                    <constraint firstAttribute="trailing" secondItem="cNv-4f-PXc" secondAttribute="trailing" constant="40" id="rQF-uq-5lI"/>
+                                    <constraint firstAttribute="trailing" secondItem="cNv-4f-PXc" secondAttribute="trailing" constant="606" id="rQF-uq-5lI"/>
                                     <constraint firstAttribute="bottom" secondItem="SyB-dw-tQG" secondAttribute="bottom" constant="110" id="vo9-Ev-s29"/>
                                 </constraints>
                             </view>
@@ -271,10 +265,10 @@ top - touch here!</string>
                         <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="sSk-Nz-PVT" firstAttribute="top" secondItem="Exh-5S-ovk" secondAttribute="top" id="0e1-gc-xDG"/>
+                            <constraint firstItem="x5U-mZ-23n" firstAttribute="top" secondItem="Exh-5S-ovk" secondAttribute="top" constant="210" id="4GS-sc-VvJ"/>
                             <constraint firstItem="tA0-Vr-WJ6" firstAttribute="top" secondItem="hDb-2e-3aN" secondAttribute="bottom" id="CnD-K0-Idv"/>
+                            <constraint firstAttribute="trailing" secondItem="x5U-mZ-23n" secondAttribute="trailing" constant="14" id="F35-Mq-P3k"/>
                             <constraint firstAttribute="trailing" secondItem="sSk-Nz-PVT" secondAttribute="trailing" id="Scg-T7-bkc"/>
-                            <constraint firstItem="x5U-mZ-23n" firstAttribute="top" secondItem="Exh-5S-ovk" secondAttribute="top" constant="50" id="avz-LX-XHT"/>
-                            <constraint firstAttribute="trailing" secondItem="x5U-mZ-23n" secondAttribute="trailing" constant="20" id="dVs-06-VzT"/>
                             <constraint firstItem="hDb-2e-3aN" firstAttribute="top" secondItem="sSk-Nz-PVT" secondAttribute="bottom" id="rA3-PX-fpr"/>
                             <constraint firstItem="hDb-2e-3aN" firstAttribute="leading" secondItem="Exh-5S-ovk" secondAttribute="leading" id="sPG-mt-Rnx"/>
                             <constraint firstItem="sSk-Nz-PVT" firstAttribute="leading" secondItem="Exh-5S-ovk" secondAttribute="leading" id="uMa-la-ttA"/>
@@ -584,6 +578,10 @@ top - touch here!</string>
     </scenes>
     <resources>
         <image name="Print" width="20" height="20"/>
+        <image name="cancel-64.png" width="64" height="64"/>
+        <image name="message-64.png" width="64" height="64"/>
+        <image name="printer-64.png" width="64" height="64"/>
+        <image name="right_round-64.png" width="64" height="64"/>
     </resources>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">
         <simulatedStatusBarMetrics key="statusBar" statusBarStyle="blackOpaque"/>

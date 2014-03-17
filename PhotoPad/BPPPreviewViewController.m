@@ -64,7 +64,7 @@
     UILongPressGestureRecognizer *longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(activateActionMode:)];
     longPress.delegate = self;
     [_collectionView addGestureRecognizer:longPress];
-    self.photoToolSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:@"Cancel" destructiveButtonTitle:@"Delete" otherButtonTitles:nil];
+    self.photoToolSheet = [[UIActionSheet alloc] initWithTitle:nil delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel",nil) destructiveButtonTitle:NSLocalizedString(@"Delete", nil) otherButtonTitles:nil];
     
     longPress = [[UILongPressGestureRecognizer alloc] initWithTarget:self action:@selector(emailButtonLongPress:)];
     longPress.minimumPressDuration = 3; // 3 seconds pressing to activate!
@@ -113,7 +113,7 @@
     self.navigationController.navigationBar.tintColor = [UIColor whiteColor];
     self.navigationController.navigationBar.barTintColor = navbarTint;
     
-    self.navigationController.navigationBar.topItem.title = (windowTitle) ?: @"Browse All Photos";
+    self.navigationController.navigationBar.topItem.title = (windowTitle) ?: NSLocalizedString(@"Browse All Photos", nil);
 }
 
 // called by photostore when loading is complete, and when an image is removed (URL deleted) from camera roll
@@ -213,7 +213,7 @@
 // max 6 selected cells
 - (BOOL)collectionView:(UICollectionView *)collectionView shouldSelectItemAtIndexPath:(NSIndexPath *)indexPath {
     if( self.collectionView.indexPathsForSelectedItems.count >= 6 ) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Maximum 6 Photos" message:@"The maximum number of photos is already selected. To clear the selection, use the clear button." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Maximum 6 Photos",nil) message:NSLocalizedString(@"The maximum number of photos is already selected. To clear the selection, use the clear button.", nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK",nil) otherButtonTitles:nil];
         [alert show];
         return NO;
     }
@@ -366,17 +366,15 @@
 - (void)startPrinting:(NSArray*)images {
     BPPAirprintCollagePrinter *ap = [BPPAirprintCollagePrinter singleton];
     
-    
-    
     if( ! [ap printCollage:images fromCGRect:self.printButtonOutlet.frame fromUIView:self.view successBlock:^{
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Printing Successful" message:@"Your photo(s) will print soon. Please take the photo and put it in the wedding album for the happy couple, and write a nice message with it!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Printing Successful",nil) message:NSLocalizedString(@"Your photo(s) will print soon. Please take the photo and put it in the wedding album for the happy couple, and write a nice message with it!",nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK",nil) otherButtonTitles:nil];
         [alert show];
         
         [self clearCellSelections];
 
     } failBlock:^(NSError *error) {
-        NSString* displayStr = [NSString stringWithFormat:@"Oh no! The printer didn't work. Please go get Tim and tell him about it. Your pictures have been saved, so you can try again later.\n\nError -- descrip: %@, domain %@ with error code %d", error.localizedDescription, error.domain, (int)error.code];
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Printing Error" message:displayStr delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        NSString* displayStr = [NSString stringWithFormat:NSLocalizedString(@"Oh no! The printer didn't work. Please go get the photographer and tell him about it. Your pictures have been saved, so you can try again later.\n\nError -- descrip: %@, domain %@ with error code %d",nil), error.localizedDescription, error.domain, (int)error.code];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Printing Error",nil) message:displayStr delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
         [alert show];
         
     }] ) {
@@ -443,6 +441,11 @@
         } else {
             // TODO: going from 0->1 selected images -- inform user to pick another?
             NSLog(@"NOT ENOUGH SELECTED PHOTOS");
+            
+            if( forPrinting ) {
+                UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Please choose more photos",nil) message:NSLocalizedString(@"Please choose at least 2 photos to print. You can choose photos by touching them at the top.",nil) delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+                [alert show];
+            }
         }
         
         self.loadingAnimationStrongOutlet.hidden = YES;
@@ -548,7 +551,7 @@
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     
     // rough password check
-    if( [[alertView textFieldAtIndex:0].text isEqualToString:@"rush2112"] ) {
+    if( [[alertView textFieldAtIndex:0].text isEqualToString:@"getemails"] ) {
         
         BPPAppDelegate *appDelegate = (BPPAppDelegate *)[[UIApplication sharedApplication] delegate];
 

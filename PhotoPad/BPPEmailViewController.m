@@ -83,7 +83,7 @@
     if( [self.emailTextFieldOutlet.text isEqualToString:@""] || ![self NSStringIsValidEmail:self.emailTextFieldOutlet.text] ) {
         // fail case
         
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Invalid Email Address" message:@"Please enter a valid email address, or hit cancel." delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Invalid Email Address",nil) message:NSLocalizedString(@"Please enter a valid email address, or hit cancel.",nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK",nil) otherButtonTitles:nil];
         [alert show];
 
         return NO;
@@ -92,7 +92,7 @@
         BPPAppDelegate *appDelegate = (BPPAppDelegate *)[[UIApplication sharedApplication] delegate];
         [appDelegate addEmailAddress:self.emailTextFieldOutlet.text];
         
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Email Saved" message:@"Your email address has been saved, thank you!" delegate:nil cancelButtonTitle:@"OK" otherButtonTitles:nil];
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Email Saved",nil) message:NSLocalizedString(@"Your email address has been saved, thank you!",nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK",nil) otherButtonTitles:nil];
         [alert show];
         
         self.emailTextFieldOutlet.text = @"";

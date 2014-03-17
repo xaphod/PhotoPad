@@ -1,0 +1,30 @@
+
+/* Class = "IBUIButton"; normalTitle = "OK"; ObjectID = "6Ah-WG-kcN"; */
+"6Ah-WG-kcN.normalTitle" = "OK";
+
+/* Class = "IBUIButton"; normalTitle = "OLD FULL-SCREEN COLLECTION VIEW"; ObjectID = "IBi-AH-Xlg"; */
+"IBi-AH-Xlg.normalTitle" = "OLD FULL-SCREEN COLLECTION VIEW";
+
+/* Class = "IBUIButton"; normalTitle = "Cancel"; ObjectID = "JbL-fx-vjZ"; */
+"JbL-fx-vjZ.normalTitle" = "Abbrechen";
+
+/* Class = "IBUIButton"; normalTitle = "INJECT"; ObjectID = "cNv-4f-PXc"; */
+"cNv-4f-PXc.normalTitle" = "INJECT";
+
+/* Class = "IBUINavigationItem"; title = "Browse All Photos"; ObjectID = "dCg-GS-7iL"; */
+"dCg-GS-7iL.title" = "Alle Fotos";
+
+/* Class = "IBUIBarButtonItem"; title = "Help"; ObjectID = "sgi-o3-8Hf"; */
+"sgi-o3-8Hf.title" = "Help";
+
+/* Class = "IBUIButton"; normalTitle = "New photos at the \ntop - touch here!"; ObjectID = "tPq-gM-Tjl"; */
+"tPq-gM-Tjl.normalTitle" = "New photos at the \ntop - touch here!";
+
+/* Class = "IBUIButton"; normalTitle = "NEW PREVIEW VIEW"; ObjectID = "uY4-qK-GuZ"; */
+"uY4-qK-GuZ.normalTitle" = "NEW PREVIEW VIEW";
+
+/* Class = "IBUIBarButtonItem"; title = "DEBUG: inject"; ObjectID = "xP4-ke-SRw"; */
+"xP4-ke-SRw.title" = "DEBUG: inject";
+
+/* Class = "IBUITextField"; placeholder = "  email address"; ObjectID = "zbZ-ze-l9O"; */
+"zbZ-ze-l9O.placeholder" = "  email adresse";

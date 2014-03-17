@@ -1,0 +1,34 @@
+/* 
+  Localizable.strings
+  PhotoPad
+
+  Created by Tim Carr on 3/17/14.
+
+*/
+
+"Cancel" = "Cancel";
+"Delete" = "Delete";
+"Browse All Photos" = "Browse All Photos";
+
+
+"Maximum 6 Photos" = "Maximum 6 Photos";
+"The maximum number of photos is already selected. To clear the selection, use the clear button." = "The maximum number of photos is already selected. To clear the selection, use the clear button.";
+"OK" = "OK";
+
+"Printing Successful" = "Printing Successful";
+"Your photo(s) will print soon. Please take the photo and put it in the wedding album for the happy couple, and write a nice message with it!" = "Your photo(s) will print soon. Please take the photo and put it in the wedding album for the happy couple, and write a nice message with it!";
+
+"Printing Error" = "Printing Error";
+"Oh no! The printer didn't work. Please go get the photographer and tell him about it. Your pictures have been saved, so you can try again later.\n\nError -- descrip: %@, domain %@ with error code %d" = "Oh no! The printer didn't work. Please go get the photographer and tell him about it. Your pictures have been saved, so you can try again later.\n\nError -- descrip: %@, domain %@ with error code %d";
+
+"Please choose more photos" = "Please choose more photos";
+"Please choose at least 2 photos to print. You can choose photos by touching them at the top." = "Please choose at least 2 photos to print. You can choose photos by touching them at the top.";
+
+"Invalid Email Address" = "Invalid Email Address";
+"Please enter a valid email address, or hit cancel." = "Please enter a valid email address, or hit cancel.";
+
+"Email Saved" = "Email Saved";
+"Your email address has been saved, thank you!" = "Your email address has been saved, thank you!";
+
+"Need Access to Photos" = "Need Access to Photos";
+"Please give this app permission to access your photo library in your settings app." = "Please give this app permission to access your photo library in your settings app.";

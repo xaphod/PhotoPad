@@ -122,7 +122,7 @@ static BPPPhotoStore *shared = nil;
         ALAuthorizationStatus status = [ALAssetsLibrary authorizationStatus];
         
         if (status == ALAuthorizationStatusDenied || status == ALAuthorizationStatusRestricted ) {
-            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Need Access to Photos" message:@"Please give this app permission to access your photo library in your settings app." delegate:nil cancelButtonTitle:@"Close" otherButtonTitles:nil, nil];
+            UIAlertView *alert = [[UIAlertView alloc] initWithTitle:NSLocalizedString(@"Need Access to Photos",nil) message:NSLocalizedString(@"Please give this app permission to access your photo library in your settings app.",nil) delegate:nil cancelButtonTitle:NSLocalizedString(@"OK",nil) otherButtonTitles:nil, nil];
             [alert show];
         }
         
