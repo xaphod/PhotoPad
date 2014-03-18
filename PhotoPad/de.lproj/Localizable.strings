@@ -1,10 +1,10 @@
-/* 
-  Localizable.strings
-  PhotoPad
-
-  Created by Tim Carr on 3/17/14.
-
-*/
+/*
+ Localizable.strings
+ PhotoPad
+ 
+ Created by Tim Carr on 3/17/14.
+ 
+ */
 
 "Cancel" = "Abbrechen";
 "Delete" = "Löschen";
@@ -12,23 +12,23 @@
 
 
 "Maximum 6 Photos" = "Maximal 6 Fotos";
-"The maximum number of photos is already selected. To clear the selection, use the clear button." = "Die maximale Anzahl der Bilder ist bereits ausgewählt. Um die Auswahl zu löschen, verwenden Sie die X.";
+"The maximum number of photos is already selected. To clear the selection, use the clear button." = "Die maximale Anzahl Bilder ist bereits ausgewählt. Um die Auswahl zu löschen, drücken Sie X.";
 "OK" = "OK";
 
-"Printing Successful" = "Druck War Erfolgreiche";
-"Your photo(s) will print soon. Please take the photo and put it in the wedding album for the happy couple, and write a nice message with it!" = "Ihr Foto(s) wird bald drucken. Bitte nehmen Sie das Foto aus und legen Sie sie in der Hochzeitsalbum für das glückliche Paar. Vergessen Sie nicht, eine Nachtricht ins album zu schreiben!";
+"Printing Successful" = "Druck erfolgreich";
+"Your photo(s) will print soon. Please take the photo and put it in the wedding album for the happy couple, and write a nice message with it!" = "Ihre Fotos werden demnächst gedruckt. Bitte nehmen Sie die Fotos und legen Sie sie in der Hochzeitsalbum für das Hochzeitspaar. Vergessen Sie nicht, eine nette Nachtricht ins Album zu schreiben!";
 
-"Printing Error" = "Druck Nicht Erfolgreiche";
-"Oh no! The printer didn't work. Please go get the photographer and tell him about it. Your pictures have been saved, so you can try again later.\n\nError -- descrip: %@, domain %@ with error code %d" = "Oups! Der Drucker hat nicht funktioniert. Bitte gehen Sie zu den Fotografen und erklären was passiert ist. Ihre Bilder wurden gespeichert -- Sie können es später nochmal versuchen.\n\nError -- descrip: %@, domain %@ with error code %d";
+"Printing Error" = "Druck nicht erfolgreich";
+"Oh no! The printer didn't work. Please go get the photographer and tell him about it. Your pictures have been saved, so you can try again later.\n\nError -- descrip: %@, domain %@ with error code %d" = "Ups! Der Drucker funktioniert nicht. Bitte informieren Sie den Fotografen und erklären Sie was passiert ist. Ihre Bilder wurden gespeichert -- Sie können es später nochmals versuchen.\n\nError -- descrip: %@, domain %@ with error code %d";
 
-"Please choose more photos" = "Bitte wählen Sie mehr Fotos";
-"Please choose at least 2 photos to print. You can choose photos by touching them at the top." = "Um zu drucken, wählen Sie bitte mindestens 2 Fotos. Sie können Fotos von oben wählen.";
+"Please choose more photos" = "Bitte wählen Sie mehr Fotos aus";
+"Please choose at least 2 photos to print. You can choose photos by touching them at the top." = "Wählen Sie bitte mindestens 2 Fotos. Sie können Fotos von oben wählen.";
 
-"Invalid Email Address" = "Email Adresse nicht gültig";
-"Please enter a valid email address, or hit cancel." = "Bitte geben Sie eine gültige E-Mail-Adresse.";
+"Invalid Email Address" = "Email-Adresse nicht gültig";
+"Please enter a valid email address, or hit cancel." = "Bitte geben Sie eine gültige E-Mail-Adresse ein.";
 
-"Email Saved" = "Email Gespeichert";
+"Email Saved" = "Email gespeichert";
 "Your email address has been saved, thank you!" = "Ihre E-Mail-Adresse wurde gespeichert, danke!";
 
-"Need Access to Photos" = "Zugriff auf Fotos Benötigt";
-"Please give this app permission to access your photo library in your settings app." = "Bitte geben Sie diese App Erlaubnis, in die Einstellungen App Zugriff auf Ihre Foto-Bibliothek.";
+"Need Access to Photos" = "Zugriff auf Fotos benötigt";
+"Please give this app permission to access your photo library in your settings app." = "Bitte geben Sie dieser App in den Einstellungen des Gerätes Zugriff auf Ihre Foto-Bibliothek.";
