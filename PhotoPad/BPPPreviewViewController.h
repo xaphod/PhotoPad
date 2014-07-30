@@ -19,7 +19,6 @@
 @interface BPPPreviewViewController : UIViewController <MWPhotoBrowserDelegate, UIGestureRecognizerDelegate, UIActionSheetDelegate, UICollectionViewDataSource, UICollectionViewDelegateFlowLayout,
     UIScrollViewDelegate,  UIAlertViewDelegate, MFMailComposeViewControllerDelegate>
 
-//@property(nonatomic, strong) NSMutableDictionary* selectedPhotos; // key = URL (from PhotoStore), value = UIImage*
 @property (nonatomic) NSUInteger selectedIndex;
 
 @property (strong, nonatomic) MWPhotoBrowser *photosBrowser;

@@ -543,6 +543,7 @@
         
         UIAlertView *passwordAlert = [[UIAlertView alloc] initWithTitle:@"Password" message:@"" delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel",nil) otherButtonTitles:NSLocalizedString(@"OK",nil), nil];
         passwordAlert.alertViewStyle = UIAlertViewStyleSecureTextInput;
+        passwordAlert.tag = 1;
         [passwordAlert show];
         
     }
@@ -551,33 +552,46 @@
 - (void)alertView:(UIAlertView *)alertView didDismissWithButtonIndex:(NSInteger)buttonIndex {
     
     // rough password check
-    if( [[alertView textFieldAtIndex:0].text isEqualToString:@"getemails"] ) {
+    
+    if( alertView.tag == 1 ) {
+        // case: get all emails, password entry
         
-        BPPAppDelegate *appDelegate = (BPPAppDelegate *)[[UIApplication sharedApplication] delegate];
+        if( [[alertView textFieldAtIndex:0].text isEqualToString:@"getemails"] ) {
+            
+            BPPAppDelegate *appDelegate = (BPPAppDelegate *)[[UIApplication sharedApplication] delegate];
+            
+            MFMailComposeViewController *mailController = [[MFMailComposeViewController alloc] init];
+            
+            [mailController setSubject:@"Eyefi Booth - email addresses"];
+            [mailController setMessageBody:[appDelegate getStringOfAllEmailAddresses] isHTML:NO];
+            
+            mailController.mailComposeDelegate = self;
+            
+            UINavigationController *myNavController = [self navigationController];
+            
+            if ( mailController != nil ) {
+                if ([MFMailComposeViewController canSendMail]){
+                    [myNavController presentViewController:mailController animated:YES completion:^{
+                        
+                        // TODO: localize all of these
+                        UIAlertView *passwordAlert = [[UIAlertView alloc] initWithTitle:@"Clear emails?" message:@"Hit OK to clear all emails, hit cancel not to." delegate:self cancelButtonTitle:NSLocalizedString(@"Cancel",nil) otherButtonTitles:NSLocalizedString(@"OK",nil), nil];
+ // TODO: TODO LEFT HERE                       passwordAlert.alertViewStyle = ????;
+                        passwordAlert.tag = 2;
+                        [passwordAlert show];
 
-        MFMailComposeViewController *mailController = [[MFMailComposeViewController alloc] init];
-        
-        // TODO: add support to set name of wedding in settings, and use it here in subject
-        [mailController setSubject:@"Eyefi Booth - email addresses"];
-        [mailController setMessageBody:[appDelegate getStringOfAllEmailAddresses] isHTML:NO];
-        
-        mailController.mailComposeDelegate = self;
-        
-       UINavigationController *myNavController = [self navigationController];
-        
-        if ( mailController != nil ) {
-            if ([MFMailComposeViewController canSendMail]){
-                [myNavController presentViewController:mailController animated:YES completion:^{
-                    nil;
-                }];
-            } else {
-                NSLog(@"ERROR: uh oh MFMailComposeVC cannot send mail!");
+                    }];
+                } else {
+                    NSLog(@"ERROR: uh oh MFMailComposeVC cannot send mail!");
+                }
             }
         }
-
-        // TODO: ofer to clear list of emails now it is sent
+    } else if( alertView.tag == 2 ) {
         
+        // case: clear all emails on OK (only)
+        
+        // TODO: implement
     }
+    
 }
 
 - (void)mailComposeController:(MFMailComposeViewController*)controller didFinishWithResult:(MFMailComposeResult)result error:(NSError*)error {

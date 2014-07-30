@@ -303,7 +303,7 @@
     
     UIImage* resizedAndCroppedImage = [self cropImage:image scaledToFillSize:rect.size];
     // TODO: enable tilt?
-    resizedAndCroppedImage = [self tiltAndZoomImage:resizedAndCroppedImage];
+//    resizedAndCroppedImage = [self tiltAndZoomImage:resizedAndCroppedImage];
     
     if( nil == resizedAndCroppedImage ) {
         NSLog(@"Failed to resize image!");

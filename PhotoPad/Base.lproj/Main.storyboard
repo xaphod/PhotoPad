@@ -183,11 +183,11 @@
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                     </imageView>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="dBX-PL-m9r">
-                                        <rect key="frame" x="694" y="637" width="45" height="45"/>
+                                        <rect key="frame" x="691" y="624" width="50" height="50"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <constraints>
-                                            <constraint firstAttribute="width" constant="45" id="bJd-zB-blR"/>
-                                            <constraint firstAttribute="height" constant="45" id="mR7-PN-fim"/>
+                                            <constraint firstAttribute="width" constant="50" id="bJd-zB-blR"/>
+                                            <constraint firstAttribute="height" constant="50" id="mR7-PN-fim"/>
                                         </constraints>
                                         <state key="normal" image="printer-64.png">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -197,11 +197,11 @@
                                         </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="ZBQ-Bw-o8m">
-                                        <rect key="frame" x="623" y="637" width="45" height="45"/>
+                                        <rect key="frame" x="616" y="624" width="50" height="50"/>
                                         <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                         <constraints>
-                                            <constraint firstAttribute="height" constant="45" id="iHl-rO-hT8"/>
-                                            <constraint firstAttribute="width" constant="45" id="opj-aZ-BSK"/>
+                                            <constraint firstAttribute="height" constant="50" id="iHl-rO-hT8"/>
+                                            <constraint firstAttribute="width" constant="50" id="opj-aZ-BSK"/>
                                         </constraints>
                                         <state key="normal" image="message-64.png">
                                             <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
@@ -245,8 +245,8 @@
                                     <constraint firstItem="Cjg-tN-PS9" firstAttribute="top" secondItem="hDb-2e-3aN" secondAttribute="top" constant="20" id="218-ub-OAU"/>
                                     <constraint firstAttribute="bottom" secondItem="cNv-4f-PXc" secondAttribute="bottom" constant="20" id="2K8-J8-JBW"/>
                                     <constraint firstAttribute="trailing" secondItem="Cjg-tN-PS9" secondAttribute="trailing" constant="169" id="88a-wn-jFn"/>
-                                    <constraint firstAttribute="trailing" secondItem="ZBQ-Bw-o8m" secondAttribute="trailing" constant="100" id="AJd-0K-G09"/>
-                                    <constraint firstAttribute="trailing" secondItem="dBX-PL-m9r" secondAttribute="trailing" constant="29" id="FtX-oQ-9WO"/>
+                                    <constraint firstAttribute="trailing" secondItem="ZBQ-Bw-o8m" secondAttribute="trailing" constant="102" id="AJd-0K-G09"/>
+                                    <constraint firstAttribute="trailing" secondItem="dBX-PL-m9r" secondAttribute="trailing" constant="27" id="FtX-oQ-9WO"/>
                                     <constraint firstAttribute="centerY" secondItem="duE-tM-bjX" secondAttribute="centerY" id="G27-dr-pFe"/>
                                     <constraint firstItem="SyB-dw-tQG" firstAttribute="leading" secondItem="hDb-2e-3aN" secondAttribute="leading" constant="20" id="Hz6-FC-u87"/>
                                     <constraint firstItem="SyB-dw-tQG" firstAttribute="top" secondItem="hDb-2e-3aN" secondAttribute="top" constant="109" id="Zxg-T6-uY3"/>
@@ -254,8 +254,8 @@
                                     <constraint firstItem="Cjg-tN-PS9" firstAttribute="leading" secondItem="hDb-2e-3aN" secondAttribute="leading" constant="170" id="dds-oo-k5O"/>
                                     <constraint firstAttribute="trailing" secondItem="MxQ-8b-LYQ" secondAttribute="trailing" constant="29" id="ika-wX-563"/>
                                     <constraint firstAttribute="trailing" secondItem="SyB-dw-tQG" secondAttribute="trailing" constant="20" id="lsd-bj-FbI"/>
-                                    <constraint firstItem="dBX-PL-m9r" firstAttribute="top" secondItem="ZBQ-Bw-o8m" secondAttribute="bottom" constant="-45" id="nFb-z1-cbg"/>
-                                    <constraint firstItem="ZBQ-Bw-o8m" firstAttribute="top" secondItem="MxQ-8b-LYQ" secondAttribute="bottom" constant="572" id="oUn-eI-MZs"/>
+                                    <constraint firstItem="dBX-PL-m9r" firstAttribute="top" secondItem="ZBQ-Bw-o8m" secondAttribute="bottom" constant="-50" id="nFb-z1-cbg"/>
+                                    <constraint firstItem="ZBQ-Bw-o8m" firstAttribute="top" secondItem="MxQ-8b-LYQ" secondAttribute="bottom" constant="559" id="oUn-eI-MZs"/>
                                     <constraint firstAttribute="centerX" secondItem="duE-tM-bjX" secondAttribute="centerX" id="r3A-0d-4e7"/>
                                     <constraint firstAttribute="trailing" secondItem="cNv-4f-PXc" secondAttribute="trailing" constant="606" id="rQF-uq-5lI"/>
                                     <constraint firstAttribute="bottom" secondItem="SyB-dw-tQG" secondAttribute="bottom" constant="110" id="vo9-Ev-s29"/>

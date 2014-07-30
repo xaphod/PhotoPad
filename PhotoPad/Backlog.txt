@@ -1,5 +1,12 @@
 Backlog - Tim
 
+- finish email removal logic (todos)
+- detect duplicate email entry, warn and don't add a second time
+- helper UI - arrows to icons with text
+- ppl don't understand they cannot print just 1: make selecting 1, select 1 + a grey photo of question mark etc?
+- ppl need more encouragement to select photos
+- takes too long until printer starts printing: investigate sending 150dpi and see if it is visibly less quality than 300dpi, and if it is noticeably faster
+- 
 
 1. TODOs in code
 
@@ -9,17 +16,3 @@ Backlog - Tim
 20. localize into german?
 22. publish to the instagram feed of the wedding??
 
-
-DONE
-
-1b.DONE: Stop saving images inside app's own xcappdata -- save to photo roll instead, own folder
-- max 6 selection
-
-    12.per image in collage: random amount of tilt + zoom, to make things more interesting
-
-    3. DONE: scrolling down thru images is jerky, fix this: image thumbnails too big?
-    4. DONE: deselect doesn't work: at least the checkmarks are not removed on deselect
-    6. DONE: new images (images downloaded) must be put at START of collection (top left), not bottom
-    6b.DONE: if scrolled down in main view, nothing must change until an action is taken (ie print) when new photos come in
-    6c.DONE, NEEDS BETTER UI: have some UI indication that newest ones are at the top - a notificaton overlay that appears when new images arrive, touch it to jump to top
-    13.app must prevent screen from turning off
