@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>IDESourceControlProjectFavoriteDictionaryKey</key>
+	<false/>
+	<key>IDESourceControlProjectIdentifier</key>
+	<string>957483D6-D239-4171-AD1D-2D0B7C9D05B5</string>
+	<key>IDESourceControlProjectName</key>
+	<string>PhotoPad</string>
+	<key>IDESourceControlProjectOriginsDictionary</key>
+	<dict>
+		<key>23C2C393B1095FC8AD3A1BB8FD0CD4E3841FE4EB</key>
+		<string>https://github.com/xaphod/PhotoPad.git</string>
+	</dict>
+	<key>IDESourceControlProjectPath</key>
+	<string>PhotoPad.xcworkspace</string>
+	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
+	<dict>
+		<key>23C2C393B1095FC8AD3A1BB8FD0CD4E3841FE4EB</key>
+		<string>..</string>
+	</dict>
+	<key>IDESourceControlProjectURL</key>
+	<string>https://github.com/xaphod/PhotoPad.git</string>
+	<key>IDESourceControlProjectVersion</key>
+	<integer>111</integer>
+	<key>IDESourceControlProjectWCCIdentifier</key>
+	<string>23C2C393B1095FC8AD3A1BB8FD0CD4E3841FE4EB</string>
+	<key>IDESourceControlProjectWCConfigurations</key>
+	<array>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>23C2C393B1095FC8AD3A1BB8FD0CD4E3841FE4EB</string>
+			<key>IDESourceControlWCCName</key>
+			<string>PhotoPad</string>
+		</dict>
+	</array>
+</dict>
+</plist>

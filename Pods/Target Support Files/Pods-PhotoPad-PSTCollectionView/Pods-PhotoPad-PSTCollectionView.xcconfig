@@ -1,0 +1,1 @@
+PODS_PHOTOPAD_PSTCOLLECTIONVIEW_OTHER_LDFLAGS = -framework "QuartzCore" -framework "UIKit"

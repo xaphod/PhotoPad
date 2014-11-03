@@ -8,9 +8,13 @@
 
 #import <Foundation/Foundation.h>
 
-// Must be in 4 x 6" ratio - numbers here are for  300DPI.
-#define CollageLongsidePixels 1800
-#define CollageShortsidePixels 1200
+// Must be in 4 x 6" ratio. 1800 x 1200 is 300DPI.
+#define CollageLongsidePixelsAt150DPI 900
+#define CollageShortsidePixelsAt150DPI 600
+#define CollageLongsidePixelsAt200DPI 1200
+#define CollageShortsidePixelsAt200DPI 800
+#define CollageLongsidePixelsAt300DPI 1800
+#define CollageShortsidePixelsAt300DPI 1200
 #define CollageBorderPixels 20
 #define CollageBorderUIColor whiteColor
 #define CollageJPGQuality 0.6 // from 0 to 1, 1 is best quality

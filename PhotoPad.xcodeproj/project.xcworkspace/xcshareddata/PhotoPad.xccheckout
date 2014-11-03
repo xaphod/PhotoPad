@@ -18,7 +18,7 @@
 		<string>https://github.com/mwaterfall/MWPhotoBrowser.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>PhotoPad.xcodeproj/project.xcworkspace</string>
+	<string>PhotoPad.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>23C2C393B1095FC8AD3A1BB8FD0CD4E3841FE4EB</key>

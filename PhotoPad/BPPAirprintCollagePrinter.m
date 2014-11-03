@@ -26,8 +26,8 @@
     if (self = [super init]) {
         _printerIDs = [NSMutableArray array];
         _lastUsedPrinterIDArrayIndex = -1;
-        self.longsidePixels = CollageLongsidePixels;
-        self.shortsidePixels = CollageShortsidePixels;
+        self.longsidePixels = CollageLongsidePixelsAt150DPI;
+        self.shortsidePixels = CollageShortsidePixelsAt150DPI;
     }
     return self;
 }
@@ -48,7 +48,7 @@
         return NO;
     }
     
-    if( CollageLongsidePixels * 0.25 != CollageShortsidePixels* 0.375 ) {
+    if( self.longsidePixels * 0.25 != self.shortsidePixels* 0.375 ) {
         // dimensions are not in 4 x 6
         NSAssert(NO, @"Input dimensions (CollageXsidePixels) are not in 6:4 ratio");
         return NO;
@@ -170,8 +170,7 @@
 
 // public
 - (NSArray*)makeCollageImages:(NSArray*)collages {
-    // default size is full 300dpi size
-    return [self makeCollageImages:collages longsideLength:CollageLongsidePixels shortsideLength:CollageShortsidePixels completionBlock:nil];
+    return [self makeCollageImages:collages longsideLength:self.longsidePixels shortsideLength:self.shortsidePixels completionBlock:nil];
 }
 
 - (NSArray*)makeCollageImages:(NSArray*)collages longsideLength:(CGFloat)longsideLength shortsideLength:(CGFloat)shortsideLength completionBlock:(MakeCollageCompletionBlock)completionBlock {

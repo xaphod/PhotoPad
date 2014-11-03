@@ -1,5 +1,20 @@
 Backlog - Tim
 
+*** from november 2014
+- Email
+    - ask for email each time something is printed?
+    - show list of existing emails to help know if yours is there?
+    - make button position more discoverable, bigger (same with print button)
+- next to X button (clear), show lil placeholder squares or numbers to show how many images are selected?
+- "instruction area": shows the next step, ie. "Pick at least 2 images!"
+- how is german & english mixed wedding working?
+- admin settings area, ie. in settings app proper: pick DPI, pick album name (PhotoPad)
+- test 150DPI prints compared to 300DPI prints
+- perf: resolution is higher for imageview than for print. just generate print res, have imageview stretch?
+- check what happens when new photos are arriving via eyefi?
+
+
+*** before november 2014
 - finish email removal logic (todos)
 - detect duplicate email entry, warn and don't add a second time
 - helper UI - arrows to icons with text
