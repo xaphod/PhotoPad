@@ -10,33 +10,45 @@
 	<string>PhotoPad</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
-		<key>622E836D-81B1-4310-B6BC-FF10A0560CDB</key>
-		<string>https://github.com/mwaterfall/MWPhotoBrowser.git</string>
-		<key>CC18DFCE-E9A9-4DF6-A79C-C568C16B72BD</key>
+		<key>23C2C393B1095FC8AD3A1BB8FD0CD4E3841FE4EB</key>
 		<string>https://github.com/xaphod/PhotoPad.git</string>
+		<key>71CFC0DE1DEFC877B0C5B9F98B971EBA2921D608</key>
+		<string>https://github.com/robbiehanson/CocoaHTTPServer.git</string>
+		<key>9F9B14DA276794D9192F387F0CC62561009373D0</key>
+		<string>https://github.com/mwaterfall/MWPhotoBrowser.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
 	<string>PhotoPad.xcodeproj/project.xcworkspace</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
-		<key>622E836D-81B1-4310-B6BC-FF10A0560CDB</key>
-		<string>../../../MWPhotoBrowser</string>
-		<key>CC18DFCE-E9A9-4DF6-A79C-C568C16B72BD</key>
+		<key>23C2C393B1095FC8AD3A1BB8FD0CD4E3841FE4EB</key>
 		<string>../..</string>
+		<key>71CFC0DE1DEFC877B0C5B9F98B971EBA2921D608</key>
+		<string>../../../CocoaHTTPServer</string>
+		<key>9F9B14DA276794D9192F387F0CC62561009373D0</key>
+		<string>../../../MWPhotoBrowser</string>
 	</dict>
 	<key>IDESourceControlProjectURL</key>
 	<string>https://github.com/xaphod/PhotoPad.git</string>
 	<key>IDESourceControlProjectVersion</key>
-	<integer>110</integer>
+	<integer>111</integer>
 	<key>IDESourceControlProjectWCCIdentifier</key>
-	<string>CC18DFCE-E9A9-4DF6-A79C-C568C16B72BD</string>
+	<string>23C2C393B1095FC8AD3A1BB8FD0CD4E3841FE4EB</string>
 	<key>IDESourceControlProjectWCConfigurations</key>
 	<array>
 		<dict>
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>622E836D-81B1-4310-B6BC-FF10A0560CDB</string>
+			<string>71CFC0DE1DEFC877B0C5B9F98B971EBA2921D608</string>
+			<key>IDESourceControlWCCName</key>
+			<string>CocoaHTTPServer</string>
+		</dict>
+		<dict>
+			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
+			<string>public.vcs.git</string>
+			<key>IDESourceControlWCCIdentifierKey</key>
+			<string>9F9B14DA276794D9192F387F0CC62561009373D0</string>
 			<key>IDESourceControlWCCName</key>
 			<string>MWPhotoBrowser</string>
 		</dict>
@@ -44,7 +56,7 @@
 			<key>IDESourceControlRepositoryExtensionIdentifierKey</key>
 			<string>public.vcs.git</string>
 			<key>IDESourceControlWCCIdentifierKey</key>
-			<string>CC18DFCE-E9A9-4DF6-A79C-C568C16B72BD</string>
+			<string>23C2C393B1095FC8AD3A1BB8FD0CD4E3841FE4EB</string>
 			<key>IDESourceControlWCCName</key>
 			<string>PhotoPad</string>
 		</dict>

@@ -22,4 +22,12 @@
     self.photoImageView.image = asset;
 }
 
+- (void)prepareForReuse
+{
+    [super prepareForReuse];
+    
+    self.photoImageView.image = nil;
+}
+
+
 @end
